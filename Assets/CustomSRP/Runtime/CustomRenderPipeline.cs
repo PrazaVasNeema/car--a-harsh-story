@@ -1,21 +1,24 @@
 ﻿using UnityEngine;
 using UnityEngine.Rendering;
 
-public class CustomRenderPipeline : RenderPipeline
+namespace CustomSRP.Runtime
 {
-	CameraRenderer renderer = new CameraRenderer();
-
-	public CustomRenderPipeline () {
-		GraphicsSettings.useScriptableRenderPipelineBatching = true;
-		GraphicsSettings.lightsUseLinearIntensity = true;
-	}
-
-	protected override void Render(
-		ScriptableRenderContext context, Camera[] cameras
-	)
+	public class CustomRenderPipeline : RenderPipeline
 	{
-		for (int i = 0; i < cameras.Length; i++) {
-			renderer.Render(context, cameras[i]);
+		CameraRenderer renderer = new CameraRenderer();
+
+		public CustomRenderPipeline () {
+			GraphicsSettings.useScriptableRenderPipelineBatching = true;
+			GraphicsSettings.lightsUseLinearIntensity = true;
+		}
+
+		protected override void Render(
+			ScriptableRenderContext context, Camera[] cameras
+		)
+		{
+			for (int i = 0; i < cameras.Length; i++) {
+				renderer.Render(context, cameras[i]);
+			}
 		}
 	}
 }
