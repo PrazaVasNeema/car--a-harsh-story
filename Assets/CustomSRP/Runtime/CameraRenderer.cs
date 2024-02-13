@@ -21,21 +21,22 @@ namespace CustomSRP.Runtime
 		Lighting lighting = new Lighting();
 
 
-		public void Render(ScriptableRenderContext context, Camera camera)
+		public void Render(ScriptableRenderContext context, Camera camera, ShadowSettings shadowSettings)
 		{
 			this.context = context;
 			this.camera = camera;
 
 			PrepareUIForSceneWindow();
-			if (!Cull()) {
+			if (!Cull(shadowSettings.maxDistance)) {
 				return;
 			}
 
 			Setup();
-			lighting.Setup(context, cullingResults);
+			lighting.Setup(context, cullingResults, shadowSettings);
 			DrawVisibleGeometry();
 			DrawUnsupportedShaders();
 			DrawGizmos();
+			RenderUtils.CleanupTempRT(buffer, Shadows.dirShadowAtlasId);
 			Submit();
 		}
 
@@ -67,15 +68,11 @@ namespace CustomSRP.Runtime
 			{
 				criteria = SortingCriteria.CommonOpaque
 			};
-			var drawingSettings = new DrawingSettings(
-				unlitShaderTagId, sortingSettings
-			);
+			var drawingSettings = new DrawingSettings(unlitShaderTagId, sortingSettings);
 			drawingSettings.SetShaderPassName(1, litShaderTagId);
 			var filteringSettings = new FilteringSettings(RenderQueueRange.opaque);
 
-			context.DrawRenderers(
-				cullingResults, ref drawingSettings, ref filteringSettings
-			);
+			context.DrawRenderers(cullingResults, ref drawingSettings, ref filteringSettings);
 
 			context.DrawSkybox(camera);
 
@@ -83,9 +80,7 @@ namespace CustomSRP.Runtime
 			sortingSettings.criteria = SortingCriteria.CommonTransparent;
 			drawingSettings.sortingSettings = sortingSettings;
 			filteringSettings.renderQueueRange = RenderQueueRange.transparent;
-			context.DrawRenderers(
-				cullingResults, ref drawingSettings, ref filteringSettings
-			);
+			context.DrawRenderers(cullingResults, ref drawingSettings, ref filteringSettings);
 		}
 
 		void Submit () {
@@ -94,5 +89,17 @@ namespace CustomSRP.Runtime
 			context.Submit();
 		}
 
+		bool Cull(float maxShadowDistance)
+		{
+
+			if (camera.TryGetCullingParameters(out ScriptableCullingParameters p))
+			{
+				p.shadowDistance = Mathf.Min(maxShadowDistance, camera.farClipPlane);
+				cullingResults = context.Cull(ref p);
+				return true;
+			}
+			return false;
+		}
+		
 	}
 }
