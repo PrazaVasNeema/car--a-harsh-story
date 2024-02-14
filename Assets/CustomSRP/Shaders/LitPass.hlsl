@@ -17,6 +17,10 @@ CBUFFER_START(UnityPerMaterial)
 	float _Roughness;
 CBUFFER_END
 
+uniform float4x4 _lightSpaceMatrix;
+uniform Texture2D _DirectionalShadowAtlas;
+
+
 struct VertexAttributes {
 	float3 positionOS : POSITION;
 	float3 normalOS   : NORMAL;
@@ -28,6 +32,7 @@ struct Varyings {
 	float3 positionWS : VAR_POSITION;
 	float3 normalWS   : VAR_NORMAL;
 	float2 uv         : TEXCOORD0;
+	float4 fragPosLightSpace : TEXCOORD1;
 };
 
 Varyings Vertex(VertexAttributes vertexInput)
@@ -37,8 +42,24 @@ Varyings Vertex(VertexAttributes vertexInput)
 	vertexOut.positionCS = TransformWorldToHClip(vertexOut.positionWS);
 	vertexOut.normalWS = TransformObjectToWorldNormal(vertexInput.normalOS);
 	vertexOut.uv = vertexInput.uv * _BaseMap_ST.xy + _BaseMap_ST.zw;
-
+	
+	vertexOut.fragPosLightSpace = mul(_lightSpaceMatrix,float4(vertexOut.positionWS, 1));
 	return vertexOut;
+}
+
+float ShadowCalculation(float4 fragPosLightSpace)
+{
+	float3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+
+	projCoords = projCoords * 0.5 + 0.5;
+	// get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
+	float closestDepth = tex2D(_DirectionalShadowAtlas, projCoords.xy).r; 
+	// get depth of current fragment from light's perspective
+	float currentDepth = projCoords.z;
+	// check whether current frag pos is in shadow
+	float shadow = currentDepth > closestDepth  ? 1.0 : 0.0;
+
+	return shadow;
 }
 
 float4 Fragment(Varyings fragmentInput) : SV_TARGET
@@ -56,7 +77,9 @@ float4 Fragment(Varyings fragmentInput) : SV_TARGET
 
 	BRDF brdf = GetBRDF(surface);
 	float3 color = GetLighting(surface, brdf);
-
+	
+	float shadow = ShadowCalculation(fragmentInput.fragPosLightSpace);
+	
 	return float4(color, surface.alpha);
 }
 

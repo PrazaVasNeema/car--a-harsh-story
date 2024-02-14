@@ -66,6 +66,8 @@ namespace CustomSRP.Runtime
 
             m_buffer.SetViewport(new Rect(0, 0, atlasSize, atlasSize));
             m_buffer.SetViewProjectionMatrices(viewMatrix, projectionMatrix);
+
+            Shader.SetGlobalMatrix("_lightSpaceMatrix", projectionMatrix * viewMatrix);
             
             // RenderUtils.ExecuteBuffer(m_buffer,m_context);
             ExecuteBuffer();
