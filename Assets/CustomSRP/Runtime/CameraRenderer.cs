@@ -30,13 +30,15 @@ namespace CustomSRP.Runtime
 			if (!Cull(shadowSettings.maxDistance)) {
 				return;
 			}
+			lighting.Setup(context, cullingResults, shadowSettings);
 
 			Setup();
-			lighting.Setup(context, cullingResults, shadowSettings);
 			DrawVisibleGeometry();
 			DrawUnsupportedShaders();
 			DrawGizmos();
-			RenderUtils.CleanupTempRT(buffer, Shadows.dirShadowAtlasId);
+			//RenderUtils.CleanupTempRT(buffer, Shadows.dirShadowAtlasId);
+			lighting.Cleanup();
+
 			Submit();
 		}
 
@@ -51,6 +53,7 @@ namespace CustomSRP.Runtime
 			buffer.BeginSample(bufferName);
 		
 			RenderUtils.ExecuteBuffer(buffer, context);
+			
 		}
 
 		bool Cull ()

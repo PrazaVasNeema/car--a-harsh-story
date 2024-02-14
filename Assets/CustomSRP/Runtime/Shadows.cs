@@ -51,36 +51,56 @@ namespace CustomSRP.Runtime
             m_buffer.GetTemporaryRT(dirShadowAtlasId, atlasSize, atlasSize, 32, FilterMode.Bilinear, RenderTextureFormat.Shadowmap); // RT = render texture
             //                                           To immediately clear target              The purpose
             m_buffer.SetRenderTarget(dirShadowAtlasId, RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store);
-            // buffer.ClearRenderTarget(true, false, Color.clear); // Why clear it here anyway?
+            m_buffer.ClearRenderTarget(true, false, Color.clear); // Why clear it here anyway?
             m_buffer.BeginSample(BUFFER_NAME);
-            RenderUtils.ExecuteBuffer(m_buffer, m_context);
-            
+            // RenderUtils.ExecuteBuffer(m_buffer, m_context);
+            ExecuteBuffer();
+
             var shadowSettings = new ShadowDrawingSettings(m_cullingResults, ACTIVE_LIGHT_INDEX); // maybe here will be a problem
             
             m_cullingResults.ComputeDirectionalShadowMatricesAndCullingPrimitives(ACTIVE_LIGHT_INDEX, 0, 1,
-                Vector3.zero, 0, 0f,
+                Vector3.zero, atlasSize, 0f,
                 out Matrix4x4 viewMatrix, out Matrix4x4 projectionMatrix, out ShadowSplitData splitData);
             
             shadowSettings.splitData = splitData;
 
-            m_buffer.SetViewport(new Rect(atlasSize, atlasSize, atlasSize, atlasSize));
+            m_buffer.SetViewport(new Rect(0, 0, atlasSize, atlasSize));
             m_buffer.SetViewProjectionMatrices(viewMatrix, projectionMatrix);
             
-            RenderUtils.ExecuteBuffer(m_buffer,m_context);
-            
+            // RenderUtils.ExecuteBuffer(m_buffer,m_context);
+            ExecuteBuffer();
+
             m_context.DrawShadows(ref shadowSettings);
+
+            
+            m_buffer.EndSample(BUFFER_NAME);
+            // RenderUtils.ExecuteBuffer(m_buffer,m_context);
+            ExecuteBuffer();
+
+
         }
 
-        // public void ReserveDirectionalShadows(Light light, int visibleLightIndex = 0)
-        // {
-        //     if (light.shadows != LightShadows.None && light.shadowStrength > 0f 
-        //                                            && m_cullingResults.GetShadowCasterBounds(visibleLightIndex,
-        //                                                out Bounds b))
-        //     {
-        //         
-        //     }
-        // }
+        public void ReserveDirectionalShadows(Light light)
+        {
+            if (light.shadows != LightShadows.None && light.shadowStrength > 0f 
+                                                   && m_cullingResults.GetShadowCasterBounds(0,
+                                                       out Bounds b))
+            {
+                m_shadowedDirectionalLightCount = 1;
+            }
+        }
         
+        public void Cleanup () {
+            m_buffer.ReleaseTemporaryRT(dirShadowAtlasId);
+            // RenderUtils.ExecuteBuffer(m_buffer, m_context);
+            ExecuteBuffer();
+        }
+        
+        
+        void ExecuteBuffer () {
+            m_context.ExecuteCommandBuffer(m_buffer);
+            m_buffer.Clear();
+        }
 
     }
     

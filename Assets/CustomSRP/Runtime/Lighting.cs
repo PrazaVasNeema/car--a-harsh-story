@@ -57,7 +57,11 @@ namespace CustomSRP.Runtime
 		void SetupDirectionalLight (int index, ref VisibleLight visibleLight) {
 			dirLightColors[index] = visibleLight.finalColor;
 			dirLightDirections[index] = -visibleLight.localToWorldMatrix.GetColumn(2);
-			// m_shadows.ReserveDirectionalShadows()
+			m_shadows.ReserveDirectionalShadows(visibleLight.light);
+		}
+		
+		public void Cleanup () {
+			m_shadows.Cleanup();
 		}
 	}
 }
