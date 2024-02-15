@@ -67,7 +67,12 @@ namespace CustomSRP.Runtime
             m_buffer.SetViewport(new Rect(0, 0, atlasSize, atlasSize));
             m_buffer.SetViewProjectionMatrices(viewMatrix, projectionMatrix);
 
-            Shader.SetGlobalMatrix("_lightSpaceMatrix", projectionMatrix * viewMatrix);
+            Debug.Log($"proj: {projectionMatrix}, view: {viewMatrix}");
+            Debug.Log($"proj*view: {projectionMatrix * viewMatrix} ");
+            
+            Shader.SetGlobalMatrix("_lightProjection", projectionMatrix * viewMatrix);
+            //Shader.SetGlobalTexture(_shadowMap);
+            m_buffer.SetGlobalTexture("_DirectionalShadowAtlas", dirShadowAtlasId);
             
             // RenderUtils.ExecuteBuffer(m_buffer,m_context);
             ExecuteBuffer();

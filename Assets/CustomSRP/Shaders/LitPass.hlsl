@@ -17,8 +17,17 @@ CBUFFER_START(UnityPerMaterial)
 	float _Roughness;
 CBUFFER_END
 
-uniform float4x4 _lightSpaceMatrix;
-uniform Texture2D _DirectionalShadowAtlas;
+//uniform float4x4 _lightSpaceMatrix;
+uniform float4x4 _lightProjection;
+// uniform Texture2D _DirectionalShadowAtlas;
+
+// TEXTURE2D(_DirectionalShadowAtlas);
+// TEXTURE2D_SHADOW(_DirectionalShadowAtlas);
+// SAMPLER(sampler_DirectionalShadowAtlas);
+
+sampler2D _DirectionalShadowAtlas;
+
+// sampler2D _DirectionalShadowAtlasSampler;
 
 
 struct VertexAttributes {
@@ -32,7 +41,7 @@ struct Varyings {
 	float3 positionWS : VAR_POSITION;
 	float3 normalWS   : VAR_NORMAL;
 	float2 uv         : TEXCOORD0;
-	float4 fragPosLightSpace : TEXCOORD1;
+	float4 fragPosLight : TEXCOORD1;
 };
 
 Varyings Vertex(VertexAttributes vertexInput)
@@ -43,24 +52,24 @@ Varyings Vertex(VertexAttributes vertexInput)
 	vertexOut.normalWS = TransformObjectToWorldNormal(vertexInput.normalOS);
 	vertexOut.uv = vertexInput.uv * _BaseMap_ST.xy + _BaseMap_ST.zw;
 	
-	vertexOut.fragPosLightSpace = mul(_lightSpaceMatrix,float4(vertexOut.positionWS, 1));
+	vertexOut.fragPosLight = mul(_lightProjection,float4(vertexOut.positionWS, 1.0f));
 	return vertexOut;
 }
 
-float ShadowCalculation(float4 fragPosLightSpace)
-{
-	float3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
-
-	projCoords = projCoords * 0.5 + 0.5;
-	// get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
-	float closestDepth = tex2D(_DirectionalShadowAtlas, projCoords.xy).r; 
-	// get depth of current fragment from light's perspective
-	float currentDepth = projCoords.z;
-	// check whether current frag pos is in shadow
-	float shadow = currentDepth > closestDepth  ? 1.0 : 0.0;
-
-	return shadow;
-}
+// float ShadowCalculation(float4 fragPosLightSpace)
+// {
+// 	float3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+//
+// 	projCoords = projCoords * 0.5 + 0.5;
+// 	// get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
+// 	float closestDepth = tex2D(_DirectionalShadowAtlas, projCoords.xy).r; 
+// 	// get depth of current fragment from light's perspective
+// 	float currentDepth = projCoords.z;
+// 	// check whether current frag pos is in shadow
+// 	float shadow = currentDepth > closestDepth  ? 1.0 : 0.0;
+//
+// 	return shadow;
+// }
 
 float4 Fragment(Varyings fragmentInput) : SV_TARGET
 {
@@ -77,10 +86,28 @@ float4 Fragment(Varyings fragmentInput) : SV_TARGET
 
 	BRDF brdf = GetBRDF(surface);
 	float3 color = GetLighting(surface, brdf);
+
+	float shadow1 = 0.0f;
+	float3 lightCoords = fragmentInput.fragPosLight.xyz / fragmentInput.fragPosLight.w;
+
+	if (lightCoords.z <= 1.0f)
+	{
+		//lightCoords = (lightCoords + 1.0f) / 2.0f;
+		lightCoords = lightCoords * 0.5f + 0.5f;
+		float closestDepth = tex2D(_DirectionalShadowAtlas, lightCoords.xy).r;
+		float currentDepth = lightCoords.z;
+
+		if (currentDepth > closestDepth)
+		{
+			shadow1 = 1.0f;
+		}
+		
+	}
 	
-	float shadow = ShadowCalculation(fragmentInput.fragPosLightSpace);
 	
-	return float4(color, surface.alpha);
+	//float shadow = ShadowCalculation(fragmentInput.fragPosLightSpace);
+	
+	return float4(color * (1.0f - shadow1), surface.alpha);
 }
 
 #endif
