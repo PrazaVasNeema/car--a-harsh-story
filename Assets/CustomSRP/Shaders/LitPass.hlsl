@@ -25,6 +25,10 @@ uniform float4x4 _lightProjection;
 // TEXTURE2D_SHADOW(_DirectionalShadowAtlas);
 // SAMPLER(sampler_DirectionalShadowAtlas);
 
+
+// TEXTURE2D_SHADOW(_DirectionalShadowAtlas);
+// #define SHADOW_SAMPLER sampler_linear_clamp_compare
+// SAMPLER_CMP(SHADOW_SAMPLER);
 sampler2D _DirectionalShadowAtlas;
 
 // sampler2D _DirectionalShadowAtlasSampler;
@@ -52,7 +56,7 @@ Varyings Vertex(VertexAttributes vertexInput)
 	vertexOut.normalWS = TransformObjectToWorldNormal(vertexInput.normalOS);
 	vertexOut.uv = vertexInput.uv * _BaseMap_ST.xy + _BaseMap_ST.zw;
 	
-	vertexOut.fragPosLight = mul(_lightProjection,float4(vertexOut.positionWS, 1.0f));
+	vertexOut.fragPosLight = mul(unity_MatrixVP,float4(vertexOut.positionWS, 1.0f));
 	return vertexOut;
 }
 
@@ -69,6 +73,10 @@ Varyings Vertex(VertexAttributes vertexInput)
 // 	float shadow = currentDepth > closestDepth  ? 1.0 : 0.0;
 //
 // 	return shadow;
+// }
+
+// float SampleDirectionalShadowAtlas (float3 positionSTS) {
+// 	return SAMPLE_TEXTURE2D_SHADOW(_DirectionalShadowAtlas, SHADOW_SAMPLER, positionSTS);
 // }
 
 float4 Fragment(Varyings fragmentInput) : SV_TARGET
@@ -90,13 +98,15 @@ float4 Fragment(Varyings fragmentInput) : SV_TARGET
 	float shadow1 = 0.0f;
 	float3 lightCoords = fragmentInput.fragPosLight.xyz / fragmentInput.fragPosLight.w;
 
+	//shadow1 = SampleDirectionalShadowAtlas(lightCoords);
+
 	if (lightCoords.z <= 1.0f)
 	{
 		//lightCoords = (lightCoords + 1.0f) / 2.0f;
 		lightCoords = lightCoords * 0.5f + 0.5f;
 		float closestDepth = tex2D(_DirectionalShadowAtlas, lightCoords.xy).r;
 		float currentDepth = lightCoords.z;
-
+	
 		if (currentDepth > closestDepth)
 		{
 			shadow1 = 1.0f;

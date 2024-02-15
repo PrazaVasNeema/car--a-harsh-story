@@ -62,6 +62,22 @@ namespace CustomSRP.Runtime
                 Vector3.zero, atlasSize, 0f,
                 out Matrix4x4 viewMatrix, out Matrix4x4 projectionMatrix, out ShadowSplitData splitData);
             
+            // Vector3 lightPosition = new Vector3(-2.0f, 4.0f, -1.0f);
+            // Vector3 lightTarget = Vector3.zero;
+            // Vector3 up = Vector3.up; // World up direction is usually (0, 1, 0)
+            //
+            // viewMatrix = Matrix4x4.LookAt(lightPosition, lightTarget, up);
+            //
+            // float left = -10.0f;
+            // float right = 10.0f;
+            // float bottom = -10.0f;
+            // float top = 10.0f;
+            // float near_plane = 1.0f; // Near plane distance
+            // float far_plane = 100.0f; // Far plane distance
+            //
+            // projectionMatrix = Matrix4x4.Ortho(left, right, bottom, top, near_plane, far_plane);
+
+            
             shadowSettings.splitData = splitData;
 
             m_buffer.SetViewport(new Rect(0, 0, atlasSize, atlasSize));
@@ -69,6 +85,8 @@ namespace CustomSRP.Runtime
 
             Debug.Log($"proj: {projectionMatrix}, view: {viewMatrix}");
             Debug.Log($"proj*view: {projectionMatrix * viewMatrix} ");
+            
+
             
             Shader.SetGlobalMatrix("_lightProjection", projectionMatrix * viewMatrix);
             //Shader.SetGlobalTexture(_shadowMap);

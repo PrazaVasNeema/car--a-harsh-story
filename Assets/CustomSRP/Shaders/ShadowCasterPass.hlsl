@@ -33,8 +33,8 @@ Varyings ShadowCasterPassVertex (Attributes input)
 
 void ShadowCasterPassFragment (Varyings input)
 {
-    float4 baseMap = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.baseUV);
-    float4 base = baseMap * _BaseColor;
+    // float4 baseMap = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.baseUV);
+    // float4 base = baseMap * _BaseColor;
     
 }
 

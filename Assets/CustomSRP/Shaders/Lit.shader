@@ -24,6 +24,7 @@ Shader "CustomSRP/Lit"
 
 			HLSLPROGRAM
 			#pragma target 3.5
+			#pragma enable_d3d11_debug_symbols
 			#pragma vertex Vertex
 			#pragma fragment Fragment
 			#include "LitPass.hlsl"
@@ -40,6 +41,7 @@ Shader "CustomSRP/Lit"
 			HLSLPROGRAM
 			#pragma target 3.5
 			#pragma vertex ShadowCasterPassVertex
+			#pragma enable_d3d11_debug_symbols
 			#pragma fragment ShadowCasterPassFragment
 			#include "ShadowCasterPass.hlsl"
 			ENDHLSL
