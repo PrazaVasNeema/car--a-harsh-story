@@ -24,6 +24,7 @@ namespace CustomSRP.Runtime
         private ShadowSettings m_settings;
         //private ShadowedDirectionalLight[] m_hadowedDirectionalLights = new ShadowedDirectionalLight[MAX_SHADOWED_DIRECTIONAL_LIGHT_COUNT];
         private int m_shadowedDirectionalLightCount;
+        private Vector3 m_lightDir;
 
 
         
@@ -54,7 +55,7 @@ namespace CustomSRP.Runtime
         {
             int atlasSize = (int)m_settings.directional.atlasSize;
             
-            m_buffer.GetTemporaryRT(dirShadowAtlasId, atlasSize, atlasSize, 32, FilterMode.Bilinear, RenderTextureFormat.Shadowmap); // RT = render texture
+            m_buffer.GetTemporaryRT(dirShadowAtlasId, atlasSize, atlasSize, 32, FilterMode.Point, RenderTextureFormat.Shadowmap); // RT = render texture
             //                                           To immediately clear target              The purpose
             m_buffer.SetRenderTarget(dirShadowAtlasId, RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store);
             m_buffer.ClearRenderTarget(true, false, Color.clear); // Why clear it here anyway?
@@ -62,7 +63,7 @@ namespace CustomSRP.Runtime
             // RenderUtils.ExecuteBuffer(m_buffer, m_context);
             ExecuteBuffer();
 
-            var shadowSettings = new ShadowDrawingSettings(m_cullingResults, ACTIVE_LIGHT_INDEX); // maybe here will be a problem
+            var shadowSettings = new ShadowDrawingSettings(m_cullingResults, ACTIVE_LIGHT_INDEX, BatchCullingProjectionType.Orthographic); // maybe here will be a problem
             
             m_cullingResults.ComputeDirectionalShadowMatricesAndCullingPrimitives(ACTIVE_LIGHT_INDEX, 0, 1,
                 Vector3.zero, atlasSize, 0f,
@@ -95,6 +96,7 @@ namespace CustomSRP.Runtime
 
             
             Shader.SetGlobalMatrix("_lightProjection", projectionMatrix * viewMatrix);
+            Shader.SetGlobalVector("_lightDir", m_lightDir);
             //Shader.SetGlobalTexture(_shadowMap);
             m_buffer.SetGlobalTexture("_DirectionalShadowAtlas", dirShadowAtlasId);
             
@@ -118,6 +120,7 @@ namespace CustomSRP.Runtime
                                                        out Bounds b))
             {
                 m_shadowedDirectionalLightCount = 1;
+                m_lightDir = light.transform.forward;
             }
         }
         

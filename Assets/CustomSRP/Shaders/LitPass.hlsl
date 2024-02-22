@@ -19,6 +19,7 @@ CBUFFER_END
 
 //uniform float4x4 _lightSpaceMatrix;
 uniform float4x4 _lightProjection;
+uniform float3 _lightDir;
 // uniform Texture2D _DirectionalShadowAtlas;
 
 // TEXTURE2D(_DirectionalShadowAtlas);
@@ -81,9 +82,9 @@ Varyings Vertex(VertexAttributes vertexInput)
 // 	return SAMPLE_TEXTURE2D_SHADOW(_DirectionalShadowAtlas, SHADOW_SAMPLER, positionSTS);
 // }
 
-float checkShadow(float curDepth, float mapDepth)
+float checkShadow(float mapDepth, float curDepth)
 {
-	return curDepth > mapDepth ? 0 : 1;
+	return curDepth > mapDepth ? 1 : 0;
 }
 
 float4 Fragment(Varyings fragmentInput) : SV_TARGET
@@ -103,29 +104,38 @@ float4 Fragment(Varyings fragmentInput) : SV_TARGET
 	float3 color = GetLighting(surface, brdf);
 
 	float shadow1 = 0.0f;
-	float3 lightCoords = fragmentInput.fragPosLight.xyz / fragmentInput.fragPosLight.w;
+	float3 lightCoords = fragmentInput.fragPosLight.xyz ;
 
 	//shadow1 = SampleDirectionalShadowAtlas(lightCoords);
+	lightCoords = lightCoords * 0.5 + 0.5;
 
+	// lightCoords = saturate(lightCoords);
+
+		// return float4(tex2D(_DirectionalShadowAtlas, lightCoords.xy).r,0,0,1);
 	
-	if (lightCoords.z < 1.0f)
-	{
 		//lightCoords = (lightCoords + 1.0f) / 2.0f;
-		lightCoords = lightCoords * 0.5f + 0.5f;
+		// lightCoords = lightCoords * 0.5f + 0.5f;
 
 		float sum = 0;
 
 		float2 texelSize = float2(_DirectionalShadowAtlas_TexelSize.x, _DirectionalShadowAtlas_TexelSize.y);
-		
-		float currentDepth = lightCoords.z - 0.01;
+
+		// float3 lightDir = normalize(_lightPos - fragmentInput.positionWS);
+	
+		float currentDepth = lightCoords.z - max(0.01 * (1.0 - dot(fragmentInput.normalWS, -_lightDir)), 0.001);
 		sum += checkShadow(tex2D(_DirectionalShadowAtlas, lightCoords.xy + float2(1,1) * texelSize).r, currentDepth);
 		sum += checkShadow(tex2D(_DirectionalShadowAtlas, lightCoords.xy + float2(-1,-1) * texelSize ).r, currentDepth);
 		sum += checkShadow(tex2D(_DirectionalShadowAtlas, lightCoords.xy + float2(1,-1) * texelSize).r, currentDepth);
 		sum += checkShadow(tex2D(_DirectionalShadowAtlas, lightCoords.xy + float2(-1,1) * texelSize).r, currentDepth);
-		shadow1 = sum * 0.25;
+		// shadow1 = checkShadow(tex2D(_DirectionalShadowAtlas, lightCoords.xy).r, currentDepth);
 
-		
-		
+	shadow1 = sum * 0.25;
+		// return float4(dot(fragmentInput.normalWS, -_lightDir),0,0,1);
+	// return float4(fragmentInput.normalWS,1);
+
+	// return float4(_lightDir,1);
+// if (lightCoords.y > 1)
+// 	return float4(1,0,0,1);
 		// float closestDepth = tex2D(_DirectionalShadowAtlas, lightCoords.xy).r;
 		// float currentDepth = lightCoords.z - 0.001;
 		//
@@ -135,8 +145,14 @@ float4 Fragment(Varyings fragmentInput) : SV_TARGET
 		//  {
 		//  	shadow1 = 1.0f;
 		//  }
-	}
-	
+
+	// if (lightCoords.z >= 1 || lightCoords.x >1 || lightCoords.x <0 || lightCoords.y >1 || lightCoords.y <0)
+	if (lightCoords.z >= 1 || lightCoords.x >1 || lightCoords.x <0 || lightCoords.y >1 || lightCoords.y <0)
+		shadow1 = 0;
+	// lightCoords = fragmentInput.fragPosLight.xyz ;
+	// lightCoords = (lightCoords + 1.0f) / 2.0f;
+	//
+	// return float4(lightCoords.x, lightCoords.y,0,1);
 	
 	//float shadow = ShadowCalculation(fragmentInput.fragPosLightSpace);
 	
