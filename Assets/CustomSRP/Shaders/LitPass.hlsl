@@ -31,6 +31,8 @@ uniform float4x4 _lightProjection;
 // SAMPLER_CMP(SHADOW_SAMPLER);
 sampler2D _DirectionalShadowAtlas;
 
+float2 _DirectionalShadowAtlas_TexelSize;
+
 // sampler2D _DirectionalShadowAtlasSampler;
 
 
@@ -56,7 +58,7 @@ Varyings Vertex(VertexAttributes vertexInput)
 	vertexOut.normalWS = TransformObjectToWorldNormal(vertexInput.normalOS);
 	vertexOut.uv = vertexInput.uv * _BaseMap_ST.xy + _BaseMap_ST.zw;
 	
-	vertexOut.fragPosLight = mul(unity_MatrixVP,float4(vertexOut.positionWS, 1.0f));
+	vertexOut.fragPosLight = mul(_lightProjection,float4(vertexOut.positionWS, 1.0f));
 	return vertexOut;
 }
 
@@ -79,6 +81,11 @@ Varyings Vertex(VertexAttributes vertexInput)
 // 	return SAMPLE_TEXTURE2D_SHADOW(_DirectionalShadowAtlas, SHADOW_SAMPLER, positionSTS);
 // }
 
+float checkShadow(float curDepth, float mapDepth)
+{
+	return curDepth > mapDepth ? 0 : 1;
+}
+
 float4 Fragment(Varyings fragmentInput) : SV_TARGET
 {
 	float4 baseColor = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, fragmentInput.uv);
@@ -100,18 +107,34 @@ float4 Fragment(Varyings fragmentInput) : SV_TARGET
 
 	//shadow1 = SampleDirectionalShadowAtlas(lightCoords);
 
-	if (lightCoords.z <= 1.0f)
+	
+	if (lightCoords.z < 1.0f)
 	{
 		//lightCoords = (lightCoords + 1.0f) / 2.0f;
 		lightCoords = lightCoords * 0.5f + 0.5f;
-		float closestDepth = tex2D(_DirectionalShadowAtlas, lightCoords.xy).r;
-		float currentDepth = lightCoords.z;
-	
-		if (currentDepth > closestDepth)
-		{
-			shadow1 = 1.0f;
-		}
+
+		float sum = 0;
+
+		float2 texelSize = float2(_DirectionalShadowAtlas_TexelSize.x, _DirectionalShadowAtlas_TexelSize.y);
 		
+		float currentDepth = lightCoords.z - 0.01;
+		sum += checkShadow(tex2D(_DirectionalShadowAtlas, lightCoords.xy + float2(1,1) * texelSize).r, currentDepth);
+		sum += checkShadow(tex2D(_DirectionalShadowAtlas, lightCoords.xy + float2(-1,-1) * texelSize ).r, currentDepth);
+		sum += checkShadow(tex2D(_DirectionalShadowAtlas, lightCoords.xy + float2(1,-1) * texelSize).r, currentDepth);
+		sum += checkShadow(tex2D(_DirectionalShadowAtlas, lightCoords.xy + float2(-1,1) * texelSize).r, currentDepth);
+		shadow1 = sum * 0.25;
+
+		
+		
+		// float closestDepth = tex2D(_DirectionalShadowAtlas, lightCoords.xy).r;
+		// float currentDepth = lightCoords.z - 0.001;
+		//
+		//
+		//
+		//  if (currentDepth > closestDepth)
+		//  {
+		//  	shadow1 = 1.0f;
+		//  }
 	}
 	
 	

@@ -27,6 +27,12 @@ namespace CustomSRP.Runtime
 
 
         
+        static string[] directionalFilterKeywords = {
+            "_DIRECTIONAL_PCF3",
+            "_DIRECTIONAL_PCF5",
+            "_DIRECTIONAL_PCF7",
+        };
+        
     
         public void Setup (ScriptableRenderContext context, CullingResults cullingResults, ShadowSettings settings)
         {
@@ -127,6 +133,18 @@ namespace CustomSRP.Runtime
             m_buffer.Clear();
         }
 
+        void SetKeywords () {
+            int enabledIndex = (int)m_settings.directional.filter - 1;
+            for (int i = 0; i < directionalFilterKeywords.Length; i++) {
+                if (i == enabledIndex) {
+                    m_buffer.EnableShaderKeyword(directionalFilterKeywords[i]);
+                }
+                else {
+                    m_buffer.DisableShaderKeyword(directionalFilterKeywords[i]);
+                }
+            }
+        }
+        
     }
     
     
