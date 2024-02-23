@@ -87,6 +87,21 @@ float checkShadow(float mapDepth, float curDepth)
 	return curDepth > mapDepth ? 1 : 0;
 }
 
+float offset_lookup(sampler2D map, float3 coords, float2 texelSize, float bias)
+{
+	float y;
+	float x;
+	float mapDepth;
+	float sum;
+	for (y = -1.5; y <= 1.5; y +=1)
+		for (x = -1.5; x <= 1.5; x +=1)
+		{
+			mapDepth = tex2D(_DirectionalShadowAtlas, coords.xy + float2(x, y) * texelSize).r;
+			sum += coords.z - bias > mapDepth ? 1 : 0;
+		}
+	return sum * 0.0625;
+}
+
 float4 Fragment(Varyings fragmentInput) : SV_TARGET
 {
 	float4 baseColor = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, fragmentInput.uv);
@@ -130,6 +145,10 @@ float4 Fragment(Varyings fragmentInput) : SV_TARGET
 		// shadow1 = checkShadow(tex2D(_DirectionalShadowAtlas, lightCoords.xy).r, currentDepth);
 
 	shadow1 = sum * 0.25;
+
+	float bias = max(0.01 * (1.0 - dot(fragmentInput.normalWS, -_lightDir)), 0.001);
+	shadow1 = offset_lookup(_DirectionalShadowAtlas, lightCoords, texelSize, bias);
+	// shadow1 = tex2Dproj(_DirectionalShadowAtlas, float4(lightCoords.xy, 1, lightCoords.z)).r;
 		// return float4(dot(fragmentInput.normalWS, -_lightDir),0,0,1);
 	// return float4(fragmentInput.normalWS,1);
 
