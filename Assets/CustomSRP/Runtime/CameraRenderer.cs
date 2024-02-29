@@ -25,7 +25,6 @@ namespace CustomSRP.Runtime
 		{
 			this.context = context;
 			this.camera = camera;
-
 			PrepareUIForSceneWindow();
 			if (!Cull(shadowSettings.maxDistance)) {
 				return;

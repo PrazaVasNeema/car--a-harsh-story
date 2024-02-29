@@ -7,6 +7,16 @@
 #include "../ShaderLibrary/BRDF.hlsl"
 #include "../ShaderLibrary/Lighting.hlsl"
 
+#if defined(_DIRECTIONAL_PCF_NONE)
+	#define PCF_VALUE 0
+#elif defined(_DIRECTIONAL_PCF2x2)
+	#define PCF_VALUE 1
+#elif defined(_DIRECTIONAL_PCF4x4)
+	#define PCF_VALUE 2
+#elif defined(_DIRECTIONAL_PCF8x8)
+	#define PCF_VALUE 3
+#endif
+// #define PCF_VALUE 1;
 TEXTURE2D(_BaseMap);
 SAMPLER(sampler_BaseMap);
 
@@ -89,17 +99,24 @@ float checkShadow(float mapDepth, float curDepth)
 
 float offset_lookup(sampler2D map, float3 coords, float2 texelSize, float bias)
 {
+	#ifdef PCF_VALUE
 	float y;
 	float x;
 	float mapDepth;
 	float sum;
-	for (y = -1.5; y <= 1.5; y +=1)
-		for (x = -1.5; x <= 1.5; x +=1)
+	for (y = -0.5 * PCF_VALUE; y <= 0.5 * PCF_VALUE; y +=1)
+		for (x = -0.5 * PCF_VALUE; x <= 0.5 * PCF_VALUE; x +=1)
 		{
 			mapDepth = tex2D(_DirectionalShadowAtlas, coords.xy + float2(x, y) * texelSize).r;
 			sum += coords.z - bias > mapDepth ? 1 : 0;
 		}
 	return sum * 0.0625;
+
+	// return sum * 1/
+	
+	#else
+	return 0;
+	#endif
 }
 
 float4 Fragment(Varyings fragmentInput) : SV_TARGET
@@ -131,23 +148,35 @@ float4 Fragment(Varyings fragmentInput) : SV_TARGET
 		//lightCoords = (lightCoords + 1.0f) / 2.0f;
 		// lightCoords = lightCoords * 0.5f + 0.5f;
 
-		float sum = 0;
 
+	float bias = max(0.01 * (1.0 - dot(fragmentInput.normalWS, -_lightDir)), 0.001);
+
+	
+	#ifdef _DIRECTIONAL_PCF_NONE
+		float mapDepth = tex2D(_DirectionalShadowAtlas, lightCoords.xy).r;
+		shadow1 = lightCoords.z - bias > mapDepth ? 1 : 0;
+	#else
 		float2 texelSize = float2(_DirectionalShadowAtlas_TexelSize.x, _DirectionalShadowAtlas_TexelSize.y);
+		shadow1 = offset_lookup(_DirectionalShadowAtlas, lightCoords, texelSize, bias);
+	
+	#endif
+
+	
+		// float2 texelSize = float2(_DirectionalShadowAtlas_TexelSize.x, _DirectionalShadowAtlas_TexelSize.y);
 
 		// float3 lightDir = normalize(_lightPos - fragmentInput.positionWS);
 	
-		float currentDepth = lightCoords.z - max(0.01 * (1.0 - dot(fragmentInput.normalWS, -_lightDir)), 0.001);
-		sum += checkShadow(tex2D(_DirectionalShadowAtlas, lightCoords.xy + float2(1,1) * texelSize).r, currentDepth);
-		sum += checkShadow(tex2D(_DirectionalShadowAtlas, lightCoords.xy + float2(-1,-1) * texelSize ).r, currentDepth);
-		sum += checkShadow(tex2D(_DirectionalShadowAtlas, lightCoords.xy + float2(1,-1) * texelSize).r, currentDepth);
-		sum += checkShadow(tex2D(_DirectionalShadowAtlas, lightCoords.xy + float2(-1,1) * texelSize).r, currentDepth);
+		// float currentDepth = lightCoords.z - max(0.01 * (1.0 - dot(fragmentInput.normalWS, -_lightDir)), 0.001);
+		// sum += checkShadow(tex2D(_DirectionalShadowAtlas, lightCoords.xy + float2(1,1) * texelSize).r, currentDepth);
+		// sum += checkShadow(tex2D(_DirectionalShadowAtlas, lightCoords.xy + float2(-1,-1) * texelSize ).r, currentDepth);
+		// sum += checkShadow(tex2D(_DirectionalShadowAtlas, lightCoords.xy + float2(1,-1) * texelSize).r, currentDepth);
+		// sum += checkShadow(tex2D(_DirectionalShadowAtlas, lightCoords.xy + float2(-1,1) * texelSize).r, currentDepth);
 		// shadow1 = checkShadow(tex2D(_DirectionalShadowAtlas, lightCoords.xy).r, currentDepth);
 
-	shadow1 = sum * 0.25;
-
-	float bias = max(0.01 * (1.0 - dot(fragmentInput.normalWS, -_lightDir)), 0.001);
-	shadow1 = offset_lookup(_DirectionalShadowAtlas, lightCoords, texelSize, bias);
+	// shadow1 = sum * 0.25;
+	//
+	// float bias = max(0.01 * (1.0 - dot(fragmentInput.normalWS, -_lightDir)), 0.001);
+	// shadow1 = offset_lookup(_DirectionalShadowAtlas, lightCoords, texelSize, bias);
 	// shadow1 = tex2Dproj(_DirectionalShadowAtlas, float4(lightCoords.xy, 1, lightCoords.z)).r;
 		// return float4(dot(fragmentInput.normalWS, -_lightDir),0,0,1);
 	// return float4(fragmentInput.normalWS,1);

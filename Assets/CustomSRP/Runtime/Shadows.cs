@@ -29,9 +29,10 @@ namespace CustomSRP.Runtime
 
         
         static string[] directionalFilterKeywords = {
-            "_DIRECTIONAL_PCF3",
-            "_DIRECTIONAL_PCF5",
-            "_DIRECTIONAL_PCF7",
+            "_DIRECTIONAL_PCF_NONE",
+            "_DIRECTIONAL_PCF2x2",
+            "_DIRECTIONAL_PCF4x4",
+            "_DIRECTIONAL_PCF8x8",
         };
         
     
@@ -105,7 +106,7 @@ namespace CustomSRP.Runtime
 
             m_context.DrawShadows(ref shadowSettings);
 
-            
+            SetKeywords();
             m_buffer.EndSample(BUFFER_NAME);
             // RenderUtils.ExecuteBuffer(m_buffer,m_context);
             ExecuteBuffer();
@@ -137,9 +138,12 @@ namespace CustomSRP.Runtime
         }
 
         void SetKeywords () {
-            int enabledIndex = (int)m_settings.directional.filter - 1;
+            int enabledIndex = (int)m_settings.directional.filter;
+            Debug.Log(enabledIndex);
+
             for (int i = 0; i < directionalFilterKeywords.Length; i++) {
                 if (i == enabledIndex) {
+                    Debug.Log(i);
                     m_buffer.EnableShaderKeyword(directionalFilterKeywords[i]);
                 }
                 else {

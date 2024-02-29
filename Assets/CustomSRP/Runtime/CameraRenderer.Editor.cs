@@ -59,3 +59,23 @@ namespace CustomSRP.Runtime
 #endif
 	}
 }
+
+// // Build a matrix for cropping light's projection
+// // Given vectors are in light's clip space
+// Matrix Light::CalculateCropMatrix(Frustum splitFrustum) 
+// {   Matrix lightViewProjMatrix = viewMatrix * projMatrix;   
+// 	// Find boundaries in light's clip space
+// 	BoundingBox cropBB = CreateAABB(splitFrustum.AABB, lightViewProjMatrix);   
+// 	// Use default near-plane value
+// 	cropBB.min.z = 0.0f;   
+// 	// Create the crop matrix
+// 	float scaleX, scaleY, scaleZ;   
+// 	float offsetX, offsetY, offsetZ;   
+// 	scaleX = 2.0f / (cropBB.max.x - cropBB.min.x);   
+// 	scaleY = 2.0f / (cropBB.max.y - cropBB.min.y);   
+// 	offsetX = -0.5f * (cropBB.max.x + cropBB.min.x) * scaleX;   
+// 	offsetY = -0.5f * (cropBB.max.y + cropBB.min.y) * scaleY;   
+// 	scaleZ = 1.0f / (cropBB.max.z - cropBB.min.z);   
+// 	offsetZ = -cropBB.min.z * scaleZ;   
+// 	return Matrix( scaleX, 0.0f, 0.0f, 0.0f, 0.0f, scaleY, 0.0f,  0.0f, 0.0f, 0.0f, scaleZ,  0.0f, offsetX,  offsetY,  offsetZ,  1.0f); 
+// } 

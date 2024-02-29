@@ -14,7 +14,7 @@ namespace CustomSRP.Runtime
         }
         
         public enum FilterMode {
-            PCF2x2, PCF3x3, PCF5x5, PCF7x7
+            PCFNONE, PCF2x2, PCF4x4, PCF8x8
         }
     
         [System.Serializable]
