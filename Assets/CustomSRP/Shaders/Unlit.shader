@@ -18,7 +18,7 @@ Shader "CustomSRP/Unlit"
 
 			HLSLPROGRAM
 			#pragma target 3.5
-			#pragma vertex Vertex
+			#pragma vertex vert
 			#pragma fragment Fragment
 			#include "UnlitPass.hlsl"
 			ENDHLSL

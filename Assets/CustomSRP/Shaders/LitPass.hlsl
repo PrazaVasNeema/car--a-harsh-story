@@ -61,7 +61,7 @@ struct Varyings {
 	float4 fragPosLight : TEXCOORD1;
 };
 
-Varyings Vertex(VertexAttributes vertexInput)
+Varyings vert(VertexAttributes vertexInput)
 {
 	Varyings vertexOut;
 	vertexOut.positionWS = TransformObjectToWorld(vertexInput.positionOS.xyz);

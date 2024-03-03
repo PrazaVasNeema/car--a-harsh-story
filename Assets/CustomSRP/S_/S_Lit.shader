@@ -1,4 +1,4 @@
-Shader "CustomSRP/Lit"
+Shader "CustomSRP/S_Lit"
 {
 	Properties
 	{
@@ -33,8 +33,8 @@ Shader "CustomSRP/Lit"
 			#pragma enable_d3d11_debug_symbols
 			#pragma multi_compile _ _DIRECTIONAL_PCF_NONE _DIRECTIONAL_PCF2x2 _DIRECTIONAL_PCF4x4 _DIRECTIONAL_PCF8x8
 			#pragma vertex vert
-			#pragma fragment Fragment
-			#include "LitPass.hlsl"
+			#pragma fragment frag
+			#include "S_LitPass.hlsl"
 			ENDHLSL
 		}
 
@@ -50,7 +50,7 @@ Shader "CustomSRP/Lit"
 			#pragma vertex ShadowCasterPassVertex
 			#pragma enable_d3d11_debug_symbols
 			#pragma fragment ShadowCasterPassFragment
-			#include "ShadowCasterPass.hlsl"
+			#include "Assets/CustomSRP/Shaders/ShadowCasterPass.hlsl"
 			ENDHLSL
 		}
 	}

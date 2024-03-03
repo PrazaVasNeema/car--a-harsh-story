@@ -21,7 +21,7 @@ struct Varyings {
 	float2 uv         : TEXCOORD0;
 };
 
-Varyings Vertex(VertexAttributes vertexInput)
+Varyings vert(VertexAttributes vertexInput)
 {
 	Varyings vertexOut;
 	float3 positionWS = TransformObjectToWorld(vertexInput.positionOS.xyz);
