@@ -10,15 +10,16 @@
 TEXTURE2D(_BaseMap);
 SAMPLER(sampler_BaseMap);
 
+#define l _DirectionalLightDirection
+
 CBUFFER_START(UnityPerMaterial)
 	float4 _BaseColor;
 	float4 _BaseMap_ST; //texture scale and transform params
 	float _Metallic;
 	float _Roughness;
 	float _Reflectance;
+	float3 l;
 CBUFFER_END
-
-uniform float3 _lightDir;
 
 struct MeshData {
 	float3 positionOS : POSITION;
@@ -79,16 +80,16 @@ float4 frag(Interpolators fragmentInput) : SV_TARGET
 	surfaceData.roughness = perceptualRoughnessToRoughness(_Roughness);
 	surfaceData.f0 = computeReflectance(baseColor, _Metallic, _Reflectance);
 
-float3 a = _lightDir;
-	float3 h = normalize(surfaceData.viewDirection + -_lightDir);
+float3 a = l;
+	float3 h = normalize(surfaceData.viewDirection + -l);
 
 	float NoV = clampNoV(dot(surfaceData.normal, surfaceData.viewDirection));
-	float NoL = saturate(dot(surfaceData.normal, -_lightDir));
+	float NoL = saturate(dot(surfaceData.normal, -l));
 	float NoH = saturate(dot(surfaceData.normal, h));
-	float LoH = saturate(dot(-_lightDir, h));
+	float LoH = saturate(dot(-l, h));
 
 
-	float3 Fr = specularLobe(surfaceData, _lightDir, h, NoV, NoL, NoH, LoH);
+	float3 Fr = specularLobe(surfaceData, l, h, NoV, NoL, NoH, LoH);
 	float3 Fd = diffuseLobe(surfaceData, NoV, NoL, LoH);
 	// Fd = dot(surfaceData.normal, -_lightDir);
 	// float3 color = Fd * 0.5 + 0.5;

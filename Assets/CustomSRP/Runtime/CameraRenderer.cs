@@ -5,7 +5,7 @@ namespace CustomSRP.Runtime
 {
 	public partial class CameraRenderer {
 		
-		const string bufferName = "RenderCamera";
+		private const string BUFFER_NAME = "RenderCamera";
 
 		private static ShaderTagId unlitShaderTagId = new ShaderTagId("SRPDefaultUnlit");
 		private static ShaderTagId litShaderTagId = new ShaderTagId("CustomLit");
@@ -22,8 +22,8 @@ namespace CustomSRP.Runtime
 			}
 			
 			m_lighting.Setup(RAPI.Context, RAPI.CullingResults, shadowSettings);
-
 			Setup();
+			
 			DrawVisibleGeometry();
 			DrawUnsupportedShaders();
 			DrawGizmos();
@@ -38,10 +38,8 @@ namespace CustomSRP.Runtime
 			var flags = RAPI.CurCamera.clearFlags;
 			RAPI.Buffer.ClearRenderTarget(flags <= CameraClearFlags.Depth, flags == CameraClearFlags.Color,
 				flags == CameraClearFlags.Color ? RAPI.CurCamera.backgroundColor.linear : Color.clear);
-			RAPI.Buffer.BeginSample(bufferName);
-		
+			RAPI.Buffer.BeginSample(BUFFER_NAME);
 			RAPI.ExecuteBuffer();
-			
 		}
 
 		void DrawVisibleGeometry ()
@@ -66,10 +64,11 @@ namespace CustomSRP.Runtime
 		}
 
 		void Submit () {
-			RAPI.Buffer.EndSample(bufferName);
+			RAPI.Buffer.EndSample(BUFFER_NAME);
 			RAPI.ExecuteBuffer();
 			RAPI.Context.Submit();
 		}
 		
 	}
+	
 }

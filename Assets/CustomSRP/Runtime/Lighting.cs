@@ -6,62 +6,49 @@ namespace CustomSRP.Runtime
 {
 	public class Lighting
 	{
-		private const int MAX_DIR_LIGHT_COUNT = 4;
+		private const int MAX_DIR_LIGHT_COUNT = 1;
+		private const string BUFFER_NAME = "Lighting";
 
-		private static int DIR_LIGHT_COUNT_ID = Shader.PropertyToID("_DirectionalLightCount");
-		private static int dirLightColorsId = Shader.PropertyToID("_DirectionalLightColors");
-		private static int dirLightDirectionsId = Shader.PropertyToID("_DirectionalLightDirections");
-
-		private static Vector4[] dirLightColors = new Vector4[MAX_DIR_LIGHT_COUNT];
-		private static Vector4[] dirLightDirections = new Vector4[MAX_DIR_LIGHT_COUNT];
-
-		const string bufferName = "Lighting";
+		// private static int _dirLightCountID = Shader.PropertyToID("_DirectionalLightCount");
+		private static int _dirLightColorId = Shader.PropertyToID("_DirectionalLightColor");
+		private static int _dirLightDirectionId = Shader.PropertyToID("_DirectionalLightDirection");
+		private static Vector4 _dirLightColor = new Vector4();
+		private static Vector4 _dirLightDirection = new Vector4();
 		
 		private Shadows m_shadows = new Shadows();
 
-		CommandBuffer buffer = new CommandBuffer {
-			name = bufferName
-		};
-
 		public void Setup(ScriptableRenderContext context, CullingResults cullingResults, ShadowSettings shadowSettings)
 		{
-			buffer.BeginSample(bufferName);
+			RAPI.Buffer.BeginSample(BUFFER_NAME);
 			m_shadows.Setup(context, cullingResults, shadowSettings);
-			SetupLights(cullingResults);
+			SetupDirLight(cullingResults);
 			m_shadows.Render();
-			buffer.EndSample(bufferName);
-			context.ExecuteCommandBuffer(buffer);
-			buffer.Clear();
+			RAPI.Buffer.EndSample(BUFFER_NAME);
+			RAPI.Context.ExecuteCommandBuffer(RAPI.Buffer);
+			RAPI.Buffer.Clear();
 		}
 
-		void SetupLights(CullingResults cullingResults)
+		void SetupDirLight(CullingResults cullingResults)
 		{
-			NativeArray<VisibleLight> visibleLights = cullingResults.visibleLights;
+			var visibleLights = cullingResults.visibleLights;
 
-			int dirLightCount = 0;
-			for (int i = 0; i < visibleLights.Length; i++) {
-				VisibleLight visibleLight = visibleLights[i];
-				if (visibleLight.lightType == LightType.Directional) {
-					SetupDirectionalLight(dirLightCount++, ref visibleLight);
-					if (dirLightCount >= MAX_DIR_LIGHT_COUNT) {
-						break;
-					}
-				}
+			if (visibleLights[0].lightType == LightType.Directional) {
+				SetupDirectionalLight(visibleLights[0]);
+				// if (dirLightCount >= MAX_DIR_LIGHT_COUNT) {
+				// 	break;
+				// }
 			}
 
-			buffer.SetGlobalInt(DIR_LIGHT_COUNT_ID, visibleLights.Length);
-			buffer.SetGlobalVectorArray(dirLightColorsId, dirLightColors);
-			buffer.SetGlobalVectorArray(dirLightDirectionsId, dirLightDirections);
+			RAPI.Buffer.SetGlobalVector(_dirLightColorId, _dirLightColor);
+			RAPI.Buffer.SetGlobalVector(_dirLightDirectionId, _dirLightDirection);
 		}
 
-		void SetupDirectionalLight (int index, ref VisibleLight visibleLight) {
-			dirLightColors[index] = visibleLight.finalColor;
-			dirLightDirections[index] = -visibleLight.localToWorldMatrix.GetColumn(2);
+		void SetupDirectionalLight (VisibleLight visibleLight) {
+			_dirLightColor = visibleLight.finalColor;
+			_dirLightDirection = -visibleLight.localToWorldMatrix.GetColumn(2);
 			m_shadows.ReserveDirectionalShadows(visibleLight.light);
 		}
 		
-		public void Cleanup () {
-			m_shadows.Cleanup();
-		}
 	}
+	
 }
