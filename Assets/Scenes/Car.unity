@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.17716807, g: 0.22178906, b: 0.3040462, a: 1}
+  m_IndirectSpecularColor: {r: 0.18355331, g: 0.22767621, b: 0.2973537, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -410,13 +410,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1202241819}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.76090586, y: 0.30953157, z: -0.019114314, w: 0.5699536}
+  m_LocalRotation: {x: 0.59192765, y: 0.56956923, z: 0.19355038, w: 0.5364242}
   m_LocalPosition: {x: -9.23, y: 10.48, z: 5.55}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 61.545, y: 137.197, z: 109.454}
+  m_LocalEulerAnglesHint: {x: 24.492, y: 112.59, z: 75.729}
 --- !u!1 &1427993658
 GameObject:
   m_ObjectHideFlags: 0
@@ -571,7 +571,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 96d897d3edcd15449b91f7342ae0d513, type: 2}
+  - {fileID: 2100000, guid: 910bba5f076ba2b49b3735050fd6a58b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -634,7 +634,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4f583566f002ba345b0e68d7e26d1083, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.02
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4f583566f002ba345b0e68d7e26d1083, type: 3}
       propertyPath: m_LocalPosition.z
@@ -668,6 +668,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -4384426109149132938, guid: 4f583566f002ba345b0e68d7e26d1083, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 910bba5f076ba2b49b3735050fd6a58b, type: 2}
     - target: {fileID: 919132149155446097, guid: 4f583566f002ba345b0e68d7e26d1083, type: 3}
       propertyPath: m_Name
       value: demo_car_3_0
@@ -688,6 +692,10 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 910bba5f076ba2b49b3735050fd6a58b, type: 2}
+    - target: {fileID: 6983559138637205681, guid: 4f583566f002ba345b0e68d7e26d1083, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 96d897d3edcd15449b91f7342ae0d513, type: 2}
     - target: {fileID: 8450725636678006928, guid: 4f583566f002ba345b0e68d7e26d1083, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 

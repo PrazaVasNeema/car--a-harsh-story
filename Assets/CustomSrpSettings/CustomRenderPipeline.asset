@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: CustomRenderPipeline
   m_EditorClassIdentifier: 
   m_shadowsSettings:
-    maxDistance: 344
+    maxDistance: 15
     directional:
       atlasSize: 8192
       filter: 3

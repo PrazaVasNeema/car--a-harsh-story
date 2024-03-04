@@ -92,7 +92,7 @@ float3 a = _lightDir;
 	float3 Fd = diffuseLobe(surfaceData, NoV, NoL, LoH);
 	// Fd = dot(surfaceData.normal, -_lightDir);
 	// float3 color = Fd * 0.5 + 0.5;
-	float3 color = Fd + Fr;
+	float3 color = saturate((Fd + Fr) * NoL);
 
 	
 	// color = _lightDir;

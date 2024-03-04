@@ -1,8 +1,6 @@
 ﻿#ifndef CUSTOM_BRDF_INCLUDED
 #define CUSTOM_BRDF_INCLUDED
 
-#define PI 3.14
-
 #include "SurfaceData.hlsl"
 #include "CommonMath.hlsl"
 

@@ -1,6 +1,8 @@
 ﻿#ifndef COMMON_MATH_INCLUDED
 #define COMMON_MATH_INCLUDED
 
+#define PI 3.14
+
 /**
  * Computes x^5 using only multiply operations.
  *
