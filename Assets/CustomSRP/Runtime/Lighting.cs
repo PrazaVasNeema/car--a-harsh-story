@@ -20,9 +20,9 @@ namespace CustomSRP.Runtime
 		public void Setup(ScriptableRenderContext context, CullingResults cullingResults, ShadowSettings shadowSettings)
 		{
 			RAPI.Buffer.BeginSample(BUFFER_NAME);
-			m_shadows.Setup(context, cullingResults, shadowSettings);
+			//m_shadows.Setup(context, cullingResults, shadowSettings);
 			SetupDirLight(cullingResults);
-			m_shadows.Render();
+			//m_shadows.Render();
 			RAPI.Buffer.EndSample(BUFFER_NAME);
 			RAPI.Context.ExecuteCommandBuffer(RAPI.Buffer);
 			RAPI.Buffer.Clear();
@@ -40,13 +40,13 @@ namespace CustomSRP.Runtime
 			}
 
 			RAPI.Buffer.SetGlobalVector(_dirLightColorId, _dirLightColor);
-			RAPI.Buffer.SetGlobalVector(_dirLightDirectionId, _dirLightDirection);
+			RAPI.Buffer.SetGlobalVector(_dirLightDirectionId, -_dirLightDirection);
 		}
 
 		void SetupDirectionalLight (VisibleLight visibleLight) {
 			_dirLightColor = visibleLight.finalColor;
 			_dirLightDirection = -visibleLight.localToWorldMatrix.GetColumn(2);
-			m_shadows.ReserveDirectionalShadows(visibleLight.light);
+			//m_shadows.ReserveDirectionalShadows(visibleLight.light);
 		}
 		
 	}
