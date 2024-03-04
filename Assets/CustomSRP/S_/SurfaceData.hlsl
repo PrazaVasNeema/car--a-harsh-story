@@ -6,7 +6,7 @@ struct SurfaceData {
 	float3 viewDirection;
 	float3 color;
 	float alpha;
-	float metalness;
+	float metallic;
 	float roughness;
 };
 

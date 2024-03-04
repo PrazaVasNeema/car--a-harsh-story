@@ -13,7 +13,7 @@ SAMPLER(sampler_BaseMap);
 CBUFFER_START(UnityPerMaterial)
 	float4 _BaseColor;
 	float4 _BaseMap_ST; //texture scale and transform params
-	float _Metalness;
+	float _Metallic;
 	float _Roughness;
 CBUFFER_END
 
@@ -33,15 +33,26 @@ struct Interpolators {
 	float4 fragPosLight : TEXCOORD1;
 };
 
-Interpolators vert(MeshData vertexInput)
+Interpolators vert(MeshData i)
 {
 	Interpolators o;
-	o.positionWS = TransformObjectToWorld(vertexInput.positionOS.xyz);
+	o.positionWS = TransformObjectToWorld(i.positionOS.xyz);
 	o.positionCS = TransformWorldToHClip(o.positionWS);
-	o.normalWS = TransformObjectToWorldNormal(vertexInput.normalOS);
-	o.uv = vertexInput.uv * _BaseMap_ST.xy + _BaseMap_ST.zw;
+	o.normalWS = TransformObjectToWorldNormal(i.normalOS);
+	o.uv = i.uv * _BaseMap_ST.xy + _BaseMap_ST.zw;
+
 	
 	return o;
+}
+
+float3 isotropicLobe(const SurfaceData surfaceData, const float3 h,
+		float NoV, float NoL, float NoH, float LoH) {
+
+	float D = distribution(pixel.roughness, NoH, h);
+	float V = visibility(pixel.roughness, NoV, NoL);
+	float3  F = fresnel(pixel.f0, LoH);
+
+	return (D * V) * F;
 }
 
 float3 diffuseLobe(const SurfaceData surfaceData, float NoV, float NoL, float LoH) {
@@ -56,12 +67,12 @@ float4 frag(Interpolators fragmentInput) : SV_TARGET
 	SurfaceData surfaceData;
 	surfaceData.normal = normalize(fragmentInput.normalWS);
 	surfaceData.viewDirection = normalize(_WorldSpaceCameraPos - fragmentInput.positionWS);
-	surfaceData.color = baseColor.rgb;
+	surfaceData.color = computeDiffuseColor(baseColor.rgb, _Metallic);
 	surfaceData.alpha = baseColor.a;
-	surfaceData.metalness = _Metalness;
-	surfaceData.roughness = _Roughness;
+	surfaceData.metallic = _Metallic;
+	surfaceData.roughness = perceptualRoughnessToRoughness(_Roughness);
 
-
+float3 a = _lightDir;
 	float3 h = normalize(surfaceData.viewDirection + -_lightDir);
 
 	float NoV = clampNoV(dot(surfaceData.normal, surfaceData.viewDirection));
