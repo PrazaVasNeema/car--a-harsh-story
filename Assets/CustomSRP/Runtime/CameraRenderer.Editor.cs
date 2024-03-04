@@ -30,7 +30,7 @@ namespace CustomSRP.Runtime
 			}
 
 			var drawingSettings = new DrawingSettings(
-				legacyShaderTagIds[0], new SortingSettings(camera)
+				legacyShaderTagIds[0], new SortingSettings(RAPI.CurCamera)
 			)
 			{
 				overrideMaterial = errorMaterial
@@ -39,21 +39,21 @@ namespace CustomSRP.Runtime
 				drawingSettings.SetShaderPassName(i, legacyShaderTagIds[i]);
 			}
 			var filteringSettings = FilteringSettings.defaultValue;
-			context.DrawRenderers(
-				cullingResults, ref drawingSettings, ref filteringSettings
+			RAPI.Context.DrawRenderers(
+				RAPI.CullingResults, ref drawingSettings, ref filteringSettings
 			);
 		}
 
 		partial void DrawGizmos () {
 			if (Handles.ShouldRenderGizmos()) {
-				context.DrawGizmos(camera, GizmoSubset.PreImageEffects);
-				context.DrawGizmos(camera, GizmoSubset.PostImageEffects);
+				RAPI.Context.DrawGizmos(RAPI.CurCamera, GizmoSubset.PreImageEffects);
+				RAPI.Context.DrawGizmos(RAPI.CurCamera, GizmoSubset.PostImageEffects);
 			}
 		}
 
 		partial void PrepareUIForSceneWindow () {
-			if (camera.cameraType == CameraType.SceneView) {
-				ScriptableRenderContext.EmitWorldGeometryForSceneView(camera);
+			if (RAPI.CurCamera.cameraType == CameraType.SceneView) {
+				ScriptableRenderContext.EmitWorldGeometryForSceneView(RAPI.CurCamera);
 			}
 		}
 #endif

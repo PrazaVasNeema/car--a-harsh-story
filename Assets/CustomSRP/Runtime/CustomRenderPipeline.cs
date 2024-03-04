@@ -14,12 +14,11 @@ namespace CustomSRP.Runtime
 			m_shadowSettings = shadowSettings;
 		}
 
-		protected override void Render(
-			ScriptableRenderContext context, Camera[] cameras
-		)
+		protected override void Render(ScriptableRenderContext context, Camera[] cameras)
 		{
+			RAPI.Context = context;
 			for (int i = 0; i < cameras.Length; i++) {
-				renderer.Render(context, cameras[i], m_shadowSettings);
+				renderer.Render(cameras[i], m_shadowSettings);
 			}
 		}
 	}
