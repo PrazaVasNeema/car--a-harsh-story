@@ -15,6 +15,7 @@ CBUFFER_START(UnityPerMaterial)
 	float4 _BaseMap_ST; //texture scale and transform params
 	float _Metallic;
 	float _Roughness;
+	float _Reflectance;
 CBUFFER_END
 
 uniform float3 _lightDir;
@@ -48,11 +49,16 @@ Interpolators vert(MeshData i)
 float3 isotropicLobe(const SurfaceData surfaceData, const float3 h,
 		float NoV, float NoL, float NoH, float LoH) {
 
-	float D = distribution(pixel.roughness, NoH, h);
-	float V = visibility(pixel.roughness, NoV, NoL);
-	float3  F = fresnel(pixel.f0, LoH);
+	float D = distribution(surfaceData.roughness, NoH, h);
+	float V = visibility(surfaceData.roughness, NoV, NoL);
+	float3  F = fresnel(surfaceData.f0, LoH);
 
 	return (D * V) * F;
+}
+
+float3 specularLobe(const SurfaceData surfaceData, const float3 lightDir, const float3 h,
+		float NoV, float NoL, float NoH, float LoH) {
+	return isotropicLobe(surfaceData, h, NoV, NoL, NoH, LoH);
 }
 
 float3 diffuseLobe(const SurfaceData surfaceData, float NoV, float NoL, float LoH) {
@@ -71,6 +77,7 @@ float4 frag(Interpolators fragmentInput) : SV_TARGET
 	surfaceData.alpha = baseColor.a;
 	surfaceData.metallic = _Metallic;
 	surfaceData.roughness = perceptualRoughnessToRoughness(_Roughness);
+	surfaceData.f0 = computeReflectance(baseColor, _Metallic, _Reflectance);
 
 float3 a = _lightDir;
 	float3 h = normalize(surfaceData.viewDirection + -_lightDir);
@@ -80,10 +87,12 @@ float3 a = _lightDir;
 	float NoH = saturate(dot(surfaceData.normal, h));
 	float LoH = saturate(dot(-_lightDir, h));
 
+
+	float3 Fr = specularLobe(surfaceData, _lightDir, h, NoV, NoL, NoH, LoH);
 	float3 Fd = diffuseLobe(surfaceData, NoV, NoL, LoH);
 	// Fd = dot(surfaceData.normal, -_lightDir);
 	// float3 color = Fd * 0.5 + 0.5;
-	float3 color = Fd;
+	float3 color = Fd + Fr;
 
 	
 	// color = _lightDir;
