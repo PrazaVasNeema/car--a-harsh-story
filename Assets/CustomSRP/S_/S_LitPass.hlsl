@@ -11,6 +11,7 @@ TEXTURE2D(_BaseMap);
 SAMPLER(sampler_BaseMap);
 
 #define l _DirectionalLightDirection
+#define MAX_OTHER_LIGHT_COUNT 64
 
 CBUFFER_START(UnityPerMaterial)
 	float4 _BaseColor;
@@ -19,6 +20,12 @@ CBUFFER_START(UnityPerMaterial)
 	float _Roughness;
 	float _Reflectance;
 	float3 l;
+
+	int _DirLightCount;
+
+	int _OtherLightCount;
+	float4 _OtherLightColors[MAX_OTHER_LIGHT_COUNT];
+	float4 _OtherLightPositions[MAX_OTHER_LIGHT_COUNT];
 CBUFFER_END
 
 struct MeshData {
@@ -42,7 +49,7 @@ Interpolators vert(MeshData i)
 	o.positionCS = TransformWorldToHClip(o.positionWS);
 	o.normalWS = TransformObjectToWorldNormal(i.normalOS);
 	o.uv = i.uv * _BaseMap_ST.xy + _BaseMap_ST.zw;
-
+	
 	
 	return o;
 }
@@ -66,38 +73,84 @@ float3 diffuseLobe(const SurfaceData surfaceData, float NoV, float NoL, float Lo
 	return surfaceData.color * diffuse(surfaceData.roughness, NoV, NoL, LoH);
 }
 
-float4 frag(Interpolators fragmentInput) : SV_TARGET
+struct Light {
+	float3 color;
+	float3 direction; //to light source
+	float attenuation;
+};
+
+int GetOtherLightCount () {
+	return _OtherLightCount;
+}
+
+Light GetOtherLight (int index, SurfaceData surfaceWS) {
+	Light light;
+	light.color = _OtherLightColors[index].rgb;
+	float3 ray = _OtherLightPositions[index].xyz - surfaceWS.positionWS;
+	light.direction = normalize(ray);
+	float distanceSqr = max(dot(ray, ray), 0.00001);
+	float rangeAttenuation = Square(saturate(1.0 - Square(distanceSqr * _OtherLightPositions[index].w)));
+	light.attenuation = rangeAttenuation / distanceSqr;
+	return light;
+}
+
+float3 GetLighting(SurfaceData surfaceData, Light light)
 {
-	float4 baseColor = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, fragmentInput.uv);
+	float3 h = normalize(surfaceData.viewDirection + light.direction);
+
+	float NoV = clampNoV(dot(surfaceData.normal, surfaceData.viewDirection));
+	float NoL = saturate(dot(surfaceData.normal, light.direction));
+	float NoH = saturate(dot(surfaceData.normal, h));
+	float LoH = saturate(dot(light.direction, h));
+	
+	float3 Fr = specularLobe(surfaceData, light.direction, h, NoV, NoL, NoH, LoH);
+	float3 Fd = diffuseLobe(surfaceData, NoV, NoL, LoH);
+	// Fd = dot(surfaceData.normal, -_lightDir);
+	// float3 color = Fd * 0.5 + 0.5;
+	float3 color = saturate((Fd + Fr) * light.color * NoL * light.attenuation);
+	return color;
+}
+
+float4 frag(Interpolators i) : SV_TARGET
+{
+	float4 baseColor = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, i.uv);
 	baseColor *= _BaseColor;
 
 	SurfaceData surfaceData;
-	surfaceData.normal = normalize(fragmentInput.normalWS);
-	surfaceData.viewDirection = normalize(_WorldSpaceCameraPos - fragmentInput.positionWS);
+	surfaceData.normal = normalize(i.normalWS);
+	surfaceData.viewDirection = normalize(_WorldSpaceCameraPos - i.positionWS);
 	surfaceData.color = computeDiffuseColor(baseColor.rgb, _Metallic);
+	surfaceData.positionWS = i.positionWS;
 	surfaceData.alpha = baseColor.a;
 	surfaceData.metallic = _Metallic;
 	surfaceData.roughness = perceptualRoughnessToRoughness(_Roughness);
 	surfaceData.f0 = computeReflectance(baseColor, _Metallic, _Reflectance);
 
-float3 a = l;
-	float3 h = normalize(surfaceData.viewDirection + -l);
-
-	float NoV = clampNoV(dot(surfaceData.normal, surfaceData.viewDirection));
-	float NoL = saturate(dot(surfaceData.normal, -l));
-	float NoH = saturate(dot(surfaceData.normal, h));
-	float LoH = saturate(dot(-l, h));
+	float3 a = l;
 
 
-	float3 Fr = specularLobe(surfaceData, l, h, NoV, NoL, NoH, LoH);
-	float3 Fd = diffuseLobe(surfaceData, NoV, NoL, LoH);
-	// Fd = dot(surfaceData.normal, -_lightDir);
-	// float3 color = Fd * 0.5 + 0.5;
-	float3 color = saturate((Fd + Fr) * NoL);
+
+	float3 color;
+
+	if (_DirLightCount > 0)
+	{
+		Light dirLight;
+		dirLight.direction = -l;
+		dirLight.color = 1;
+		dirLight.attenuation = 1;
+
+		color = GetLighting(surfaceData, dirLight);
+
+	}
 
 	
+	
+	for (int j = 0; j < GetOtherLightCount(); j++) {
+		Light light = GetOtherLight(j, surfaceData);
+		color += GetLighting(surfaceData, light);
+	}
+	
 	// color = _lightDir;
-
 	return float4(color, surfaceData.alpha);
 }
 

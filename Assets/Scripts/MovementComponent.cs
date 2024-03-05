@@ -42,19 +42,19 @@ public class MovementComponent : MonoBehaviour
     public void Move(Vector3 movementVector, Vector2 mousePosition2D)
     {
         var camepraPos = new Vector2(transform.eulerAngles.x, transform.eulerAngles.y);
-        Debug.Log(camepraPos);
+        // Debug.Log(camepraPos);
 
         rotY = camepraPos.y;
         rotX = camepraPos.x;
-        Debug.Log($"pos x: {mousePosition2D.x}; pos y: {mousePosition2D.y}");
+        // Debug.Log($"pos x: {mousePosition2D.x}; pos y: {mousePosition2D.y}");
 
         rotY += mousePosition2D.x * m_mouseSensitivity;
         rotX -= mousePosition2D.y * m_mouseSensitivity;
-        Debug.Log($"rot x: {rotX}; rot y: {rotY}");
+        // Debug.Log($"rot x: {rotX}; rot y: {rotY}");
 
         Camera.main.transform.eulerAngles = new Vector3(rotX, rotY, 0);
 
-        Debug.Log($"x: {movementVector.x}; y: {movementVector.y}");
+        // Debug.Log($"x: {movementVector.x}; y: {movementVector.y}");
         
         var newPos1 = transform.position + transform.forward * movementVector.y * 100 + transform.right * movementVector.x * 100;
         
