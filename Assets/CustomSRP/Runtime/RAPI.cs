@@ -37,5 +37,16 @@ namespace CustomSRP.Runtime
             }
             return false;
         }
+        
+        public static void SetKeyword (string keyword, bool shouldBeSet) {
+            if (shouldBeSet)
+            {
+                Buffer.EnableShaderKeyword(keyword);
+            }
+            else
+            {
+                Buffer.DisableShaderKeyword(keyword);
+            }
+        }
     }
 }

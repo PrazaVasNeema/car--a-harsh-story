@@ -41,6 +41,9 @@ public class MovementComponent : MonoBehaviour
 
     public void Move(Vector3 movementVector, Vector2 mousePosition2D)
     {
+        Rect screenRect = new Rect(0,0, Screen.width, Screen.height);
+        if (!screenRect.Contains(Input.mousePosition))
+            return;
         var camepraPos = new Vector2(transform.eulerAngles.x, transform.eulerAngles.y);
         // Debug.Log(camepraPos);
 
