@@ -71,6 +71,8 @@ Shader "CustomSRP/S_Lit"
 			HLSLPROGRAM
 			#pragma target 3.5
 			#pragma vertex ShadowCasterPassVertex
+			#pragma shader_feature _ _SHADOWS_CLIP _SHADOWS_DITHER
+			#pragma multi_compile_instancing
 			#pragma enable_d3d11_debug_symbols
 			#pragma fragment ShadowCasterPassFragment
 			#include "Assets/CustomSRP/Shaders/ShadowCasterPass.hlsl"

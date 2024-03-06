@@ -48,5 +48,16 @@ namespace CustomSRP.Runtime
                 Buffer.DisableShaderKeyword(keyword);
             }
         }
+        
+        public static void SetKeywords (string[] keywords, int enabledIndex) {
+            for (int i = 0; i < keywords.Length; i++) {
+                if (i == enabledIndex) {
+                    Buffer.EnableShaderKeyword(keywords[i]);
+                }
+                else {
+                    Buffer.DisableShaderKeyword(keywords[i]);
+                }
+            }
+        }
     }
 }
