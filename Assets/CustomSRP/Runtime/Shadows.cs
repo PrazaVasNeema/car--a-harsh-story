@@ -52,6 +52,11 @@ namespace CustomSRP.Runtime
             "_CASCADE_BLEND_SOFT",
             "_CASCADE_BLEND_DITHER"
         };
+        
+        static string[] cascadesKeywords = {
+            "CASCEDE_COUNT_2",
+            "CASCEDE_COUNT_4"
+        };
 
         private bool ready;
         public void Setup (ShadowSettings settings)
@@ -76,15 +81,17 @@ namespace CustomSRP.Runtime
             RAPI.Buffer.SetRenderTarget(dirShadowAtlasId, RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store);
             RAPI.Buffer.ClearRenderTarget(true, false, Color.clear);
             RAPI.Buffer.BeginSample(BUFFER_NAME);
+
+            int cascadesCount = m_settings.directional.cascades == ShadowSettings.Cascades._2X ? 2 : 4;
             
-            int tiles = m_settings.directional.cascadeCount;
+            int tiles = cascadesCount;
             int split = tiles <= 1 ? 1 : tiles <= 4 ? 2 : 4;
             int tileSize = atlasSize / split;
             
             //
             
             var shadowSettings = new ShadowDrawingSettings(RAPI.CullingResults, 0, BatchCullingProjectionType.Orthographic);
-            int cascadeCount = m_settings.directional.cascadeCount;
+            int cascadeCount = cascadesCount;
             int tileOffset = 0 * cascadeCount;
             Vector3 ratios = m_settings.directional.CascadeRatios;
             
@@ -106,7 +113,8 @@ namespace CustomSRP.Runtime
                 RAPI.Buffer.SetGlobalDepthBias(0f, 0f);
             }
             
-            RAPI.Buffer.SetGlobalInt(cascadeCountId, m_settings.directional.cascadeCount);
+            // RAPI.Buffer.SetGlobalInt(cascadeCountId, cascadesCount);
+            RAPI.SetKeywords(cascadesKeywords, cascadeCount / 2 - 1);
             RAPI.Buffer.SetGlobalVectorArray(cascadeCullingSpheresId, cascadeCullingSpheres);
             RAPI.Buffer.SetGlobalVectorArray(cascadeDataId, cascadeData);
             RAPI.Buffer.SetGlobalMatrixArray(dirShadowMatricesId, dirShadowMatrices);
@@ -181,7 +189,7 @@ namespace CustomSRP.Runtime
 
         }
 
-        public void ReserveDirectionalShadows(Light light)
+        public Vector3 ReserveDirectionalShadows(Light light)
         {
             if (light.shadows != LightShadows.None && light.shadowStrength > 0f && RAPI.CullingResults.GetShadowCasterBounds(0, out Bounds b))
             {
@@ -190,7 +198,10 @@ namespace CustomSRP.Runtime
                     nearPlaneOffset = light.shadowNearPlane
                 };
                 ready = true;
+                return new Vector3(light.shadowStrength, m_settings.directional.cascades == ShadowSettings.Cascades._2X ? 2 : 4,
+                    light.shadowNormalBias);
             }
+            return Vector3.zero;
         }
         
         

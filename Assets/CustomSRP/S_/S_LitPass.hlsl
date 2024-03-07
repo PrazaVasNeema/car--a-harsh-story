@@ -7,6 +7,7 @@
 #include "../S_/CommonMaterial.hlsl"
 #include "../S_/S_Lighting.hlsl"
 
+
 TEXTURE2D(_BaseMap);
 SAMPLER(sampler_BaseMap);
 
@@ -48,6 +49,7 @@ float4 frag(Interpolators i) : SV_TARGET
 	SurfaceData surfaceData;
 	surfaceData.normal = normalize(i.normalWS);
 	surfaceData.viewDirection = normalize(_WorldSpaceCameraPos - i.positionWS);
+	surfaceData.depth = -TransformWorldToView(i.positionWS).z;
 	surfaceData.color = computeDiffuseColor(baseColor.rgb, _Metallic);
 	surfaceData.positionWS = i.positionWS;
 	surfaceData.alpha = baseColor.a;
@@ -70,8 +72,6 @@ float3 color = 0;
 	// dirLight.attenuation = 1 * dirLightExist;
 	//
 	// color = GetLighting(surfaceData, dirLight);
-
-	
 
 
 	// color = b;

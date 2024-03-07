@@ -5,14 +5,33 @@
 #include "../S_/SurfaceData.hlsl"
 #include "../S_/S_BRDF.hlsl"
 #include "../S_/CommonMaterial.hlsl"
+#include "../S_/S_Shadows.hlsl"
+
+#define MAX_DIRECTIONAL_LIGHT_COUNT 1
 
 #define MAX_OTHER_LIGHT_COUNT 64
+
+CBUFFER_START(_CustomLight)
+	int _DirectionalLightCount;
+	float4 _DirectionalLightColors;
+	float4 _DirectionalLightDirections;
+	float4 _DirectionalLightShadowData;
+CBUFFER_END
 
 struct Light {
 	float3 color;
 	float3 direction;
 	float attenuation;
 };
+
+DirectionalShadowData GetDirectionalShadowData (ShadowData shadowData){
+	DirectionalShadowData data;
+	data.strength =
+		_DirectionalLightShadowData.x * shadowData.strength;
+
+	data.normalBias = _DirectionalLightShadowData.z;
+	return data;
+}
 
 // Working with BRDF
 
@@ -62,6 +81,9 @@ float3 GetLighting(SurfaceData surfaceData, Light light)
 	// Fd = dot(surfaceData.normal, -_lightDir);
 	// float3 color = Fd * 0.5 + 0.5;
 	float3 color = saturate((Fd + Fr) * light.color * NoL * light.attenuation);
+	
+
+	
 	return color;
 }
 
@@ -70,6 +92,8 @@ float3 GetLighting(SurfaceData surfaceData)
 	float3 color = 0;
 	
 	#ifdef _DIR_LIGHT_ON
+
+
 	
 	Light dirLight;
 	dirLight.direction = -_DirectionalLightDirection;
@@ -77,6 +101,17 @@ float3 GetLighting(SurfaceData surfaceData)
 	dirLight.attenuation = 1;
 	color = GetLighting(surfaceData, dirLight);
 
+	color = 1;
+
+	ShadowData shadowData = GetShadowData(surfaceData);
+	
+	DirectionalShadowData dirShadowData = GetDirectionalShadowData(shadowData);
+	dirLight.attenuation = GetDirectionalShadowAttenuation(dirShadowData, shadowData, surfaceData);
+
+	color = (saturate(dot(surfaceData.normal, dirLight.direction) * dirLight.attenuation) * dirLight.color) * color;
+
+	// color = GetLighting(surfaceData, dirLight);
+	// color = shadowData.color;
 	#endif
 
 	Light light;
@@ -159,6 +194,7 @@ float3 GetLighting(SurfaceData surfaceData)
 
 	#endif
 
+	
 	return color;
 }
 

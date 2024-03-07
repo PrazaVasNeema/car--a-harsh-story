@@ -14,14 +14,17 @@ namespace CustomSRP.Runtime
             PCFNONE, PCF2x2, PCF4x4, PCF8x8
         }
         
+        public enum Cascades {
+            _2X, _4X
+        }
+        
         [System.Serializable]
         public struct Directional {
 
             public TextureSize atlasSize;
             public FilterMode filter;
-            
-            [Range(1, 4)]
-            public int cascadeCount;
+
+            public Cascades cascades;
 
             [Range(0f, 1f)]
             public float cascadeRatio1, cascadeRatio2, cascadeRatio3;
@@ -51,7 +54,7 @@ namespace CustomSRP.Runtime
         public Directional directional = new Directional {
             atlasSize = TextureSize._1024,
             filter = FilterMode.PCF2x2,
-            cascadeCount = 4,
+            cascades = Cascades._4X,
             cascadeRatio1 = 0.1f,
             cascadeRatio2 = 0.25f,
             cascadeRatio3 = 0.5f,

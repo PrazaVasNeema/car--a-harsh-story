@@ -14,8 +14,10 @@ namespace CustomSRP.Runtime
 		private static int _dirLightCountId = Shader.PropertyToID("_DirLightCount");
 		private static int _dirLightColorId = Shader.PropertyToID("_DirectionalLightColor");
 		private static int _dirLightDirectionId = Shader.PropertyToID("_DirectionalLightDirection");
+		private static int dirLightShadowDataId = Shader.PropertyToID("_DirectionalLightShadowData");
 		private static Vector4 _dirLightColor = new Vector4();
 		private static Vector4 _dirLightDirection = new Vector4();
+		private static Vector4 _dirLightShadowData = new Vector4();
 		// ---
 		
 		// Point lights
@@ -68,6 +70,8 @@ namespace CustomSRP.Runtime
 				RAPI.SetKeyword("_DIR_LIGHT_ON", true);
 				RAPI.Buffer.SetGlobalVector(_dirLightColorId, _dirLightColor);
 				RAPI.Buffer.SetGlobalVector(_dirLightDirectionId, -_dirLightDirection);
+				RAPI.Buffer.SetGlobalVector(dirLightShadowDataId, _dirLightShadowData);
+				
 			}
 			else
 			{
@@ -113,10 +117,12 @@ namespace CustomSRP.Runtime
 			}
 		}
 
-		void SetupDirectionalLight (VisibleLight visibleLight) {
+		void SetupDirectionalLight (VisibleLight visibleLight)
+		{
+			Debug.Log(visibleLight.light.shadowStrength);
 			_dirLightColor = visibleLight.finalColor;
 			_dirLightDirection = -visibleLight.localToWorldMatrix.GetColumn(2);
-			m_shadows.ReserveDirectionalShadows(visibleLight.light);
+			_dirLightShadowData = m_shadows.ReserveDirectionalShadows(visibleLight.light);
 		}
 		
 		void SetupPointLight (int index, VisibleLight visibleLight) {
