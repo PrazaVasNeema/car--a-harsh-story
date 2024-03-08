@@ -91,7 +91,7 @@ float3 GetLighting(SurfaceData surfaceData)
 {
 	float3 color = 0;
 	
-	#ifdef _DIR_LIGHT_ON
+	// #ifdef _DIR_LIGHT_ON
 
 
 	
@@ -109,10 +109,9 @@ float3 GetLighting(SurfaceData surfaceData)
 	dirLight.attenuation = GetDirectionalShadowAttenuation(dirShadowData, shadowData, surfaceData);
 
 	color = (saturate(dot(surfaceData.normal, dirLight.direction) * dirLight.attenuation) * dirLight.color) * color;
-
+	color = shadowData.color;
 	// color = GetLighting(surfaceData, dirLight);
-	// color = shadowData.color;
-	#endif
+	// #endif
 
 	Light light;
 

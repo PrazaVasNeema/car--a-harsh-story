@@ -50,43 +50,72 @@ ShadowData GetShadowData (SurfaceData surfaceData) {
     data.strength = FadedShadowStrength(surfaceData.depth, _ShadowDistanceFade.x, _ShadowDistanceFade.y);
     
     int i = 0;
-    float4 sphere;
-    float distanceSqr;
+    // float4 sphere;
+    // float distanceSqr;
     float fade;
     
-    float checkIter;
-    float forLoopShouldContinue = 1;
+    float checkIter_1;
+    float checkIter_2 = 1;
+    float checkCombo;
 
-    for (i = 0; i < _CascadeCount; i++) {
-        float4 sphere = _CascadeCullingSpheres[i];
-        float distanceSqr = DistanceSquared(surfaceData.positionWS, sphere.xyz);
-        if (distanceSqr < sphere.w) {
-            float fade = FadedShadowStrength(distanceSqr, _CascadeData[i].x, _ShadowDistanceFade.z);
-            if (i == _CascadeCount - 1) {
-                data.strength *= fade;
-            }
-            else {
-                data.cascadeBlend = fade;
-            }
-            break;
-        }
-    }
+    float4 sphere = _CascadeCullingSpheres[0];
+    float distanceSqr = DistanceSquared(surfaceData.positionWS, sphere.xyz);
+
+    // data.color = distanceSqr < sphere.w;
+    // return  data;
+
+    // for (i = 0; i < 4; i++) {
+    //     float4 sphere = _CascadeCullingSpheres[i];
+    //     float distanceSqr = DistanceSquared(surfaceData.positionWS, sphere.xyz);
+    //     if (distanceSqr < sphere.w) {
+    //         float fade = FadedShadowStrength(distanceSqr, _CascadeData[i].x, _ShadowDistanceFade.z);
+    //         if (i == _CascadeCount - 1) {
+    //             data.strength *= fade;
+    //         }
+    //         else {
+    //             data.cascadeBlend = fade;
+    //         }
+    //         break;
+    //     }
+    // }
+
+    i = 0;
     
     // #if defined(CASCEDE_COUNT_4) || defined(CASCEDE_COUNT_2)
     //
-    sphere = _CascadeCullingSpheres[0];
-    distanceSqr = DistanceSquared(surfaceData.positionWS, sphere.xyz);
-    
-    checkIter = when_lt(distanceSqr, sphere.w) * forLoopShouldContinue;
-
-    forLoopShouldContinue = checkIter;
-    
-    fade = checkIter * FadedShadowStrength(distanceSqr, _CascadeData[0].x, _ShadowDistanceFade.z);
-    
-    data.strength *= 1 + (data.strength - 1) * when_eq(0, _CascadeCount - 1);;
-    data.cascadeBlend = data.cascadeBlend * checkIter + fade * when_neq(0, _CascadeCount - 1);
-    
-    i += 1 * checkIter;
+     sphere = _CascadeCullingSpheres[0] * checkIter_2;
+     distanceSqr = DistanceSquared(surfaceData.positionWS, sphere.xyz) * checkIter_2;
+     
+     checkIter_1 = when_lt(distanceSqr, sphere.w);
+     checkCombo = checkIter_1 * checkIter_2;
+//     
+//     fade = FadedShadowStrength(distanceSqr, _CascadeData[0].x, _ShadowDistanceFade.z) * checkCombo;
+//     
+//     data.strength *= (1 * or(not(checkCombo),when_neq(0, _CascadeCount - 1))  + (data.strength) * when_eq(0, _CascadeCount - 1) * checkCombo);
+//     data.cascadeBlend = data.cascadeBlend * or(not(checkCombo),when_eq(0, _CascadeCount - 1))
+//     + fade * when_neq(0, _CascadeCount - 1) * checkCombo;
+//
+     checkIter_2 = not(checkIter_1);
+     
+     i += 1 * checkIter_2;
+//
+// //
+//
+     sphere = _CascadeCullingSpheres[1];
+     distanceSqr = DistanceSquared(surfaceData.positionWS, sphere.xyz);
+     
+     checkIter_1 = when_lt(distanceSqr, sphere.w);
+     checkCombo = checkIter_1 * checkIter_2;
+//     
+//     fade = FadedShadowStrength(distanceSqr, _CascadeData[1].x, _ShadowDistanceFade.z) * checkCombo;
+//     
+//     data.strength *= (1 * or(not(checkCombo),when_neq(0, _CascadeCount - 1))  + (data.strength) * when_eq(0, _CascadeCount - 1) * checkCombo);
+//     data.cascadeBlend = data.cascadeBlend * or(not(checkCombo),when_eq(0, _CascadeCount - 1))
+//     + fade * when_neq(0, _CascadeCount - 1) * checkCombo;
+//
+     checkIter_2 = not(checkIter_1);
+     
+     i += 1 * checkIter_2;
     
     // //---
     //
