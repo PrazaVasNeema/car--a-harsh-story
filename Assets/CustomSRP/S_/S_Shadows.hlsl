@@ -162,9 +162,18 @@ ShadowData GetShadowData (SurfaceData surfaceData) {
 
     #endif
 
-    if (i == _CascadeCount) {
-        data.strength = 0.0;
-    }
+
+
+    data.strength = data.strength * when_neq(i, _CascadeCount);
+    // // #if defined(_CASCADE_BLEND_DITHER)
+    // i += when_eq(i, _CascadeCount) * when_lt(data.cascadeBlend < surfaceData.d)
+    // else if (data.cascadeBlend < surfaceWS.dither) {
+    //     i += 1;
+    // }
+    // #endif
+    // #if !defined(_CASCADE_BLEND_SOFT)
+    // data.cascadeBlend = 1.0;
+    // #endif
     // data.strength = data.strength * when_neq(i, _CascadeCount);
 
     // Тут идут бленды
@@ -197,6 +206,28 @@ float SampleDirectionalShadowAtlas (float3 positionSTS) {
     return SAMPLE_TEXTURE2D_SHADOW(_DirectionalShadowAtlas, SHADOW_SAMPLER, positionSTS);
 }
 
+// float offset_lookup(float3 coords, float2 texelSize)
+// {
+//     #ifdef PCF_VALUE
+//     float y;
+//     float x;
+//     float mapDepth;
+//     float sum;
+//     for (y = -0.5 * PCF_VALUE; y <= 0.5 * PCF_VALUE; y +=1)
+//         for (x = -0.5 * PCF_VALUE; x <= 0.5 * PCF_VALUE; x +=1)
+//         {
+//             mapDepth = tex2D(_DirectionalShadowAtlas, coords.xy + float2(x, y) * texelSize).r;
+//             sum += coords.z - bias > mapDepth ? 1 : 0;
+//         }
+//     return sum * 0.0625;
+//
+//     // return sum * 1/
+// 	
+//     #else
+//     return 0;
+//     #endif
+// }
+
 float GetDirectionalShadowAttenuation (
     DirectionalShadowData directional, ShadowData global, SurfaceData surfaceData
 ) {
@@ -208,7 +239,7 @@ float GetDirectionalShadowAttenuation (
     }
     float3 normalBias = surfaceData.normal * (directional.normalBias * _CascadeData[global.cascadeIndex].y);
     float3 positionSTS = mul(_DirectionalShadowMatrices[global.cascadeIndex], float4(surfaceData.positionWS + normalBias, 1.0)).xyz;
-    //float shadow = FilterDirectionalShadow(positionSTS);
+    // float shadow = offset_lookup(positionSTS);
     float shadow = SampleDirectionalShadowAtlas(positionSTS);
     if (global.cascadeBlend < 1.0) {
         normalBias = surfaceData.normal * (directional.normalBias * _CascadeData[global.cascadeIndex + 1].y);
