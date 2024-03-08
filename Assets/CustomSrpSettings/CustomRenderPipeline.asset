@@ -18,7 +18,7 @@ MonoBehaviour:
     directional:
       atlasSize: 8192
       filter: 0
-      cascades: 1
+      cascades: 0
       cascadeRatio1: 0.1
       cascadeRatio2: 0.25
       cascadeRatio3: 0.5

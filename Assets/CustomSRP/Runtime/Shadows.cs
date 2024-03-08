@@ -97,7 +97,7 @@ namespace CustomSRP.Runtime
             
             float cullingFactor = Mathf.Max(0f, 0.8f - m_settings.directional.cascadeFade);
             
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < cascadeCount; i++) {
                 RAPI.CullingResults.ComputeDirectionalShadowMatricesAndCullingPrimitives(0, i, cascadeCount, ratios, tileSize, m_light.nearPlaneOffset, out Matrix4x4 viewMatrix, out Matrix4x4 projectionMatrix, out ShadowSplitData splitData);
                 splitData.shadowCascadeBlendCullingFactor = cullingFactor;
                 shadowSettings.splitData = splitData;
