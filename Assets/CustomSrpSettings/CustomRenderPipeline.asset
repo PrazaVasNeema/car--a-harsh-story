@@ -13,14 +13,14 @@ MonoBehaviour:
   m_Name: CustomRenderPipeline
   m_EditorClassIdentifier: 
   m_shadowsSettings:
-    maxDistance: 372.4
+    maxDistance: 300
     distanceFade: 0.1
     directional:
       atlasSize: 8192
-      filter: 0
+      filter: 3
       cascades: 1
       cascadeRatio1: 0.1
-      cascadeRatio2: 0.25
+      cascadeRatio2: 0.278
       cascadeRatio3: 0.5
       cascadeFade: 0.1
-      cascadeBlend: 0
+      cascadeBlend: 1

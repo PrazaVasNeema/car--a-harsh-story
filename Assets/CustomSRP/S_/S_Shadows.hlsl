@@ -9,6 +9,14 @@
 #define MAX_SHADOWED_DIRECTIONAL_LIGHT_COUNT 1
 #define MAX_CASCADE_COUNT 4
 
+#if defined(_DIRECTIONAL_PCF2x2)
+    #define PCF_VALUE 1
+#elif defined(_DIRECTIONAL_PCF4x4)
+    #define PCF_VALUE 2
+#elif defined(_DIRECTIONAL_PCF8x8)
+    #define PCF_VALUE 3
+#endif
+
 TEXTURE2D_SHADOW(_DirectionalShadowAtlas);
 #define SHADOW_SAMPLER sampler_linear_clamp_compare
 SAMPLER_CMP(SHADOW_SAMPLER);
@@ -21,6 +29,7 @@ float4x4 _DirectionalShadowMatrices
     [MAX_SHADOWED_DIRECTIONAL_LIGHT_COUNT * MAX_CASCADE_COUNT];
 float4 _ShadowAtlasSize;
 float4 _ShadowDistanceFade;
+float2 _DirectionalShadowAtlas_TexelSize;
 CBUFFER_END
 
 struct ShadowData {
@@ -206,27 +215,28 @@ float SampleDirectionalShadowAtlas (float3 positionSTS) {
     return SAMPLE_TEXTURE2D_SHADOW(_DirectionalShadowAtlas, SHADOW_SAMPLER, positionSTS);
 }
 
-// float offset_lookup(float3 coords, float2 texelSize)
-// {
-//     #ifdef PCF_VALUE
-//     float y;
-//     float x;
-//     float mapDepth;
-//     float sum;
-//     for (y = -0.5 * PCF_VALUE; y <= 0.5 * PCF_VALUE; y +=1)
-//         for (x = -0.5 * PCF_VALUE; x <= 0.5 * PCF_VALUE; x +=1)
-//         {
-//             mapDepth = tex2D(_DirectionalShadowAtlas, coords.xy + float2(x, y) * texelSize).r;
-//             sum += coords.z - bias > mapDepth ? 1 : 0;
-//         }
-//     return sum * 0.0625;
-//
-//     // return sum * 1/
-// 	
-//     #else
-//     return 0;
-//     #endif
-// }
+float offset_lookup(float3 coords)
+{
+    #ifdef PCF_VALUE
+    float y;
+    float x;
+    float mapDepth;
+    float sum;
+    float2 offset;
+    for (y = -0.5 * PCF_VALUE; y <= 0.5 * PCF_VALUE; y +=1)
+        for (x = -0.5 * PCF_VALUE; x <= 0.5 * PCF_VALUE; x +=1)
+        {
+            offset = float2(_DirectionalShadowAtlas_TexelSize.x * x, _DirectionalShadowAtlas_TexelSize.y * y);
+            sum += SampleDirectionalShadowAtlas((coords + float3(offset.x,offset.y, 0)));
+        }
+    return sum * 0.0625;
+
+    // return sum * 1/
+	
+    #else
+    return SampleDirectionalShadowAtlas(coords);
+    #endif
+}
 
 float GetDirectionalShadowAttenuation (
     DirectionalShadowData directional, ShadowData global, SurfaceData surfaceData
@@ -240,7 +250,8 @@ float GetDirectionalShadowAttenuation (
     float3 normalBias = surfaceData.normal * (directional.normalBias * _CascadeData[global.cascadeIndex].y);
     float3 positionSTS = mul(_DirectionalShadowMatrices[global.cascadeIndex], float4(surfaceData.positionWS + normalBias, 1.0)).xyz;
     // float shadow = offset_lookup(positionSTS);
-    float shadow = SampleDirectionalShadowAtlas(positionSTS);
+    // float shadow = SampleDirectionalShadowAtlas(positionSTS);
+    float shadow = offset_lookup(positionSTS);
     if (global.cascadeBlend < 1.0) {
         normalBias = surfaceData.normal * (directional.normalBias * _CascadeData[global.cascadeIndex + 1].y);
         positionSTS = mul(_DirectionalShadowMatrices[global.cascadeIndex + 1],float4(surfaceData.positionWS + normalBias, 1.0)).xyz;

@@ -120,9 +120,8 @@ namespace CustomSRP.Runtime
             RAPI.Buffer.SetGlobalMatrixArray(dirShadowMatricesId, dirShadowMatrices);
             float f = 1f - m_settings.directional.cascadeFade;
             RAPI.Buffer.SetGlobalVector(shadowDistanceFadeId, new Vector4(1f / m_settings.maxDistance, 1f / m_settings.distanceFade, 1f / (1f - f * f)));
- 
-            RAPI.SetKeywords(directionalFilterKeywords, (int)m_settings.directional.filter - 1);
-            RAPI.SetKeywords(cascadeBlendKeywords, (int)m_settings.directional.cascadeBlend - 1);
+            RAPI.SetKeywords(directionalFilterKeywords, (int)m_settings.directional.filter);
+            RAPI.SetKeywords(cascadeBlendKeywords, (int)m_settings.directional.cascadeBlend);
             RAPI.Buffer.SetGlobalVector(shadowAtlasSizeId, new Vector4(atlasSize, 1f / atlasSize));
             RAPI.Buffer.EndSample(BUFFER_NAME);
             RAPI.ExecuteBuffer();
