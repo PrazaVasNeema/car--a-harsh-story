@@ -53,6 +53,8 @@ ShadowData GetShadowData (SurfaceData surfaceData) {
     // float4 sphere;
     // float distanceSqr;
     float fade;
+
+    float4 forLoopConditions = float4(1,0,0,0);
     
     float checkIter_1;
     float checkIter_2 = 1;
@@ -64,106 +66,101 @@ ShadowData GetShadowData (SurfaceData surfaceData) {
     // data.color = distanceSqr < sphere.w;
     // return  data;
 
-    for (i = 0; i < _CascadeCount; i++) {
-        float4 sphere = _CascadeCullingSpheres[i];
-        float distanceSqr = DistanceSquared(surfaceData.positionWS, sphere.xyz);
-        if (distanceSqr < sphere.w) {
-            float fade = FadedShadowStrength(distanceSqr, _CascadeData[i].x, _ShadowDistanceFade.z);
-            if (i == _CascadeCount - 1) {
-                data.strength *= fade;
-            }
-            else {
-                data.cascadeBlend = fade;
-            }
-            break;
-        }
-    }
+    // for (i = 0; i < _CascadeCount; i++) {
+    //     float4 sphere = _CascadeCullingSpheres[i];
+    //     float distanceSqr = DistanceSquared(surfaceData.positionWS, sphere.xyz);
+    //     if (distanceSqr < sphere.w) {
+    //         float fade = FadedShadowStrength(distanceSqr, _CascadeData[i].x, _ShadowDistanceFade.z);
+    //         if (i == _CascadeCount - 1) {
+    //             data.strength *= fade;
+    //         }
+    //         else {
+    //             data.cascadeBlend = fade;
+    //         }
+    //         break;
+    //     }
+    // }
 
     // i = 0;
     
-    // #if defined(CASCEDE_COUNT_4) || defined(CASCEDE_COUNT_2)
-    //
-//      sphere = _CascadeCullingSpheres[0] * checkIter_2;
-//      distanceSqr = DistanceSquared(surfaceData.positionWS, sphere.xyz) * checkIter_2;
-//      
-//      checkIter_1 = when_lt(distanceSqr, sphere.w);
-//      checkCombo = checkIter_1 * checkIter_2;
-// //     
-// //     fade = FadedShadowStrength(distanceSqr, _CascadeData[0].x, _ShadowDistanceFade.z) * checkCombo;
-// //     
-// //     data.strength *= (1 * or(not(checkCombo),when_neq(0, _CascadeCount - 1))  + (data.strength) * when_eq(0, _CascadeCount - 1) * checkCombo);
-// //     data.cascadeBlend = data.cascadeBlend * or(not(checkCombo),when_eq(0, _CascadeCount - 1))
-// //     + fade * when_neq(0, _CascadeCount - 1) * checkCombo;
-// //
-//      checkIter_2 = not(checkIter_1);
-//      
-//      i += 1 * checkIter_2;
-// //
-// // //
-// //
-//      sphere = _CascadeCullingSpheres[1];
-//      distanceSqr = DistanceSquared(surfaceData.positionWS, sphere.xyz);
-//      
-//      checkIter_1 = when_lt(distanceSqr, sphere.w);
-//      checkCombo = checkIter_1 * checkIter_2;
-// //     
-// //     fade = FadedShadowStrength(distanceSqr, _CascadeData[1].x, _ShadowDistanceFade.z) * checkCombo;
-// //     
-// //     data.strength *= (1 * or(not(checkCombo),when_neq(0, _CascadeCount - 1))  + (data.strength) * when_eq(0, _CascadeCount - 1) * checkCombo);
-// //     data.cascadeBlend = data.cascadeBlend * or(not(checkCombo),when_eq(0, _CascadeCount - 1))
-// //     + fade * when_neq(0, _CascadeCount - 1) * checkCombo;
-// //
-//      checkIter_2 = not(checkIter_1);
-//      
-//      i += 1 * checkIter_2;
+    #if defined(CASCEDE_COUNT_4) || defined(CASCEDE_COUNT_2)
     
-    // //---
-    //
-    // sphere = _CascadeCullingSpheres[1];
-    // distanceSqr = DistanceSquared(surfaceData.positionWS, sphere.xyz);
-    //
-    // checkIter = when_lt(distanceSqr, sphere.w);
-    //
-    // fade = FadedShadowStrength(distanceSqr, _CascadeData[1].x, _ShadowDistanceFade.z) * checkIter;
-    //
-    // data.strength *= 1 + (data.strength - 1) * when_eq(0, _CascadeCount - 1);;
-    // data.cascadeBlend = data.cascadeBlend * checkIter + fade * when_neq(0, _CascadeCount - 1);
-    //
-    // i += 1 * checkIter;
-    //
-    //
-    // #endif
-    //
-    // //--- ---
-    //
-    // #if defined(CASCEDE_COUNT_4)
-    //
-    // sphere = _CascadeCullingSpheres[2];
-    // distanceSqr = DistanceSquared(surfaceData.positionWS, sphere.xyz);
-    //
-    // checkIter = when_lt(distanceSqr, sphere.w);
-    //
-    // fade = FadedShadowStrength(distanceSqr, _CascadeData[2].x, _ShadowDistanceFade.z) * checkIter;
-    //
-    // data.strength *= 1 + (data.strength - 1) * when_eq(0, _CascadeCount - 1);;
-    // data.cascadeBlend = data.cascadeBlend * checkIter + fade * when_neq(0, _CascadeCount - 1);
-    //
-    // i += 1 * checkIter;
-    // //---
-    //
-    // sphere = _CascadeCullingSpheres[3];
-    // distanceSqr = DistanceSquared(surfaceData.positionWS, sphere.xyz);
-    //
-    // checkIter = when_lt(distanceSqr, sphere.w);
-    //
-    // fade = FadedShadowStrength(distanceSqr, _CascadeData[3].x, _ShadowDistanceFade.z) * checkIter;
-    //
-    // data.strength *= 1 + (data.strength - 1) * when_eq(0, _CascadeCount - 1);;
-    // data.cascadeBlend = data.cascadeBlend * checkIter + fade * when_neq(0, _CascadeCount - 1);
-    //
-    // i += 1 * checkIter;
+     sphere = _CascadeCullingSpheres[0] * checkIter_2;
+     distanceSqr = DistanceSquared(surfaceData.positionWS, sphere.xyz) * checkIter_2;
+     
+     checkIter_1 = when_lt(distanceSqr, sphere.w);
+     checkCombo = checkIter_1 * checkIter_2;
+     
+     fade = FadedShadowStrength(distanceSqr, _CascadeData[0].x, _ShadowDistanceFade.z) * checkCombo;
+     
+     data.strength *= (1 * or(not(checkCombo),when_neq(0, _CascadeCount - 1))  + (fade) * when_eq(0, _CascadeCount - 1) * checkCombo);
+     data.cascadeBlend = data.cascadeBlend * or(not(checkCombo),when_eq(0, _CascadeCount - 1))
+     + fade * when_neq(0, _CascadeCount - 1) * checkCombo;
 
-    // #endif
+     checkIter_2 = not(checkIter_1);
+     
+     i += 1 * checkIter_2;
+
+    //---
+
+    
+     sphere = _CascadeCullingSpheres[1];
+     distanceSqr = DistanceSquared(surfaceData.positionWS, sphere.xyz);
+     
+     checkIter_1 = when_lt(distanceSqr, sphere.w);
+     checkCombo = checkIter_1 * checkIter_2;
+
+     fade = FadedShadowStrength(distanceSqr, _CascadeData[1].x, _ShadowDistanceFade.z) * checkCombo;
+     
+     data.strength *= (1 * or(not(checkCombo),when_neq(0, _CascadeCount - 1))  + (fade) * when_eq(0, _CascadeCount - 1) * checkCombo);
+     data.cascadeBlend = data.cascadeBlend * or(not(checkCombo),when_eq(0, _CascadeCount - 1))
+     + fade * when_neq(0, _CascadeCount - 1) * checkCombo;
+
+     checkIter_2 = not(checkIter_1);
+     
+     i += 1 * checkIter_2;
+
+    #endif
+    
+    // //--- ---
+    
+    #if defined(CASCEDE_COUNT_4)
+    
+    sphere = _CascadeCullingSpheres[2];
+    distanceSqr = DistanceSquared(surfaceData.positionWS, sphere.xyz);
+     
+    checkIter_1 = when_lt(distanceSqr, sphere.w);
+    checkCombo = checkIter_1 * checkIter_2;
+
+    fade = FadedShadowStrength(distanceSqr, _CascadeData[2].x, _ShadowDistanceFade.z) * checkCombo;
+     
+    data.strength *= (1 * or(not(checkCombo),when_neq(0, _CascadeCount - 1))  + (fade) * when_eq(0, _CascadeCount - 1) * checkCombo);
+    data.cascadeBlend = data.cascadeBlend * or(not(checkCombo),when_eq(0, _CascadeCount - 1))
+    + fade * when_neq(0, _CascadeCount - 1) * checkCombo;
+
+    checkIter_2 = not(checkIter_1);
+     
+    i += 1 * checkIter_2;
+    
+    //---
+    
+    sphere = _CascadeCullingSpheres[3];
+    distanceSqr = DistanceSquared(surfaceData.positionWS, sphere.xyz);
+     
+    checkIter_1 = when_lt(distanceSqr, sphere.w);
+    checkCombo = checkIter_1 * checkIter_2;
+
+    fade = FadedShadowStrength(distanceSqr, _CascadeData[3].x, _ShadowDistanceFade.z) * checkCombo;
+     
+    data.strength *= (1 * or(not(checkCombo),when_neq(0, _CascadeCount - 1))  + (fade) * when_eq(0, _CascadeCount - 1) * checkCombo);
+    data.cascadeBlend = data.cascadeBlend * or(not(checkCombo),when_eq(0, _CascadeCount - 1))
+    + fade * when_neq(0, _CascadeCount - 1) * checkCombo;
+
+    checkIter_2 = not(checkIter_1);
+     
+    i += 1 * checkIter_2;
+
+    #endif
 
     if (i == _CascadeCount) {
         data.strength = 0.0;

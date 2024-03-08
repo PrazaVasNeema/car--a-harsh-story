@@ -98,20 +98,21 @@ float3 GetLighting(SurfaceData surfaceData)
 	Light dirLight;
 	dirLight.direction = -_DirectionalLightDirection;
 	dirLight.color = 1;
-	dirLight.attenuation = 1;
-	color = GetLighting(surfaceData, dirLight);
-
-	color = 1;
+	// dirLight.attenuation = 1;
+	// color = GetLighting(surfaceData, dirLight);
+	//
+	// color = 1;
 
 	ShadowData shadowData = GetShadowData(surfaceData);
 	
 	DirectionalShadowData dirShadowData = GetDirectionalShadowData(shadowData);
 	dirLight.attenuation = GetDirectionalShadowAttenuation(dirShadowData, shadowData, surfaceData);
 
-	color = (saturate(dot(surfaceData.normal, dirLight.direction) * dirLight.attenuation) * dirLight.color) * color;
+	//color = (saturate(dot(surfaceData.normal, dirLight.direction) * dirLight.attenuation) * dirLight.color) * color;
 	// color = shadowData.color;
-	// color = GetLighting(surfaceData, dirLight);
+	color = GetLighting(surfaceData, dirLight);
 	// #endif
+	// color = shadowData.color;
 
 	Light light;
 

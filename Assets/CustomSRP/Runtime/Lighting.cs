@@ -121,7 +121,6 @@ namespace CustomSRP.Runtime
 
 		void SetupDirectionalLight (VisibleLight visibleLight)
 		{
-			Debug.Log(visibleLight.light.shadowStrength);
 			_dirLightColor = visibleLight.finalColor;
 			_dirLightDirection = -visibleLight.localToWorldMatrix.GetColumn(2);
 			_dirLightShadowData = m_shadows.ReserveDirectionalShadows(visibleLight.light);
