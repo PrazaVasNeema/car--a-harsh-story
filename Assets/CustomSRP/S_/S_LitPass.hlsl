@@ -8,8 +8,7 @@
 #include "../S_/S_Lighting.hlsl"
 
 
-TEXTURE2D(_BaseMap);
-SAMPLER(sampler_BaseMap);
+
 
 
 
@@ -18,6 +17,7 @@ struct MeshData {
 	float3 positionOS : POSITION;
 	float3 normalOS   : NORMAL;
 	float2 uv         : TEXCOORD0;
+	UNITY_VERTEX_INPUT_INSTANCE_ID
 };
 
 struct Interpolators {
@@ -26,15 +26,19 @@ struct Interpolators {
 	float3 normalWS   : VAR_NORMAL;
 	float2 uv         : TEXCOORD0;
 	float4 fragPosLight : TEXCOORD1;
+	UNITY_VERTEX_INPUT_INSTANCE_ID
 };
 
 Interpolators vert(MeshData i)
 {
+	UNITY_SETUP_INSTANCE_ID(i);
 	Interpolators o;
+	UNITY_TRANSFER_INSTANCE_ID(i, o);
 	o.positionWS = TransformObjectToWorld(i.positionOS.xyz);
 	o.positionCS = TransformWorldToHClip(o.positionWS);
 	o.normalWS = TransformObjectToWorldNormal(i.normalOS);
-	o.uv = i.uv * _BaseMap_ST.xy + _BaseMap_ST.zw;
+	float4 baseMap_ST =  UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _BaseMap_ST);
+	o.uv = i.uv * baseMap_ST.xy + baseMap_ST.zw;
 	
 	
 	return o;
@@ -43,19 +47,20 @@ Interpolators vert(MeshData i)
 
 float4 frag(Interpolators i) : SV_TARGET
 {
+	UNITY_SETUP_INSTANCE_ID(i);
 	float4 baseColor = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, i.uv);
-	baseColor *= _BaseColor;
+	baseColor *= UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _BaseColor);
 
 	SurfaceData surfaceData;
 	surfaceData.normal = normalize(i.normalWS);
 	surfaceData.viewDirection = normalize(_WorldSpaceCameraPos - i.positionWS);
 	surfaceData.depth = -TransformWorldToView(i.positionWS).z;
-	surfaceData.color = computeDiffuseColor(baseColor.rgb, _Metallic);
+	surfaceData.metallic = UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _Metallic);
+	surfaceData.color = computeDiffuseColor(baseColor.rgb, surfaceData.metallic);
 	surfaceData.positionWS = i.positionWS;
 	surfaceData.alpha = baseColor.a;
-	surfaceData.metallic = _Metallic;
-	surfaceData.roughness = perceptualRoughnessToRoughness(_Roughness);
-	surfaceData.f0 = computeReflectance(baseColor, _Metallic, _Reflectance);
+	surfaceData.roughness = perceptualRoughnessToRoughness(UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _Roughness));
+	surfaceData.f0 = computeReflectance(baseColor, surfaceData.metallic, UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _Reflectance));
 
 float3 color = 0;
 
@@ -76,7 +81,7 @@ float3 color = 0;
 
 	// color = b;
 	// color = _lightDir;
-	return float4(color, surfaceData.alpha);
+	return float4(color, 1);
 }
 
 #endif

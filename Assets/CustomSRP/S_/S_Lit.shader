@@ -34,7 +34,7 @@ Shader "CustomSRP/S_Lit"
 			
 			#define CHECK _WorkingVar
 			#pragma target 3.5
-			#pragma enable_d3d11_debug_symbols
+			// #pragma enable_d3d11_debug_symbols
 			#pragma multi_compile_instancing
 			#pragma multi_compile _ _DIRECTIONAL_PCF_NONE _DIRECTIONAL_PCF2x2 _DIRECTIONAL_PCF4x4 _DIRECTIONAL_PCF6x6 _DIRECTIONAL_PCF8x8
 			#pragma multi_compile _ _DIR_LIGHT_ON
@@ -44,20 +44,32 @@ Shader "CustomSRP/S_Lit"
 			#pragma fragment frag
 			#include "../ShaderLibrary/Common.hlsl"
 			#define MAX_OTHER_LIGHT_COUNT 64
-			CBUFFER_START(UnityPerMaterial)
-				float4 _BaseColor;
-				float4 _BaseMap_ST; //texture scale and transform params
-				float _Metallic;
-				float _Roughness;
-				float _Reflectance;
-			
-				float3 _DirectionalLightDirection;
-			
-				int _OtherLightCount;
-				float4 _OtherLightColors[MAX_OTHER_LIGHT_COUNT];
-				float4 _OtherLightPositions[MAX_OTHER_LIGHT_COUNT];
-			CBUFFER_END
+TEXTURE2D(_BaseMap);
+SAMPLER(sampler_BaseMap);
 
+			UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
+				UNITY_DEFINE_INSTANCED_PROP(float4, _BaseColor)
+				UNITY_DEFINE_INSTANCED_PROP(float4, _BaseMap_ST)
+				UNITY_DEFINE_INSTANCED_PROP(float, _Metallic)
+				UNITY_DEFINE_INSTANCED_PROP(float, _Roughness)
+				UNITY_DEFINE_INSTANCED_PROP(float, _Reflectance)
+
+				
+
+			UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
+
+CBUFFER_START(_CustomLight)
+float3 _DirectionalLightDirection;
+			
+int _OtherLightCount;
+float4 _OtherLightColors[MAX_OTHER_LIGHT_COUNT];
+float4 _OtherLightPositions[MAX_OTHER_LIGHT_COUNT];
+
+	int _DirectionalLightCount;
+	float4 _DirectionalLightColors;
+	float4 _DirectionalLightDirections;
+	float4 _DirectionalLightShadowData;
+CBUFFER_END
 			
 			#include "S_LitPass.hlsl"
 			ENDHLSL

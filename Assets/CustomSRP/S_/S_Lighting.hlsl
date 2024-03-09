@@ -11,12 +11,7 @@
 
 #define MAX_OTHER_LIGHT_COUNT 64
 
-CBUFFER_START(_CustomLight)
-	int _DirectionalLightCount;
-	float4 _DirectionalLightColors;
-	float4 _DirectionalLightDirections;
-	float4 _DirectionalLightShadowData;
-CBUFFER_END
+
 
 struct Light {
 	float3 color;

@@ -186,9 +186,9 @@ ShadowData GetShadowData (SurfaceData surfaceData) {
     //     i += 1;
     // }
     // #endif
-    // #if !defined(_CASCADE_BLEND_SOFT)
-    // data.cascadeBlend = 1.0;
-    // #endif
+    #if !defined(_CASCADE_BLEND_SOFT)
+    data.cascadeBlend = 1.0;
+    #endif
     // data.strength = data.strength * when_neq(i, _CascadeCount);
 
     // Тут идут бленды
