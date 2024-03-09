@@ -11,10 +11,16 @@
 
 #if defined(_DIRECTIONAL_PCF2x2)
     #define PCF_VALUE 1
+    #define PCF_MULT_VALIE 0.25
 #elif defined(_DIRECTIONAL_PCF4x4)
-    #define PCF_VALUE 2
-#elif defined(_DIRECTIONAL_PCF8x8)
     #define PCF_VALUE 3
+    #define PCF_MULT_VALIE 0.0625
+#elif defined(_DIRECTIONAL_PCF6x6)
+    #define PCF_VALUE 5
+    #define PCF_MULT_VALIE 0.028
+#elif defined(_DIRECTIONAL_PCF8x8)
+    #define PCF_VALUE 7
+    #define PCF_MULT_VALIE 0.015625
 #endif
 
 TEXTURE2D_SHADOW(_DirectionalShadowAtlas);
@@ -180,9 +186,9 @@ ShadowData GetShadowData (SurfaceData surfaceData) {
     //     i += 1;
     // }
     // #endif
-    #if !defined(_CASCADE_BLEND_SOFT)
-    data.cascadeBlend = 1.0;
-    #endif
+    // #if !defined(_CASCADE_BLEND_SOFT)
+    // data.cascadeBlend = 1.0;
+    // #endif
     // data.strength = data.strength * when_neq(i, _CascadeCount);
 
     // Тут идут бленды
@@ -217,10 +223,9 @@ float SampleDirectionalShadowAtlas (float3 positionSTS) {
 
 float offset_lookup(float3 coords)
 {
-    #ifdef PCF_VALUE
+    #if defined(PCF_VALUE) && defined(PCF_MULT_VALIE)
     float y;
     float x;
-    float mapDepth;
     float sum;
     float2 offset;
     for (y = -0.5 * PCF_VALUE; y <= 0.5 * PCF_VALUE; y +=1)
@@ -229,7 +234,7 @@ float offset_lookup(float3 coords)
             offset = float2(_DirectionalShadowAtlas_TexelSize.x * x, _DirectionalShadowAtlas_TexelSize.y * y);
             sum += SampleDirectionalShadowAtlas((coords + float3(offset.x,offset.y, 0)));
         }
-    return sum * 0.0625;
+    return sum * PCF_MULT_VALIE;
 
     // return sum * 1/
 	

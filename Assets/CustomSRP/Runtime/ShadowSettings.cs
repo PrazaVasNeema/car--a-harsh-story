@@ -11,7 +11,7 @@ namespace CustomSRP.Runtime
         }
         
         public enum FilterMode {
-            PCFNONE, PCF2x2, PCF4x4, PCF8x8
+            PCFNONE, PCF2x2, PCF4x4, PCF6x6, PCF8x8
         }
         
         public enum Cascades {

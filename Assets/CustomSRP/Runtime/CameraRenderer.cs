@@ -13,7 +13,7 @@ namespace CustomSRP.Runtime
 		private readonly Lighting m_lighting = new Lighting();
 
 
-		public void Render(Camera camera, ShadowSettings shadowSettings)
+		public void Render(Camera camera, bool useDynamicBatching, bool useGPUInstancing, ShadowSettings shadowSettings)
 		{
 			RAPI.CurCamera = camera;
 			PrepareUIForSceneWindow();
@@ -24,7 +24,7 @@ namespace CustomSRP.Runtime
 			m_lighting.Setup(RAPI.Context, RAPI.CullingResults, shadowSettings);
 			Setup();
 			
-			DrawVisibleGeometry();
+			DrawVisibleGeometry(useDynamicBatching, useGPUInstancing);
 			DrawUnsupportedShaders();
 			DrawGizmos();
 			RAPI.CleanupTempRT(Shadows.dirShadowAtlasId);
@@ -42,13 +42,17 @@ namespace CustomSRP.Runtime
 			RAPI.ExecuteBuffer();
 		}
 
-		void DrawVisibleGeometry ()
+		void DrawVisibleGeometry (bool useDynamicBatching, bool useGPUInstancing)
 		{
 			var sortingSettings = new SortingSettings(RAPI.CurCamera)
 			{
 				criteria = SortingCriteria.CommonOpaque
 			};
-			var drawingSettings = new DrawingSettings(unlitShaderTagId, sortingSettings);
+			var drawingSettings = new DrawingSettings(unlitShaderTagId, sortingSettings)
+			{
+				enableDynamicBatching = useDynamicBatching,
+				enableInstancing = useGPUInstancing
+			};
 			drawingSettings.SetShaderPassName(1, litShaderTagId);
 			var filteringSettings = new FilteringSettings(RenderQueueRange.opaque);
 

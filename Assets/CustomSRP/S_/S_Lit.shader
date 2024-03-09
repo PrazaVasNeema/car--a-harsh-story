@@ -35,7 +35,8 @@ Shader "CustomSRP/S_Lit"
 			#define CHECK _WorkingVar
 			#pragma target 3.5
 			#pragma enable_d3d11_debug_symbols
-			#pragma multi_compile _ _DIRECTIONAL_PCF_NONE _DIRECTIONAL_PCF2x2 _DIRECTIONAL_PCF4x4 _DIRECTIONAL_PCF8x8
+			#pragma multi_compile_instancing
+			#pragma multi_compile _ _DIRECTIONAL_PCF_NONE _DIRECTIONAL_PCF2x2 _DIRECTIONAL_PCF4x4 _DIRECTIONAL_PCF6x6 _DIRECTIONAL_PCF8x8
 			#pragma multi_compile _ _DIR_LIGHT_ON
 			#pragma multi_compile _ _OTHER_LIGHT_COUNT_20 _OTHER_LIGHT_COUNT_15 _OTHER_LIGHT_COUNT_10 _OTHER_LIGHT_COUNT_5
 			#pragma multi_compile _ CASCEDE_COUNT_2 CASCEDE_COUNT_4

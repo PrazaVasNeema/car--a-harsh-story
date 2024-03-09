@@ -47,6 +47,7 @@ namespace CustomSRP.Runtime
             "_DIRECTIONAL_PCF_NONE",
             "_DIRECTIONAL_PCF2x2",
             "_DIRECTIONAL_PCF4x4",
+            "_DIRECTIONAL_PCF6x6",
             "_DIRECTIONAL_PCF8x8",
         };
         
