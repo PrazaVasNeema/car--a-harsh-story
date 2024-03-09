@@ -19,10 +19,12 @@ namespace CustomSRP.Runtime
         public static int cascadeDataId = Shader.PropertyToID("_CascadeData");
         public static int shadowAtlasSizeId = Shader.PropertyToID("_ShadowAtlasSize");
         public static int shadowDistanceFadeId = Shader.PropertyToID("_ShadowDistanceFade");
+        private static int dirCascades = Shader.PropertyToID("_CascadeCount");
 
         private static Vector4[] cascadeCullingSpheres = new Vector4[MAX_CASCADES];
         private static Vector4[] cascadeData = new Vector4[MAX_CASCADES];
         private static Matrix4x4[] dirShadowMatrices = new Matrix4x4[MAX_CASCADES];
+
         
         struct ShadowedDirectionalLight {
             public float slopeScaleBias;
@@ -123,6 +125,7 @@ namespace CustomSRP.Runtime
             RAPI.SetKeywords(directionalFilterKeywords, (int)m_settings.directional.filter);
             RAPI.SetKeywords(cascadeBlendKeywords, (int)m_settings.directional.cascadeBlend);
             RAPI.Buffer.SetGlobalVector(shadowAtlasSizeId, new Vector4(atlasSize, 1f / atlasSize));
+            RAPI.Buffer.SetGlobalFloat(dirCascades, cascadeCount);
             RAPI.Buffer.EndSample(BUFFER_NAME);
             RAPI.ExecuteBuffer();
             

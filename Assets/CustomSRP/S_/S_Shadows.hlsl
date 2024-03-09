@@ -180,9 +180,9 @@ ShadowData GetShadowData (SurfaceData surfaceData) {
     //     i += 1;
     // }
     // #endif
-    // #if !defined(_CASCADE_BLEND_SOFT)
-    // data.cascadeBlend = 1.0;
-    // #endif
+    #if !defined(_CASCADE_BLEND_SOFT)
+    data.cascadeBlend = 1.0;
+    #endif
     // data.strength = data.strength * when_neq(i, _CascadeCount);
 
     // Тут идут бленды
@@ -255,7 +255,7 @@ float GetDirectionalShadowAttenuation (
     if (global.cascadeBlend < 1.0) {
         normalBias = surfaceData.normal * (directional.normalBias * _CascadeData[global.cascadeIndex + 1].y);
         positionSTS = mul(_DirectionalShadowMatrices[global.cascadeIndex + 1],float4(surfaceData.positionWS + normalBias, 1.0)).xyz;
-        //shadow = lerp(FilterDirectionalShadow(positionSTS), shadow, global.cascadeBlend);
+        shadow = lerp(offset_lookup(positionSTS), shadow, global.cascadeBlend);
     }
     return lerp(1.0, shadow, directional.strength);
 }
