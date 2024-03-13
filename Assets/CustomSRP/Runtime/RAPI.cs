@@ -13,7 +13,8 @@ namespace CustomSRP.Runtime
         public static ScriptableRenderContext Context { get; set; }
         public static Camera CurCamera { get; set; }
         public static CullingResults CullingResults { get; private set; }
-    
+
+        public static RenderTexture a;
     
         public static void ExecuteBuffer () {
             Context.ExecuteCommandBuffer(Buffer);

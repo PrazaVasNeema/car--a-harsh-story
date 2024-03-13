@@ -71,6 +71,7 @@ namespace CustomSRP.Runtime
 			drawingSettings.sortingSettings = sortingSettings;
 			filteringSettings.renderQueueRange = RenderQueueRange.transparent;
 			RAPI.Context.DrawRenderers(RAPI.CullingResults, ref drawingSettings, ref filteringSettings);
+			
 		}
 
 		void Submit () {
