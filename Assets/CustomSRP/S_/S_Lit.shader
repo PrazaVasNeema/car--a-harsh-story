@@ -13,6 +13,10 @@ Shader "CustomSRP/S_Lit"
 		[Enum(Off, 0, On, 1)] _ZWrite ("Z Write", Float) = 1
 		
 		[Enum(Off, 0, On, 1)] _WorkingVar ("check????", Float) = 1
+		
+		[Toggle(_PREMULTIPLY_ALPHA)] _PremulAlpha ("Premultiply Alpha", Float) = 0
+				[Toggle(_RECEIVE_SHADOWS)] _ReceiveShadows ("Receive Shadows", Float) = 1
+		
 
 	}
 
@@ -40,6 +44,8 @@ Shader "CustomSRP/S_Lit"
 			#pragma multi_compile _ _DIR_LIGHT_ON
 			#pragma multi_compile _ _OTHER_LIGHT_COUNT_20 _OTHER_LIGHT_COUNT_15 _OTHER_LIGHT_COUNT_10 _OTHER_LIGHT_COUNT_5
 			#pragma multi_compile _ CASCEDE_COUNT_2 CASCEDE_COUNT_4
+			#pragma shader_feature _PREMULTIPLY_ALPHA
+			#pragma shader_feature _RECEIVE_SHADOWS
 			#pragma vertex vert
 			#pragma fragment frag
 			#include "../ShaderLibrary/Common.hlsl"

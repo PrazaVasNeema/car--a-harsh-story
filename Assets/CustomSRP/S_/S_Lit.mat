@@ -11,7 +11,8 @@ Material:
   m_Shader: {fileID: 4800000, guid: d4a64dff0c135b147a4464e0fb33764f, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
+  m_ValidKeywords:
+  - _RECEIVE_SHADOWS
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
@@ -72,13 +73,15 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _Metallic: 0.022
+    - _Metallic: 0
     - _Metalness: 0
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _Reflectance: 0.527
-    - _Roughness: 0.205
+    - _PremulAlpha: 0
+    - _ReceiveShadows: 1
+    - _Reflectance: 0.044
+    - _Roughness: 0.082
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
@@ -86,7 +89,7 @@ Material:
     - _WorkingVar: 1
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 0.7264151, g: 0.3255162, b: 0.3255162, a: 1}
+    - _BaseColor: {r: 0.7169812, g: 0.33481666, b: 0.33481666, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []

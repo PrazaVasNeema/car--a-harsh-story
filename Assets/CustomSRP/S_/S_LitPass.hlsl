@@ -56,7 +56,11 @@ float4 frag(Interpolators i) : SV_TARGET
 	surfaceData.viewDirection = normalize(_WorldSpaceCameraPos - i.positionWS);
 	surfaceData.depth = -TransformWorldToView(i.positionWS).z;
 	surfaceData.metallic = UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _Metallic);
+	#ifdef _PREMULTIPLY_ALPHA
+	surfaceData.color = computeDiffuseColor(baseColor.rgb, surfaceData.metallic) * baseColor.a;
+	#else
 	surfaceData.color = computeDiffuseColor(baseColor.rgb, surfaceData.metallic);
+	#endif
 	surfaceData.positionWS = i.positionWS;
 	surfaceData.alpha = baseColor.a;
 	surfaceData.roughness = perceptualRoughnessToRoughness(UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _Roughness));
@@ -81,7 +85,9 @@ float3 color = 0;
 
 	// color = b;
 	// color = _lightDir;
-	return float4(color, 1);
+
+	
+	return float4(color, surfaceData.alpha);
 }
 
 #endif
