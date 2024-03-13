@@ -51,7 +51,13 @@ namespace CustomSRP.Runtime
 			var drawingSettings = new DrawingSettings(unlitShaderTagId, sortingSettings)
 			{
 				enableDynamicBatching = useDynamicBatching,
-				enableInstancing = useGPUInstancing
+				enableInstancing = useGPUInstancing,
+				perObjectData =
+				PerObjectData.ReflectionProbes |
+				PerObjectData.Lightmaps | PerObjectData.ShadowMask |
+				PerObjectData.LightProbe | PerObjectData.OcclusionProbe |
+				PerObjectData.LightProbeProxyVolume |
+				PerObjectData.OcclusionProbeProxyVolume
 			};
 			drawingSettings.SetShaderPassName(1, litShaderTagId);
 			var filteringSettings = new FilteringSettings(RenderQueueRange.opaque);

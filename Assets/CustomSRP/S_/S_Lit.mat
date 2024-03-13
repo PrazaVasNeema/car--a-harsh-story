@@ -80,8 +80,8 @@ Material:
     - _Parallax: 0.02
     - _PremulAlpha: 0
     - _ReceiveShadows: 1
-    - _Reflectance: 0.044
-    - _Roughness: 0.082
+    - _Reflectance: 0.121
+    - _Roughness: 0.213
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1

@@ -17,6 +17,7 @@ struct MeshData {
 	float3 positionOS : POSITION;
 	float3 normalOS   : NORMAL;
 	float2 uv         : TEXCOORD0;
+	GI_ATTRIBUTE_DATA
 	UNITY_VERTEX_INPUT_INSTANCE_ID
 };
 
@@ -26,6 +27,7 @@ struct Interpolators {
 	float3 normalWS   : VAR_NORMAL;
 	float2 uv         : TEXCOORD0;
 	float4 fragPosLight : TEXCOORD1;
+	GI_VARYINGS_DATA
 	UNITY_VERTEX_INPUT_INSTANCE_ID
 };
 
@@ -34,6 +36,7 @@ Interpolators vert(MeshData i)
 	UNITY_SETUP_INSTANCE_ID(i);
 	Interpolators o;
 	UNITY_TRANSFER_INSTANCE_ID(i, o);
+	TRANSFER_GI_DATA(input, output);
 	o.positionWS = TransformObjectToWorld(i.positionOS.xyz);
 	o.positionCS = TransformWorldToHClip(o.positionWS);
 	o.normalWS = TransformObjectToWorldNormal(i.normalOS);
@@ -67,9 +70,12 @@ float4 frag(Interpolators i) : SV_TARGET
 	surfaceData.f0 = computeReflectance(baseColor, surfaceData.metallic, UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _Reflectance));
 
 float3 color = 0;
+	
+	GI gi = GetGI(GI_FRAGMENT_DATA(input), surfaceData);
 
+	color = IndirectBRDF(surfaceData, gi.specular);
 
-	color = GetLighting(surfaceData);
+	color += GetLighting(surfaceData);
 
 	
 	// bool dirLightExist = when_gt(_DirLightCount, 0);

@@ -6,6 +6,8 @@
 #include "../S_/S_BRDF.hlsl"
 #include "../S_/CommonMaterial.hlsl"
 #include "../S_/S_Shadows.hlsl"
+#include "../S_/GI.hlsl"
+
 
 #define MAX_DIRECTIONAL_LIGHT_COUNT 1
 
@@ -85,6 +87,7 @@ float3 GetLighting(SurfaceData surfaceData, Light light)
 float3 GetLighting(SurfaceData surfaceData)
 {
 	float3 color = 0;
+
 	
 	#ifdef _DIR_LIGHT_ON
 
