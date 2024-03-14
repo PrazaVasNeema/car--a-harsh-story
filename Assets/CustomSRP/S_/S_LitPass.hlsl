@@ -7,6 +7,9 @@
 #include "../S_/CommonMaterial.hlsl"
 #include "../S_/S_Lighting.hlsl"
 
+#include "../S_/S_SSAO.hlsl"
+
+
 
 
 
@@ -92,6 +95,7 @@ float3 color = 0;
 	// color = b;
 	// color = _lightDir;
 
+	color = CalculateSSAO(i.positionCS);
 	
 	return float4(color, surfaceData.alpha);
 }

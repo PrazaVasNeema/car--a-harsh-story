@@ -80,8 +80,8 @@ Material:
     - _Parallax: 0.02
     - _PremulAlpha: 0
     - _ReceiveShadows: 1
-    - _Reflectance: 0.121
-    - _Roughness: 0.213
+    - _Reflectance: 0
+    - _Roughness: 0.476
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
@@ -89,7 +89,7 @@ Material:
     - _WorkingVar: 1
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 0.7169812, g: 0.33481666, b: 0.33481666, a: 1}
+    - _BaseColor: {r: 1, g: 0, b: 0, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []

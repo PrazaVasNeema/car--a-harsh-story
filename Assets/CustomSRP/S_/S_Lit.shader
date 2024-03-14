@@ -98,5 +98,39 @@ CBUFFER_END
 			#include "Assets/CustomSRP/Shaders/ShadowCasterPass.hlsl"
 			ENDHLSL
 		}
+
+		Pass {
+			Tags {
+				"LightMode" = "PositionBufferSpace"
+			}
+
+
+			HLSLPROGRAM
+			#pragma target 3.5
+			#pragma vertex vert
+			#pragma multi_compile_instancing
+			#pragma enable_d3d11_debug_symbols
+			#pragma fragment frag
+			#include "../ShaderLibrary/Common.hlsl"
+			#include "SSAO_color.hlsl"
+			ENDHLSL
+		}
+
+		Pass {
+			Tags {
+				"LightMode" = "NormalBufferPass"
+			}
+
+
+			HLSLPROGRAM
+			#pragma target 3.5
+			#pragma vertex vert
+			#pragma multi_compile_instancing
+			#pragma enable_d3d11_debug_symbols
+			#pragma fragment frag
+			#include "../ShaderLibrary/Common.hlsl"
+			#include "SSAO_normal.hlsl"
+			ENDHLSL
+		}
 	}
 }

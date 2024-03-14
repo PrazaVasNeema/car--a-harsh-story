@@ -11,6 +11,7 @@ namespace CustomSRP.Runtime
 		private static ShaderTagId litShaderTagId = new ShaderTagId("CustomLit");
 
 		private readonly Lighting m_lighting = new Lighting();
+		private readonly SSAO m_ssao = new SSAO();
 
 
 		public void Render(Camera camera, bool useDynamicBatching, bool useGPUInstancing, ShadowSettings shadowSettings)
@@ -21,6 +22,8 @@ namespace CustomSRP.Runtime
 				return;
 			}
 			
+			m_ssao.Render();
+			
 			m_lighting.Setup(RAPI.Context, RAPI.CullingResults, shadowSettings);
 			Setup();
 			
@@ -28,6 +31,7 @@ namespace CustomSRP.Runtime
 			DrawUnsupportedShaders();
 			DrawGizmos();
 			RAPI.CleanupTempRT(Shadows.dirShadowAtlasId);
+			RAPI.CleanupTempRT(SSAO.colorBufferAtlasId);
 			//lighting.Cleanup();
 
 			Submit();
