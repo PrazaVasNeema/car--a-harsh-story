@@ -31,7 +31,7 @@ namespace CustomSRP.Runtime
 			DrawUnsupportedShaders();
 			DrawGizmos();
 			RAPI.CleanupTempRT(Shadows.dirShadowAtlasId);
-			RAPI.CleanupTempRT(SSAO.colorBufferAtlasId);
+			RAPI.CleanupTempRT(SSAO.SSAODepthNormalsAtlas);
 			//lighting.Cleanup();
 
 			Submit();

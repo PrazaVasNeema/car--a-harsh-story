@@ -96,8 +96,8 @@ float3 color = 0;
 	// color = _lightDir;
 
 	color = CalculateSSAO(i.positionCS);
-	
 	return float4(color, surfaceData.alpha);
+
 }
 
 #endif

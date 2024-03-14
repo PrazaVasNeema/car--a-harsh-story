@@ -4,6 +4,8 @@
 #define NUM_SAMPLES 8
 #define NUM_NOISE   4
 
+
+
 CBUFFER_START(_SSAO)
 
     float4 _ssaoSamples[NUM_SAMPLES];
@@ -13,12 +15,9 @@ CBUFFER_START(_SSAO)
 
 CBUFFER_END
 
-TEXTURE2D(_ColorBufferAtlas);
-SAMPLER(sampler_ColorBufferAtlas);
-float2 _ColorBufferAtlas_TexelSize;
-
-TEXTURE2D(_NormalBufferAtlas);
-SAMPLER(sampler_NormalBufferAtlas);
+TEXTURE2D(_SSAODepthNormalsAtlas);
+SAMPLER(sampler_SSAODepthNormalsAtlas);
+float2 _SSAODepthNormalsAtlas_TexelSize;
 
 
 
@@ -27,18 +26,19 @@ float3 CalculateSSAO(float4 fragCoord)
     float radius    = 0.6;
     float bias      = 0.005;
     float magnitude = 1.1;
-    float contrast  = 1.1;
+    float contrast  = 0.1;
 
     float4 fragColor = 1;
 
-    float2 texSize = _ColorBufferAtlas_TexelSize;
-    float2 texCoord = fragCoord.xy / texSize;
+    float2 texSize = _SSAODepthNormalsAtlas_TexelSize;
+    float2 texCoord = fragCoord.xy / float2(942, 530);
 
-    float4 position = SAMPLE_TEXTURE2D(_ColorBufferAtlas, sampler_ColorBufferAtlas, texCoord);
+    float4 position = SAMPLE_TEXTURE2D(_SSAODepthNormalsAtlas, sampler_SSAODepthNormalsAtlas, texCoord);
 
-    if (position.a <= 0) { return 1; }
+    
+    if (position.a <= 0) { return 0; }
 
-    float3 normal = normalize(SAMPLE_TEXTURE2D(_NormalBufferAtlas, sampler_NormalBufferAtlas, texCoord).xyz);
+    float3 normal = normalize(SAMPLE_TEXTURE2D(_SSAODepthNormalsAtlas, sampler_SSAODepthNormalsAtlas, texCoord).xyz);
 
     
     int  noiseS = int(sqrt(NUM_NOISE));
@@ -58,7 +58,7 @@ float3 CalculateSSAO(float4 fragCoord)
     {
 
         float3 samplePosition = mul(tbn, _ssaoSamples[i]);
-        samplePosition = position.xyz + samplePosition * radius;
+        samplePosition = float3(texCoord, position.w) + samplePosition * radius;
 
         float4 offsetUV = float4(samplePosition, 1);
         // offsetUV      = lensProjection * offsetUV;
@@ -66,7 +66,7 @@ float3 CalculateSSAO(float4 fragCoord)
         offsetUV.xyz /= offsetUV.w;
         offsetUV.xy   = offsetUV.xy * 0.5 + 0.5;
 
-        float4 offsetPosition = SAMPLE_TEXTURE2D(_ColorBufferAtlas, sampler_ColorBufferAtlas, offsetUV.xy);
+        float4 offsetPosition = SAMPLE_TEXTURE2D(_SSAODepthNormalsAtlas, sampler_SSAODepthNormalsAtlas, offsetUV.xy);
 
         float occluded = 0;
         if   (samplePosition.y + bias <= offsetPosition.y)

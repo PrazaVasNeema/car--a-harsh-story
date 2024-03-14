@@ -17,7 +17,7 @@ Shader "CustomSRP/S_Lit"
 		[Toggle(_PREMULTIPLY_ALPHA)] _PremulAlpha ("Premultiply Alpha", Float) = 0
 				[Toggle(_RECEIVE_SHADOWS)] _ReceiveShadows ("Receive Shadows", Float) = 1
 		
-
+_DepthLevel ("Depth Level", Range(1, 3)) = 1
 	}
 
 	SubShader
@@ -99,9 +99,11 @@ CBUFFER_END
 			ENDHLSL
 		}
 
+
+
 		Pass {
 			Tags {
-				"LightMode" = "PositionBufferSpace"
+				"LightMode" = "DepthBuffer"
 			}
 
 
@@ -111,15 +113,14 @@ CBUFFER_END
 			#pragma multi_compile_instancing
 			#pragma enable_d3d11_debug_symbols
 			#pragma fragment frag
-			#include "../ShaderLibrary/Common.hlsl"
-			#include "SSAO_color.hlsl"
+			#include "UnityCG.cginc"
+
+			#include "SSAO_DEPTH_NORMALS.hlsl"
 			ENDHLSL
 		}
 
 		Pass {
-			Tags {
-				"LightMode" = "NormalBufferPass"
-			}
+
 
 
 			HLSLPROGRAM
@@ -129,8 +130,11 @@ CBUFFER_END
 			#pragma enable_d3d11_debug_symbols
 			#pragma fragment frag
 			#include "../ShaderLibrary/Common.hlsl"
-			#include "SSAO_normal.hlsl"
+
+			#include "S_SSAOPass.hlsl"
 			ENDHLSL
 		}
+
+
 	}
 }

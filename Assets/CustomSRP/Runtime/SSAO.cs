@@ -9,15 +9,11 @@ namespace CustomSRP.Runtime
     {
         private const string BUFFER_NAME = "SSAO";
 
-        private static ShaderTagId colorBufferID = new ShaderTagId("PositionBufferSpace");
+        private static ShaderTagId DepthBufferId = new ShaderTagId("DepthBuffer");
         
-        public static int colorBufferAtlasId = Shader.PropertyToID("_ColorBufferAtlas");
+        public static int SSAODepthNormalsAtlas = Shader.PropertyToID("_SSAODepthNormalsAtlas");
         
-        
-        
-        private static ShaderTagId normalBufferID = new ShaderTagId("NormalBufferPass");
-
-        public static int NormalBufferAtlasId = Shader.PropertyToID("_NormalBufferAtlas");
+        Material ssaoMaterial = new Material(Shader.Find("CustomSRP/S_Lit"));
         
         
         public static int ssaoSamplesId = Shader.PropertyToID("_ssaoSamples");
@@ -29,6 +25,9 @@ namespace CustomSRP.Runtime
         
         public static int lensProjection = Shader.PropertyToID("lensProjection");
 
+        
+        public static int SSAOAtlas = Shader.PropertyToID("_SSAOAtlas");
+
 
 
 
@@ -39,8 +38,8 @@ namespace CustomSRP.Runtime
 
             RAPI.Buffer.BeginSample(BUFFER_NAME);
 
-            RAPI.Buffer.GetTemporaryRT(colorBufferAtlasId, RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight, 32, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
-            RAPI.Buffer.SetRenderTarget(colorBufferAtlasId, RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store);
+            RAPI.Buffer.GetTemporaryRT(SSAODepthNormalsAtlas, RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight, 32, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
+            RAPI.Buffer.SetRenderTarget(SSAODepthNormalsAtlas, RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store);
             RAPI.Buffer.ClearRenderTarget(true, true, Color.clear);
 
             RAPI.Context.SetupCameraProperties(RAPI.CurCamera);
@@ -52,7 +51,7 @@ namespace CustomSRP.Runtime
                 criteria = SortingCriteria.CommonOpaque
             };
 
-            var drawingSettings = new DrawingSettings(colorBufferID, sortingSettings)
+            var drawingSettings = new DrawingSettings(DepthBufferId, sortingSettings)
             {
                 enableDynamicBatching = false,
                 enableInstancing = true,
@@ -64,24 +63,14 @@ namespace CustomSRP.Runtime
             RAPI.Buffer.EndSample(BUFFER_NAME);
             RAPI.ExecuteBuffer();
             
-            RAPI.Buffer.GetTemporaryRT(NormalBufferAtlasId, RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight, 32, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
-            RAPI.Buffer.SetRenderTarget(NormalBufferAtlasId, RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store);
-            RAPI.Buffer.ClearRenderTarget(true, true, Color.clear);
-            
-            
-            drawingSettings.SetShaderPassName(0, normalBufferID);
-
-            RAPI.Context.DrawRenderers(RAPI.CullingResults, ref drawingSettings, ref filteringSettings);
-            RAPI.ExecuteBuffer();
-
-
             int i = 0;
             foreach (var sampleVec3 in GetSSAOSamples())
             {
                 ssaoSamples[i] = sampleVec3;
                 i++;
             }
-            
+
+            SetNoise();
             RAPI.Buffer.SetGlobalVectorArray(ssaoSamplesId, ssaoSamples);
             RAPI.Buffer.SetGlobalVectorArray(ssaoNoiseId, ssaoNoise);
 
@@ -89,6 +78,18 @@ namespace CustomSRP.Runtime
             Matrix4x4 projectionMatrix = RAPI.CurCamera.projectionMatrix;
             
             RAPI.Buffer.SetGlobalMatrix(lensProjection, projectionMatrix);
+            
+            RenderTexture ssaoTexture = new RenderTexture(Screen.width, Screen.height, 0, RenderTextureFormat.ARGBFloat); // Setup SSAO texture
+            
+            RAPI.Buffer.GetTemporaryRT(SSAOAtlas, RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight, 32, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
+            RAPI.Buffer.SetRenderTarget(SSAOAtlas, RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store);
+
+            // RAPI.Buffer.SetRenderTarget(ssaoTexture); // Set the render target to your SSAO texture
+            // RAPI.Buffer.ClearRenderTarget(true, true, Color.clear); // Optional: clear the render target
+            
+            RAPI.Buffer.Blit(null, BuiltinRenderTextureType.CurrentActive, ssaoMaterial, 3);
+            
+            RAPI.ExecuteBuffer();
             
         }
 

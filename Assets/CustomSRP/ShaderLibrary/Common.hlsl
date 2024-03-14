@@ -26,4 +26,10 @@ float DistanceSquared(float3 pA, float3 pB) {
 	return dot(pA - pB, pA - pB);
 }
 
+float2 MultiplyUV (float4x4 mat, float2 inUV) {
+	float4 temp = float4 (inUV.x, inUV.y, 0, 0);
+	temp = mul (mat, temp);
+	return temp.xy;
+}
+
 #endif
