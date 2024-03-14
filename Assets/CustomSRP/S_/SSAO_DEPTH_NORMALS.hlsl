@@ -62,8 +62,7 @@ float4 frag(Interpolators i) : COLOR
 {
 	UNITY_SETUP_INSTANCE_ID(i);
 
-	float depth = UNITY_SAMPLE_DEPTH(tex2D(_CameraDepthTexture, i.uv));
-	depth = pow(Linear01Depth(depth), _DepthLevel);
+
 
 	float3 a = normalize(i.normalWS);
 

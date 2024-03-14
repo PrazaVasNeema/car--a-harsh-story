@@ -81,7 +81,7 @@ namespace CustomSRP.Runtime
             
             RenderTexture ssaoTexture = new RenderTexture(Screen.width, Screen.height, 0, RenderTextureFormat.ARGBFloat); // Setup SSAO texture
             
-            RAPI.Buffer.GetTemporaryRT(SSAOAtlas, RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight, 32, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
+            RAPI.Buffer.GetTemporaryRT(SSAOAtlas, RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight, 0, FilterMode.Bilinear, RenderTextureFormat.ARGBFloat);
             RAPI.Buffer.SetRenderTarget(SSAOAtlas, RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store);
 
             // RAPI.Buffer.SetRenderTarget(ssaoTexture); // Set the render target to your SSAO texture

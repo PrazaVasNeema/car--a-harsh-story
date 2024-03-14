@@ -12,7 +12,8 @@
 
 
 
-
+TEXTURE2D(_SSAOAtlas);
+SAMPLER(sampler_SSAOAtlas);
 
 
 
@@ -95,8 +96,10 @@ float3 color = 0;
 	// color = b;
 	// color = _lightDir;
 
-	color = CalculateSSAO(i.positionCS);
-	return float4(color, surfaceData.alpha);
+	// color = CalculateSSAO(i.positionCS);
+
+	float4 frag = SAMPLE_TEXTURE2D(_SSAOAtlas, sampler_SSAOAtlas, i.positionCS);
+	return frag;
 
 }
 

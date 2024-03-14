@@ -32,6 +32,8 @@ namespace CustomSRP.Runtime
 			DrawGizmos();
 			RAPI.CleanupTempRT(Shadows.dirShadowAtlasId);
 			RAPI.CleanupTempRT(SSAO.SSAODepthNormalsAtlas);
+			RAPI.CleanupTempRT(SSAO.SSAOAtlas);
+
 			//lighting.Cleanup();
 
 			Submit();

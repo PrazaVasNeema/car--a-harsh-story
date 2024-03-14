@@ -121,7 +121,9 @@ CBUFFER_END
 
 		Pass {
 
-
+			Tags {
+				"LightMode" = "2"
+			}
 
 			HLSLPROGRAM
 			#pragma target 3.5
