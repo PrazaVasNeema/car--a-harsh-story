@@ -32,7 +32,11 @@ namespace CustomSRP.Runtime
             // RAPI.Buffer.SetRenderTarget(positionViewSpaceAtlas, RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store);
             RAPI.Buffer.SetRenderTarget(colorTargets, BuiltinRenderTextureType.CameraTarget);
             RAPI.Buffer.ClearRenderTarget(true, true, Color.clear);
+            
+            RAPI.Buffer.SetGlobalFloat("_CameraNearPlane", RAPI.CurCamera.nearClipPlane);
+            RAPI.Buffer.SetGlobalFloat("_CameraFarPlane", RAPI.CurCamera.farClipPlane);
 
+            
             RAPI.ExecuteBuffer();
 
             var sortingSettings = new SortingSettings(RAPI.CurCamera)

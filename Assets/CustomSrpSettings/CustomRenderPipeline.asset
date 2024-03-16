@@ -27,3 +27,10 @@ MonoBehaviour:
       cascadeRatio3: 0.5
       cascadeFade: 0.1
       cascadeBlend: 1
+  ssaoSettings:
+    normalMapTexture: {fileID: 2800000, guid: 4d2d26443ff3f2c4980e45942ce45e79, type: 3}
+    randomSize: 64
+    gSampleRad: 1
+    gIntensity: 11.19
+    gScale: 1
+    gBias: 0.005

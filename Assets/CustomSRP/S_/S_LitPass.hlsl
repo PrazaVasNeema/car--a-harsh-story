@@ -21,6 +21,9 @@ SAMPLER(sampler_PositionViewSpace);
 TEXTURE2D(_NormalViewSpace);
 SAMPLER(sampler_NormalViewSpace);
 
+TEXTURE2D(_SSAOAtlas);
+SAMPLER(sampler_SSAOAtlas);
+
 struct MeshData {
 	float3 positionOS : POSITION;
 	float3 normalOS   : NORMAL;
@@ -106,7 +109,10 @@ float3 color = 0;
 	
 	float4 frag = SAMPLE_TEXTURE2D(_PositionViewSpace, sampler_PositionViewSpace, i.uv);
 
-	return frag;
+	float4 frag2 = SAMPLE_TEXTURE2D(_SSAOAtlas, sampler_SSAOAtlas, i.positionCS / _gScreenSize);
+
+	
+	return frag2;
 }
 
 #endif

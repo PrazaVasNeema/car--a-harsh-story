@@ -14,6 +14,7 @@ namespace CustomSRP.Runtime
 		private readonly SSAO m_ssao = new SSAO();
 		private readonly RenderBuffers m_renderBuffers = new RenderBuffers();
 		private readonly GBuffers m_gBuffers = new GBuffers();
+		private readonly SSAOmk2 m_ssaoMk2 = new SSAOmk2();
 
 
 		public void Render(Camera camera, bool useDynamicBatching, bool useGPUInstancing, ShadowSettings shadowSettings)
@@ -28,6 +29,7 @@ namespace CustomSRP.Runtime
 			RAPI.Context.SetupCameraProperties(RAPI.CurCamera);
 
 			m_gBuffers.Render();
+			m_ssaoMk2.Render();
 			
 			
 			m_lighting.Setup(RAPI.Context, RAPI.CullingResults, shadowSettings);
@@ -42,6 +44,7 @@ namespace CustomSRP.Runtime
 			
 			RAPI.CleanupTempRT(GBuffers.positionViewSpaceAtlas);
 			RAPI.CleanupTempRT(GBuffers.normalViewSpaceAtlas);
+			RAPI.CleanupTempRT(SSAOmk2.SSAOAtlas);
 
 			//lighting.Cleanup();
 
