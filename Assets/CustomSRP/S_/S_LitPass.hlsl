@@ -12,10 +12,14 @@
 
 
 
-TEXTURE2D(_SSAOAtlas);
-SAMPLER(sampler_SSAOAtlas);
+TEXTURE2D(_atlas1);
+SAMPLER(sampler_atlas1);
 
+TEXTURE2D(_PositionViewSpace);
+SAMPLER(sampler_PositionViewSpace);
 
+TEXTURE2D(_NormalViewSpace);
+SAMPLER(sampler_NormalViewSpace);
 
 struct MeshData {
 	float3 positionOS : POSITION;
@@ -98,9 +102,11 @@ float3 color = 0;
 
 	// color = CalculateSSAO(i.positionCS);
 
-	float4 frag = SAMPLE_TEXTURE2D(_SSAOAtlas, sampler_SSAOAtlas, i.positionCS);
-	return frag;
+	// return float4(color,1);
+	
+	float4 frag = SAMPLE_TEXTURE2D(_PositionViewSpace, sampler_PositionViewSpace, i.uv);
 
+	return frag;
 }
 
 #endif

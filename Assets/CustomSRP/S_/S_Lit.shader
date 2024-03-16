@@ -137,6 +137,40 @@ CBUFFER_END
 			ENDHLSL
 		}
 
+		Pass {
+
+			Tags {
+				"LightMode" = "GeometryPass"
+			}
+
+			HLSLPROGRAM
+			#pragma target 3.5
+			#pragma vertex vert
+			#pragma multi_compile_instancing
+			#pragma enable_d3d11_debug_symbols
+			#pragma fragment frag
+			#include "../ShaderLibrary/Common.hlsl"
+
+			#include "Assets/CustomSRP/S2_/S_SSAOPass.hlsl"
+			ENDHLSL
+		}
+
+		Pass {
+			Name "GBufferPass"
+			Tags {
+				"LightMode" = "GBufferPass"
+			}
+
+			HLSLPROGRAM
+			#pragma target 3.5
+			#pragma multi_compile_instancing
+			#pragma enable_d3d11_debug_symbols
+			#pragma vertex vert
+			#pragma fragment frag
+			#include "Assets/CustomSRP/S2_/GBUFFERPass.hlsl"
+			ENDHLSL
+		}
+
 
 	}
 }

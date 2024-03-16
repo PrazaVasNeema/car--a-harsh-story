@@ -12,6 +12,8 @@ namespace CustomSRP.Runtime
 
 		private readonly Lighting m_lighting = new Lighting();
 		private readonly SSAO m_ssao = new SSAO();
+		private readonly RenderBuffers m_renderBuffers = new RenderBuffers();
+		private readonly GBuffers m_gBuffers = new GBuffers();
 
 
 		public void Render(Camera camera, bool useDynamicBatching, bool useGPUInstancing, ShadowSettings shadowSettings)
@@ -22,7 +24,11 @@ namespace CustomSRP.Runtime
 				return;
 			}
 			
-			m_ssao.Render();
+			// m_ssao.Render();
+			RAPI.Context.SetupCameraProperties(RAPI.CurCamera);
+
+			m_gBuffers.Render();
+			
 			
 			m_lighting.Setup(RAPI.Context, RAPI.CullingResults, shadowSettings);
 			Setup();
@@ -31,8 +37,11 @@ namespace CustomSRP.Runtime
 			DrawUnsupportedShaders();
 			DrawGizmos();
 			RAPI.CleanupTempRT(Shadows.dirShadowAtlasId);
-			RAPI.CleanupTempRT(SSAO.SSAODepthNormalsAtlas);
-			RAPI.CleanupTempRT(SSAO.SSAOAtlas);
+			// RAPI.CleanupTempRT(SSAO.SSAODepthNormalsAtlas);
+			// RAPI.CleanupTempRT(SSAO.SSAOAtlas);
+			
+			RAPI.CleanupTempRT(GBuffers.positionViewSpaceAtlas);
+			RAPI.CleanupTempRT(GBuffers.normalViewSpaceAtlas);
 
 			//lighting.Cleanup();
 
