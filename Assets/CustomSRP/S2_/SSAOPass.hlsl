@@ -14,11 +14,11 @@ SAMPLER(sampler_NormalMapSSAO);
 
 CBUFFER_START(SSAO)
     float _randomSize;
-    float _gSampleRad;
-    float _gIntensity;
-    float _gScale;
-    float _gBias;
-    float2 _gScreenSize;
+    float _Radius;
+    float _Contrast;
+    float _Magnitude;
+    float _Bias;
+    float2 _ScreenSize;
 CBUFFER_END
 
 struct MeshData {
@@ -56,15 +56,15 @@ float3 getNormal(in float2 uv) {
 
 float2 getRandom(in float2 uv) {
     // return float2(1,1);
-    return normalize(SAMPLE_TEXTURE2D(_NormalMapSSAO, sampler_NormalMapSSAO, _gScreenSize.xy * uv / _randomSize).xy * 2.0f - 1.0f); 
+    return normalize(SAMPLE_TEXTURE2D(_NormalMapSSAO, sampler_NormalMapSSAO, _ScreenSize.xy * uv / _randomSize).xy * 2.0f - 1.0f); 
 }
 
 float doAmbientOcclusion(in float2 tcoord,in float2 uv, in float3 p, in float3 cnorm) 
 {float3 diff = getPosition(tcoord + uv) - p; 
     const float3 v = normalize(diff); 
-    const float d = length(diff)*_gScale;
+    const float d = length(diff)*_Magnitude;
     // return p.z > getPosition(tcoord + uv);
-    return max(0.0,dot(cnorm,v)-_gBias)*(1.0/(1.0+d))*_gIntensity;
+    return max(0.0,dot(cnorm,v)-_Bias)*(1.0/(1.0+d))*_Contrast;
 }
 
 float4 frag(Interpolators i) : SV_TARGET 
@@ -73,15 +73,17 @@ float4 frag(Interpolators i) : SV_TARGET
 // return 1;
     float4 color = 1;
 
-    const float2 vec[4] = {float2(1,0),float2(-1,0), float2(0,1),float2(0,-1)};float3 p = getPosition(i.uv); 
+    const float2 vec[8] = {float2(1,0),float2(-1,0), float2(0,1),float2(0,-1),
+    float2(1,1),float2(-1,-1), float2(0.5,1),float2(1,0.5)};
+    float3 p = getPosition(i.uv); 
     float3 n = getNormal(i.uv); 
     float2 rand = getRandom(i.uv); 
     float ao = 0; 
-    float rad = _gSampleRad/p.z;
+    float rad = _Radius/p.z;
     // return float4(rad.xxx,1);
     // return float4(getNormal(i.uv).xyz,1);
     // return float4(i.uv.x, i.uv.y, 0, 1);
-    int iterations = 4;
+    int iterations = 8;
     for (int j = 0; j < iterations; ++j) 
     {
         float2 coord1 = reflect(vec[j],rand)*rad; 

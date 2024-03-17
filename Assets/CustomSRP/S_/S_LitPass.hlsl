@@ -24,6 +24,9 @@ SAMPLER(sampler_NormalViewSpace);
 TEXTURE2D(_SSAOAtlas);
 SAMPLER(sampler_SSAOAtlas);
 
+TEXTURE2D(_SSAOAtlasBlurred);
+SAMPLER(sampler_SSAOAtlasBlurred);
+
 struct MeshData {
 	float3 positionOS : POSITION;
 	float3 normalOS   : NORMAL;
@@ -79,16 +82,16 @@ float4 frag(Interpolators i) : SV_TARGET
 	surfaceData.alpha = baseColor.a;
 	surfaceData.roughness = perceptualRoughnessToRoughness(UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _Roughness));
 	surfaceData.f0 = computeReflectance(baseColor, surfaceData.metallic, UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _Reflectance));
-
-float3 color = 0;
+	float ssao = SAMPLE_TEXTURE2D(_SSAOAtlasBlurred, sampler_SSAOAtlasBlurred, i.positionCS / _ScreenSize).r;
+float3 color = 0;;
 	
 	GI gi = GetGI(GI_FRAGMENT_DATA(input), surfaceData);
 
-	color = IndirectBRDF(surfaceData, gi.specular);
+	color += IndirectBRDF(surfaceData, gi.specular);
 
 	color += GetLighting(surfaceData);
-
-	
+	// return float4(ssao.xxx, 1);
+	return float4(color * ssao, surfaceData.alpha);
 	// bool dirLightExist = when_gt(_DirLightCount, 0);
 	//
 	// Light dirLight;
@@ -109,10 +112,11 @@ float3 color = 0;
 	
 	float4 frag = SAMPLE_TEXTURE2D(_PositionViewSpace, sampler_PositionViewSpace, i.uv);
 
-	float4 frag2 = SAMPLE_TEXTURE2D(_SSAOAtlas, sampler_SSAOAtlas, i.positionCS / _ScreenSize);
+	// float4 frag3 = SAMPLE_TEXTURE2D(_SSAOAtlas, sampler_SSAOAtlas, i.positionCS / _ScreenSize);
 
+	float4 frag3 = SAMPLE_TEXTURE2D(_SSAOAtlasBlurred, sampler_SSAOAtlasBlurred, i.positionCS / _ScreenSize);
 	
-	return frag2;
+	return frag3;
 }
 
 #endif

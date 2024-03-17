@@ -32,5 +32,5 @@ MonoBehaviour:
     randomSize: 64
     gSampleRad: 0.6
     gIntensity: 1.1
-    gScale: 1.1
-    gBias: 0.005
+    gScale: 1.05
+    gBias: 0.05

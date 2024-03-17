@@ -2,8 +2,8 @@
 #define SSAO_PASS2_INCLUDED
 
 #include "UnityCG.cginc"
-#define NUM_SAMPLES 8
-#define NUM_NOISE   4
+#define NUM_SAMPLES 64
+#define NUM_NOISE   16
             struct appdata
             {
                 float4 vertex : POSITION;
@@ -116,8 +116,13 @@
                 // occlusion = 1.0 - (occlusion / NUM_SAMPLES);
                 // float4 fragColor = occlusion;  
                 // float4 fragColor = float4(occlusion.xxx, 1);
+
+                occlusion  = pow(occlusion, _Magnitude);
+                occlusion  = _Contrast * (occlusion - 0.5) + 0.5;
                 
                 occlusion = 1.0 - (occlusion / NUM_SAMPLES);
+
+                
                 float4 fragColor = occlusion;  
                 // return float4(random,1.0);
 

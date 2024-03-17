@@ -189,6 +189,22 @@ CBUFFER_END
 			ENDHLSL
 		}
 
+		Pass {
+			Name "SSAOPass2Blurred"
+			Tags {
+				"LightMode" = "SSAOPass2Blurred"
+			}
+
+			HLSLPROGRAM
+			#pragma target 3.5
+			#pragma multi_compile_instancing
+			#pragma enable_d3d11_debug_symbols
+			#pragma vertex vert
+			#pragma fragment frag
+			#include "Assets/CustomSRP/S2_/SSAOPassBlur.hlsl"
+			ENDHLSL
+		}
+
 
 	}
 }
