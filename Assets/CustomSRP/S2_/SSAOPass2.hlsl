@@ -66,7 +66,7 @@
                 float3 binormal = cross(normal, tangent);
                 float3x3 tbn = float3x3(tangent, binormal, normal);
 
-                float occlusion = NUM_SAMPLES;
+                float occlusion = 0;
                 
                 for (int j = 0; j < NUM_SAMPLES; j++)
                 {
@@ -77,7 +77,7 @@
                     // float4 offset = float4(samplePosition, 1.0);
 
                     // Transform from view space to clip space and then to UV space
-                    float4 offset = mul(lensProjection, position.xyz); // Projection
+                    float4 offset = mul(lensProjection, samplePosition.xyz); // Projection
                                         // return float4(offset.xy, 0,1);
 
                     offset.xyz /= offset.w; // Perspective divide
@@ -91,30 +91,34 @@
 
                     // return float4(-position.zzz/20, 1);
 
-                    float occluded = 0;
-                    if   (samplePosition.z + _Bias <= offsetPosition.z)
-                    { occluded = 0; }
-                    else { occluded = 1; }
+                    // float occluded = 0;
+                    // if   (samplePosition.z + _Bias <= offsetPosition.z)
+                    // { occluded = 0; }
+                    // else { occluded = 1; }
                     
                     // float rangeCheck = smoothstep(0.0, 1.0, _Radius / abs(position.z - sampleDepth));
                     // occlusion += (samplePosition.z >= sampleDepth + _Bias) ? 0.0 : rangeCheck;
 
-                    float intensity =smoothstep( 0, 1,   _Radius/ abs(position.z - offsetPosition.z));
-                    occluded  *= intensity;
-                    occlusion -= occluded;
+                    // float intensity =smoothstep( 0, 1,   _Radius/ abs(position.z - offsetPosition.z));
+                    // occluded  *= intensity;
+                    // occlusion -= occluded;
+
+                    occlusion += (offsetPosition.z >= samplePosition.z + _Bias ? 1.0 : 0.0);  
                 }
 
                 // occlusion = 1.0 - (occlusion / float(NUM_SAMPLES));
                 // occlusion = pow(occlusion, _Magnitude);
                 // occlusion = _Contrast * (occlusion - 0.5) + 0.5;
 
-                occlusion /= NUM_SAMPLES;
-                occlusion  = pow(occlusion, _Magnitude);
-                occlusion  = _Contrast * (occlusion - 0.5) + 0.5;
+                // occlusion /= NUM_SAMPLES;
+                // occlusion  = pow(occlusion, _Magnitude);
+                // occlusion  = _Contrast * (occlusion - 0.5) + 0.5;
                 // occlusion = 1.0 - (occlusion / NUM_SAMPLES);
                 // float4 fragColor = occlusion;  
-                float4 fragColor = float4(occlusion.xxx, 1);
-
+                // float4 fragColor = float4(occlusion.xxx, 1);
+                
+                occlusion = 1.0 - (occlusion / NUM_SAMPLES);
+                float4 fragColor = occlusion;  
                 // return float4(random,1.0);
 
                 // return tex2D(_NormalViewSpace, i.uv).xyzw;

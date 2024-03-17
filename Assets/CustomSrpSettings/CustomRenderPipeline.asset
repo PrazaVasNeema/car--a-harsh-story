@@ -30,7 +30,7 @@ MonoBehaviour:
   ssaoSettings:
     normalMapTexture: {fileID: 2800000, guid: 4d2d26443ff3f2c4980e45942ce45e79, type: 3}
     randomSize: 64
-    gSampleRad: 0.35
-    gIntensity: 1
-    gScale: 1
-    gBias: 0.15
+    gSampleRad: 0.6
+    gIntensity: 1.1
+    gScale: 1.1
+    gBias: 0.005
