@@ -102,8 +102,8 @@
                     // float intensity =smoothstep( 0, 1,   _Radius/ abs(position.z - offsetPosition.z));
                     // occluded  *= intensity;
                     // occlusion -= occluded;
-
-                    occlusion += (offsetPosition.z >= samplePosition.z + _Bias ? 1.0 : 0.0);  
+                    float rangeCheck = smoothstep(0.0, 1.0, _Radius / abs(position.z - offsetPosition.z));
+                    occlusion += (offsetPosition.z >= samplePosition.z + _Bias ? 1.0 : 0.0)* rangeCheck;  
                 }
 
                 // occlusion = 1.0 - (occlusion / float(NUM_SAMPLES));

@@ -55,7 +55,7 @@ float3 getNormal(in float2 uv) {
 }
 
 float2 getRandom(in float2 uv) {
-    return float2(1,1);
+    // return float2(1,1);
     return normalize(SAMPLE_TEXTURE2D(_NormalMapSSAO, sampler_NormalMapSSAO, _gScreenSize.xy * uv / _randomSize).xy * 2.0f - 1.0f); 
 }
 
@@ -63,7 +63,7 @@ float doAmbientOcclusion(in float2 tcoord,in float2 uv, in float3 p, in float3 c
 {float3 diff = getPosition(tcoord + uv) - p; 
     const float3 v = normalize(diff); 
     const float d = length(diff)*_gScale;
-    return p.z > getPosition(tcoord + uv);
+    // return p.z > getPosition(tcoord + uv);
     return max(0.0,dot(cnorm,v)-_gBias)*(1.0/(1.0+d))*_gIntensity;
 }
 
