@@ -109,7 +109,7 @@ float3 color = 0;
 	
 	float4 frag = SAMPLE_TEXTURE2D(_PositionViewSpace, sampler_PositionViewSpace, i.uv);
 
-	float4 frag2 = SAMPLE_TEXTURE2D(_SSAOAtlas, sampler_SSAOAtlas, i.positionCS / _gScreenSize);
+	float4 frag2 = SAMPLE_TEXTURE2D(_SSAOAtlas, sampler_SSAOAtlas, i.positionCS / _ScreenSize);
 
 	
 	return frag2;

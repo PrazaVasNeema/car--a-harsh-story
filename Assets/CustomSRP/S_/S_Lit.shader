@@ -75,7 +75,7 @@ float4 _OtherLightPositions[MAX_OTHER_LIGHT_COUNT];
 	float4 _DirectionalLightColors;
 	float4 _DirectionalLightDirections;
 	float4 _DirectionalLightShadowData;
-			    float2 _gScreenSize;
+			    float2 _ScreenSize;
 
 CBUFFER_END
 			
@@ -176,7 +176,7 @@ CBUFFER_END
 		Pass {
 			Name "SSAOPass"
 			Tags {
-				"LightMode" = "SSAOPass"
+				"LightMode" = "SSAOPass2"
 			}
 
 			HLSLPROGRAM
@@ -185,7 +185,7 @@ CBUFFER_END
 			#pragma enable_d3d11_debug_symbols
 			#pragma vertex vert
 			#pragma fragment frag
-			#include "Assets/CustomSRP/S2_/SSAOPass.hlsl"
+			#include "Assets/CustomSRP/S2_/SSAOPass2.hlsl"
 			ENDHLSL
 		}
 
