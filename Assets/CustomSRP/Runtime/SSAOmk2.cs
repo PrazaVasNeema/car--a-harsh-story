@@ -8,6 +8,9 @@ namespace CustomSRP.Runtime
     public class SSAOmk2
     {
         private const string BUFFER_NAME = "SSAOmk2";
+        private const int SSAO_SAMPLES = 64;
+        private const int SSAO_NOISE = 16;
+        
 
         private static ShaderTagId SSAOPassId = new ShaderTagId("SSAOPass");
         
@@ -20,11 +23,12 @@ namespace CustomSRP.Runtime
         Material ssaoMaterial = new Material(Shader.Find("CustomSRP/S_Lit"));
 
 
+        
         public static int ssaoSamplesId = Shader.PropertyToID("_ssaoSamples");
-        private static Vector4[] ssaoSamples = new Vector4[64];
+        private static Vector4[] ssaoSamples = new Vector4[SSAO_SAMPLES];
         
         public static int ssaoNoiseId = Shader.PropertyToID("_ssaoNoise");
-        private static Vector4[] ssaoNoise = new Vector4[16];
+        private static Vector4[] ssaoNoise = new Vector4[SSAO_NOISE];
 
 
         public void Render()
@@ -87,7 +91,7 @@ namespace CustomSRP.Runtime
             float randomFloats(System.Random gen) => (float)gen.NextDouble();
 
 
-            int numberOfSamples = 64;
+            int numberOfSamples = SSAO_SAMPLES;
             
             for (int i = 0; i < numberOfSamples; ++i) {
                 Vector3 sample = new Vector3(
@@ -101,9 +105,9 @@ namespace CustomSRP.Runtime
 
                 float scale = (float)i / (float)numberOfSamples;
                 scale = Mathf.Lerp(0.1f, 1.0f, scale * scale); // Linearly interpolates between 0.1 and 1.0 based on scale * scale
-                sample *= scale; // Scales the sample
+                // sample *= scale; // Scales the sample
 
-                ssaoSamples[i] = sample;
+                ssaoSamples[i] = sample * scale;
             }
             
             // ssaoSamples[0] = new Vector4(-0.0125591f, -0.0224597f, 0.0023051f, 0.0000000f);
@@ -115,8 +119,10 @@ namespace CustomSRP.Runtime
             // ssaoSamples[6] = new Vector4(-0.3004070f, -0.1294822f, 0.1787521f, 0.0000000f);
             // ssaoSamples[7] = new Vector4(-0.1339805f, 0.0668470f, 0.4099129f, 0.0000000f);
             //
-            
+            return;
             ssaoSamples[0] = new Vector4(0.0375745f, -0.0225461f, 0.0207023f, 0.0000000f);
+
+            // ssaoSamples[0] = new Vector4(0.0375745f, -0.0225461f, 0.0207023f, 0.0000000f);
             ssaoSamples[1] = new Vector4(0.0283229f, 0.0581917f, 0.0654839f, 0.0000000f);
             ssaoSamples[2] = new Vector4(0.0480149f, -0.0462350f, 0.0006761f, 0.0000000f);
             ssaoSamples[3] = new Vector4(0.0097071f, 0.0170045f, 0.0094413f, 0.0000000f);
@@ -161,7 +167,7 @@ namespace CustomSRP.Runtime
             ssaoSamples[42] = new Vector4(0.0365745f, -0.0225461f, 0.0207023f, 0.0000000f);
             ssaoSamples[43] = new Vector4(0.0283229f, 0.0581917f, 0.0654839f, 0.0000000f);
             ssaoSamples[44] = new Vector4(0.0480149f, -0.0462350f, 0.0006761f, 0.0000000f);
-            ssaoSamples[45] = new Vector4(1330598f, 0343873f, 1165653f, 0.0000000f);
+            ssaoSamples[45] = new Vector4(0.0680149f, -0.0762350f, 0.006761f, 0.0000000f);
             ssaoSamples[46] = new Vector4(-0.1547538f, -0.3724611f, 0.2931141f, 0.0000000f);
             ssaoSamples[47] = new Vector4(-0.0303488f, -0.2584694f, 0.3902751f, 0.0000000f);
             ssaoSamples[48] = new Vector4(-0.0452204f, 0.2504474f, 0.2368452f, 0.0000000f);
@@ -214,16 +220,19 @@ namespace CustomSRP.Runtime
             float randomFloats(System.Random gen) => (float)gen.NextDouble();
 
 
-            for (int i = 0; i < 16; ++i) {
+            for (int i = 0; i < SSAO_NOISE; ++i) {
                 Vector3 noise = new Vector3(
                     randomFloats(generator) * 2.0f - 1.0f, // X
                     randomFloats(generator) * 2.0f - 1.0f, // Y
                     0.0f // Z
                 );
-
-                ssaoNoise[i] = noise;
                 
+                ssaoNoise[i] = noise;
+                    
             }
+            // return;
+
+            
             ssaoNoise[0] = new Vector4(-0.5886875f, -0.9517453f, 0.0f, 0.0f);
             ssaoNoise[1] = new Vector4(-0.2297425f, -0.7205612f, 0.0f, 0.0f);
             ssaoNoise[2] = new Vector4(0.2505707f, 0.2372119f, 0.0f, 0.0f);

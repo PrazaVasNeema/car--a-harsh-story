@@ -22,7 +22,7 @@ namespace CustomSRP.Runtime
 
             Vector2 cameraWidthHeight = new Vector2(RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight);
             RAPI.Buffer.GetTemporaryRT(positionViewSpaceAtlas, (int)cameraWidthHeight.x, (int)cameraWidthHeight.y, 0, FilterMode.Bilinear, RenderTextureFormat.ARGBFloat);
-            RAPI.Buffer.GetTemporaryRT(normalViewSpaceAtlas, (int)cameraWidthHeight.x, (int)cameraWidthHeight.y, 0, FilterMode.Bilinear, RenderTextureFormat.ARGBHalf);
+            RAPI.Buffer.GetTemporaryRT(normalViewSpaceAtlas, (int)cameraWidthHeight.x, (int)cameraWidthHeight.y, 0, FilterMode.Bilinear, RenderTextureFormat.ARGBFloat);
 
             RenderTargetIdentifier[] colorTargets = {
                 new RenderTargetIdentifier(positionViewSpaceAtlas),

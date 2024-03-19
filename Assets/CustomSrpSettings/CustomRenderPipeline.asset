@@ -16,13 +16,13 @@ MonoBehaviour:
   useGPUInstancing: 1
   useSRPBatcher: 0
   m_shadowsSettings:
-    maxDistance: 3000
+    maxDistance: 1500
     distanceFade: 0.1
     directional:
       atlasSize: 8192
       filter: 4
       cascades: 1
-      cascadeRatio1: 0.11
+      cascadeRatio1: 0.073
       cascadeRatio2: 0.319
       cascadeRatio3: 0.5
       cascadeFade: 0.1
@@ -31,6 +31,6 @@ MonoBehaviour:
     normalMapTexture: {fileID: 2800000, guid: 4d2d26443ff3f2c4980e45942ce45e79, type: 3}
     randomSize: 64
     gSampleRad: 0.6
-    gIntensity: 1.1
-    gScale: 1.05
-    gBias: 0.05
+    gIntensity: 1
+    gScale: 1.1
+    gBias: 0.005

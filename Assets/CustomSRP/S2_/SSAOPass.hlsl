@@ -47,6 +47,7 @@ Interpolators vert(MeshData i)
 }
 
 float3 getPosition(in float2 uv) {
+
     return  SAMPLE_TEXTURE2D(_PositionViewSpace, sampler_PositionViewSpace, uv).xyz;
 }
 
@@ -72,9 +73,9 @@ float4 frag(Interpolators i) : SV_TARGET
     UNITY_SETUP_INSTANCE_ID(i);
 // return 1;
     float4 color = 1;
-
-    const float2 vec[8] = {float2(1,0),float2(-1,0), float2(0,1),float2(0,-1),
-    float2(1,1),float2(-1,-1), float2(0.5,1),float2(1,0.5)};
+    // return float4(getPosition(i.uv),1);
+    // return float4(i.uv, 0,1);
+    const float2 vec[4] = {float2(1,0),float2(-1,0), float2(0,1),float2(0,-1)};
     float3 p = getPosition(i.uv); 
     float3 n = getNormal(i.uv); 
     float2 rand = getRandom(i.uv); 
@@ -83,7 +84,7 @@ float4 frag(Interpolators i) : SV_TARGET
     // return float4(rad.xxx,1);
     // return float4(getNormal(i.uv).xyz,1);
     // return float4(i.uv.x, i.uv.y, 0, 1);
-    int iterations = 8;
+    int iterations = 4;
     for (int j = 0; j < iterations; ++j) 
     {
         float2 coord1 = reflect(vec[j],rand)*rad; 
@@ -102,7 +103,7 @@ float4 frag(Interpolators i) : SV_TARGET
 // return ao;
     ao/=(float)iterations*4.0;
     // return float4(getRandom(i.uv),0,1);
-    return float4(color - ao.xxx, 1);
+    return float4(color - ao.xxx-0, 1);
 }
 
 #endif

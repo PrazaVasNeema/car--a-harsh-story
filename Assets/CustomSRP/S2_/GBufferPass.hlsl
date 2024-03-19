@@ -45,6 +45,11 @@ Interpolators vert(MeshData i)
     return o;
 }
 
+float LinearizeDepth(float depth) 
+{
+    return (2.0 * _CameraNearPlane * _CameraFarPlane) / (_CameraFarPlane + _CameraNearPlane - depth * (_CameraFarPlane - _CameraNearPlane));    
+}
+
 fragOutput frag(Interpolators i) 
 {
     UNITY_SETUP_INSTANCE_ID(i);
@@ -63,10 +68,16 @@ fragOutput frag(Interpolators i)
     // o.positionViewSpace = float4(i.positionVS.xy, zDepth, 1);
     // o.positionViewSpace = float4(a.xyz/a.w, 1);
     //
-    o.normalViewSpace = float4(i.normalVS, 1);
+    o.normalViewSpace = float4(i.normalVS , 1);
     // zDepth = a.z/a.w;
     // zDepth = zDepth * 0.5 + 0.5;
     o.positionViewSpace = float4(i.positionVS.xy, i.positionVS.z, 1);
+
+    // float4 offset = mul(UNITY_MATRIX_P, i.positionVS.xy.xyz);
+    // offset.xyz /= offset.w; // Perspective divide
+    // offset.xy = offset.xy * 0.5 + 0.5; // UV space
+
+    // o.positionViewSpace = float4(i.positionVS, LinearizeDepth(i.position.z));
 
     // o.positionViewSpace = mul(UNITY_MATRIX_P, o.positionViewSpace);
 
