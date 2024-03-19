@@ -27,6 +27,9 @@ SAMPLER(sampler_SSAOAtlas);
 TEXTURE2D(_SSAOAtlasBlurred);
 SAMPLER(sampler_SSAOAtlasBlurred);
 
+TEXTURE2D(_DecalsAtlas);
+SAMPLER(sampler_DecalsAtlas);
+
 struct MeshData {
 	float3 positionOS : POSITION;
 	float3 normalOS   : NORMAL;
@@ -68,8 +71,10 @@ float4 frag(Interpolators i) : SV_TARGET
 	float4 baseColor = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, i.uv);
 	baseColor *= UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _BaseColor);
 	float ssao = SAMPLE_TEXTURE2D(_SSAOAtlasBlurred, sampler_SSAOAtlasBlurred, i.positionCS / _ScreenSize).r;
+	float4 decals = SAMPLE_TEXTURE2D(_DecalsAtlas, sampler_DecalsAtlas, i.positionCS / _ScreenSize);
 	baseColor *= ssao;
-	
+	if (decals.a >0)
+		baseColor = decals;
 	SurfaceData surfaceData;
 	surfaceData.normal = normalize(i.normalWS);
 	surfaceData.viewDirection = normalize(_WorldSpaceCameraPos - i.positionWS);

@@ -20,6 +20,8 @@ struct Interpolators {
     float4 position : SV_POSITION;
     float3 positionVS   : TEXCOORD0;
     float3 normalVS   : TEXCOORD1;
+    float3 positionWS : TEXCOORD2;
+
     UNITY_VERTEX_INPUT_INSTANCE_ID
 };
 
@@ -42,6 +44,7 @@ Interpolators vert(MeshData i)
     // o.normalVS = TransformObjectToWorldNormal(i.normal);
     // o.positionVS = mul(UNITY_MATRIX_V, i.position).xyz;
     // o.positionVS = mul(UNITY_MATRIX_P, TransformWorldToView(TransformObjectToWorld(i.position)));
+    o.positionWS = TransformObjectToWorld(i.position);
     return o;
 }
 
@@ -72,7 +75,11 @@ fragOutput frag(Interpolators i)
     // zDepth = a.z/a.w;
     // zDepth = zDepth * 0.5 + 0.5;
     o.positionViewSpace = float4(i.positionVS.xy, i.positionVS.z, 1);
+    
+    // o.normalViewSpace = float4(mul(i.positionVS, UNITY_MATRIX_I_V).xyz, 1);
 
+    // o.positionViewSpace = float4(i.positionWS, 1);
+    // o.normalViewSpace = float4(TransformViewToWorld(i.positionVS.xyz), 1);
     // float4 offset = mul(UNITY_MATRIX_P, i.positionVS.xy.xyz);
     // offset.xyz /= offset.w; // Perspective divide
     // offset.xy = offset.xy * 0.5 + 0.5; // UV space

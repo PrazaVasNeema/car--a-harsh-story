@@ -57,6 +57,8 @@ namespace CustomSRP.Runtime
             RAPI.ExecuteBuffer();
 
             RAPI.Buffer.SetGlobalTexture("_PositionViewSpace", positionViewSpaceAtlas);
+            RAPI.Buffer.SetGlobalTexture("_NormalViewSpace", normalViewSpaceAtlas);
+
             
             RAPI.Buffer.EndSample(BUFFER_NAME);
             RAPI.ExecuteBuffer();

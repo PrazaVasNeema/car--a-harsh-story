@@ -54,7 +54,7 @@ float3 getRandom(in float2 uv) {
             {
                 // if (_Enabled < 1) { discard; }
 
-
+// return float4(i.uv, 0,1);
     float3 sample_sphere[64];
     sample_sphere[0] = float3(0.04977, -0.04471, 0.04996);
     sample_sphere[1] = float3(0.01457, 0.01653, 0.00224);
