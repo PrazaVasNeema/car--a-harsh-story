@@ -13,6 +13,8 @@ namespace CustomSRP.Runtime
         
         public static int positionViewSpaceAtlas = Shader.PropertyToID("_PositionViewSpace");
         public static int normalViewSpaceAtlas = Shader.PropertyToID("_NormalViewSpace");
+        public static int TangentViewSpaceAtlas = Shader.PropertyToID("_TangentViewSpace");
+
 
         
         public void Render()
@@ -23,10 +25,13 @@ namespace CustomSRP.Runtime
             Vector2 cameraWidthHeight = new Vector2(RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight);
             RAPI.Buffer.GetTemporaryRT(positionViewSpaceAtlas, (int)cameraWidthHeight.x, (int)cameraWidthHeight.y, 0, FilterMode.Bilinear, RenderTextureFormat.ARGBFloat);
             RAPI.Buffer.GetTemporaryRT(normalViewSpaceAtlas, (int)cameraWidthHeight.x, (int)cameraWidthHeight.y, 0, FilterMode.Bilinear, RenderTextureFormat.ARGBFloat);
+            RAPI.Buffer.GetTemporaryRT(TangentViewSpaceAtlas, (int)cameraWidthHeight.x, (int)cameraWidthHeight.y, 0, FilterMode.Bilinear, RenderTextureFormat.ARGBFloat);
 
             RenderTargetIdentifier[] colorTargets = {
                 new RenderTargetIdentifier(positionViewSpaceAtlas),
-                new RenderTargetIdentifier(normalViewSpaceAtlas)
+                new RenderTargetIdentifier(normalViewSpaceAtlas),
+                new RenderTargetIdentifier(TangentViewSpaceAtlas)
+
             };
             
             // RAPI.Buffer.SetRenderTarget(positionViewSpaceAtlas, RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store);
@@ -58,6 +63,8 @@ namespace CustomSRP.Runtime
 
             RAPI.Buffer.SetGlobalTexture("_PositionViewSpace", positionViewSpaceAtlas);
             RAPI.Buffer.SetGlobalTexture("_NormalViewSpace", normalViewSpaceAtlas);
+            RAPI.Buffer.SetGlobalTexture("_TangentViewSpace", TangentViewSpaceAtlas);
+
 
             
             RAPI.Buffer.EndSample(BUFFER_NAME);

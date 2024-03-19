@@ -48,6 +48,9 @@ namespace CustomSRP.Runtime
 			RAPI.CleanupTempRT(GBuffers.normalViewSpaceAtlas);
 			RAPI.CleanupTempRT(SSAOmk2.SSAOAtlas);
 			RAPI.CleanupTempRT(Decals.DecalsAtlas);
+			RAPI.CleanupTempRT(Decals.DecalsAtlasNormals);
+			RAPI.CleanupTempRT(GBuffers.TangentViewSpaceAtlas);
+
 
 			//lighting.Cleanup();
 

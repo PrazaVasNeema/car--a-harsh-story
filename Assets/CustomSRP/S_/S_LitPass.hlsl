@@ -30,10 +30,16 @@ SAMPLER(sampler_SSAOAtlasBlurred);
 TEXTURE2D(_DecalsAtlas);
 SAMPLER(sampler_DecalsAtlas);
 
+TEXTURE2D(_DecalsAtlasNormals);
+SAMPLER(sampler_DecalsAtlasNormals);
+
+TEXTURE2D(_NormalMap);
+
 struct MeshData {
 	float3 positionOS : POSITION;
 	float3 normalOS   : NORMAL;
 	float2 uv         : TEXCOORD0;
+	float4 tangentOS : TANGENT;
 	GI_ATTRIBUTE_DATA
 	UNITY_VERTEX_INPUT_INSTANCE_ID
 };
@@ -44,6 +50,7 @@ struct Interpolators {
 	float3 normalWS   : VAR_NORMAL;
 	float2 uv         : TEXCOORD0;
 	float4 fragPosLight : TEXCOORD1;
+	float4 tangentWS : VAR_TANGENT;
 	GI_VARYINGS_DATA
 	UNITY_VERTEX_INPUT_INSTANCE_ID
 };
@@ -59,11 +66,24 @@ Interpolators vert(MeshData i)
 	o.normalWS = TransformObjectToWorldNormal(i.normalOS);
 	float4 baseMap_ST =  UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _BaseMap_ST);
 	o.uv = i.uv * baseMap_ST.xy + baseMap_ST.zw;
-	
+
+	o.tangentWS = float4(TransformObjectToWorldDir(i.tangentOS.xyz), i.tangentOS.w);
 	
 	return o;
 }
 
+float3 GetNormalTS (float2 baseUV) {
+	float4 map = SAMPLE_TEXTURE2D(_NormalMap, sampler_BaseMap, baseUV);
+	float scale = UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _NormalScale);
+	float3 normal = DecodeNormal(map, scale);
+	return normal;
+}
+
+float3 NormalTangentToWorld (float3 normalTS, float3 normalWS, float4 tangentWS) {
+	float3x3 tangentToWorld =
+		CreateTangentToWorld(normalWS, tangentWS.xyz, tangentWS.w);
+	return TransformTangentToWorld(normalTS, tangentToWorld);
+}
 
 float4 frag(Interpolators i) : SV_TARGET
 {
@@ -75,8 +95,26 @@ float4 frag(Interpolators i) : SV_TARGET
 	baseColor *= ssao;
 	if (decals.a >0)
 		baseColor = decals;
+	
+		
 	SurfaceData surfaceData;
-	surfaceData.normal = normalize(i.normalWS);
+	surfaceData.normal = NormalTangentToWorld(GetNormalTS(i.uv), i.normalWS, i.tangentWS);
+	// return float4(i.tangentWS.www,1);
+
+	// return float4(surfaceData.normal, 1);
+	float4 decalsNormals = SAMPLE_TEXTURE2D(_DecalsAtlasNormals, sampler_DecalsAtlasNormals, i.positionCS / _ScreenSize);
+	if (decalsNormals.a >0)
+	{
+		// float scale = UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _NormalScale);
+		// float3 newNormals = DecodeNormal(decalsNormals, scale);
+		// surfaceData.normal = NormalTangentToWorld(newNormals, i.normalWS, i.tangentWS);
+		// surfaceData.normal = TransformViewToWorldNormal(decalsNormals);
+		surfaceData.normal = decalsNormals;
+	}
+
+	// return float4(surfaceData.normal, 1);
+
+	// surfaceData.normal = normalize(i.normalWS);
 	surfaceData.viewDirection = normalize(_WorldSpaceCameraPos - i.positionWS);
 	surfaceData.depth = -TransformWorldToView(i.positionWS).z;
 	surfaceData.metallic = UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _Metallic);

@@ -17,6 +17,7 @@
 
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/UnityInstancing.hlsl"
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/SpaceTransforms.hlsl"
+#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Packing.hlsl"
 
 float Square (float v) {
 	return v * v;
@@ -30,6 +31,14 @@ float2 MultiplyUV (float4x4 mat, float2 inUV) {
 	float4 temp = float4 (inUV.x, inUV.y, 0, 0);
 	temp = mul (mat, temp);
 	return temp.xy;
+}
+
+float3 DecodeNormal (float4 sample, float scale) {
+	#if defined(UNITY_NO_DXT5nm)
+		return normalize(UnpackNormalRGB(sample, scale));
+	#else
+		return normalize(UnpackNormalmapRGorAG(sample, scale));
+	#endif
 }
 
 #endif

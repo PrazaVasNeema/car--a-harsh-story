@@ -18,6 +18,9 @@ Shader "CustomSRP/S_Lit"
 				[Toggle(_RECEIVE_SHADOWS)] _ReceiveShadows ("Receive Shadows", Float) = 1
 		
 _DepthLevel ("Depth Level", Range(1, 3)) = 1
+		
+		[NoScaleOffset] _NormalMap("Normals", 2D) = "bump" {}
+		_NormalScale("Normal Scale", Range(0, 1)) = 1
 	}
 
 	SubShader
@@ -59,6 +62,8 @@ SAMPLER(sampler_BaseMap);
 				UNITY_DEFINE_INSTANCED_PROP(float, _Metallic)
 				UNITY_DEFINE_INSTANCED_PROP(float, _Roughness)
 				UNITY_DEFINE_INSTANCED_PROP(float, _Reflectance)
+			
+				UNITY_DEFINE_INSTANCED_PROP(float, _NormalScale)
 
 				
 

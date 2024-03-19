@@ -14,6 +14,9 @@ namespace CustomSRP.Runtime
         
         public static int DecalsAtlas = Shader.PropertyToID("_DecalsAtlas");
         
+        public static int DecalsAtlasNormals = Shader.PropertyToID("_DecalsAtlasNormals");
+
+        
         
         
 
@@ -27,7 +30,14 @@ namespace CustomSRP.Runtime
             RAPI.ExecuteBuffer();
             
             RAPI.Buffer.GetTemporaryRT(DecalsAtlas, RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight, 0, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
-            RAPI.Buffer.SetRenderTarget(DecalsAtlas, RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store);
+            RAPI.Buffer.GetTemporaryRT(DecalsAtlasNormals, RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight, 0, FilterMode.Bilinear, RenderTextureFormat.ARGBFloat);
+            RenderTargetIdentifier[] colorTargets = {
+                new RenderTargetIdentifier(DecalsAtlas),
+                new RenderTargetIdentifier(DecalsAtlasNormals)
+            };
+            
+            // RAPI.Buffer.SetRenderTarget(DecalsAtlas, RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store);
+            RAPI.Buffer.SetRenderTarget(colorTargets, BuiltinRenderTextureType.CameraTarget);
             RAPI.Buffer.ClearRenderTarget(true, true, Color.clear);
             RAPI.Buffer.SetGlobalVector("_ScreenSize", new Vector4(RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight,
                 1/RAPI.CurCamera.pixelWidth, 1/RAPI.CurCamera.pixelHeight));
@@ -53,6 +63,7 @@ namespace CustomSRP.Runtime
             RAPI.ExecuteBuffer();
            
             RAPI.Buffer.SetGlobalTexture("_DecalsAtlas", DecalsAtlas);
+            RAPI.Buffer.SetGlobalTexture("_DecalsAtlasNormals", DecalsAtlasNormals);
 
             RAPI.Buffer.EndSample(BUFFER_NAME);
             RAPI.ExecuteBuffer();

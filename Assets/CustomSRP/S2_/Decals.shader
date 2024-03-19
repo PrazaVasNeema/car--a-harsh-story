@@ -22,6 +22,9 @@ _DepthLevel ("Depth Level", Range(1, 3)) = 1
 		[Toggle(_CLIPPING)] _Clipping ("Alpha Clipping", Float) = 0
 		
 				[Enum(Off, 0, On, 1)] _ZWrite ("Z Write", Float) = 1
+		
+				[NoScaleOffset] _NormalMap("Normals", 2D) = "bump" {}
+		_NormalScale("Normal Scale", Range(0, 1)) = 1
 
 	}
 
@@ -48,9 +51,17 @@ _DepthLevel ("Depth Level", Range(1, 3)) = 1
 
 			TEXTURE2D(_BaseMap);
 			SAMPLER(sampler_BaseMap);
+
+			TEXTURE2D(_NormalMap);
 			
 			TEXTURE2D(_PositionViewSpace);
 			SAMPLER(sampler_PositionViewSpace);
+
+			TEXTURE2D(_NormalViewSpace);
+			SAMPLER(sampler_NormalViewSpace);
+
+			TEXTURE2D(_TangentViewSpace);
+			SAMPLER(sampler_TangentViewSpace);
 			
 			CBUFFER_START(GBuffer)
 			
@@ -63,6 +74,8 @@ _DepthLevel ("Depth Level", Range(1, 3)) = 1
 
 			UNITY_INSTANCING_BUFFER_START(UnityPerMaterial_DECALS)
 				UNITY_DEFINE_INSTANCED_PROP(float4, _BaseColor)
+							UNITY_DEFINE_INSTANCED_PROP(float, _NormalScale)
+
 	UNITY_DEFINE_INSTANCED_PROP(float, _Cutoff)
 
 
@@ -74,6 +87,7 @@ _DepthLevel ("Depth Level", Range(1, 3)) = 1
 				float4 position : POSITION;
 			    float3 normal   : NORMAL;
 				float2 uv   : TEXCOORD0;
+				float4 tangentOS : TANGENT;
 			    UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -83,6 +97,7 @@ _DepthLevel ("Depth Level", Range(1, 3)) = 1
 			    float3 normalVS   : TEXCOORD1;
 				float3 positionWS : TEXCOORD2;
 				float2 uv   : TEXCOORD3;
+				float4 tangentWS : VAR_TANGENT;
 			    UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -99,13 +114,35 @@ _DepthLevel ("Depth Level", Range(1, 3)) = 1
 				o.positionWS = TransformObjectToWorld(i.position);
 
 				o.uv = i.uv;
+
+				o.tangentWS = float4(TransformObjectToWorldDir(i.tangentOS.xyz), i.tangentOS.w);
 			    return o;
 			}
 
-			float4 frag(Interpolators i) : SV_TARGET
+			struct fragOutput
+			{
+			    float4 decalsAtlas : SV_Target0;
+			    float4 decalsNormalAtlas : SV_Target1;
+			};
+
+			float3 GetNormalTS (float2 baseUV) {
+				float4 map = SAMPLE_TEXTURE2D(_NormalMap, sampler_BaseMap, baseUV);
+				float scale = UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _NormalScale);
+				float3 normal = DecodeNormal(map, scale);
+				return normal;
+			}
+
+			float3 NormalTangentToWorld (float3 normalTS, float3 normalWS, float4 tangentWS) {
+				float3x3 tangentToWorld = CreateTangentToWorld(normalWS, tangentWS.xyz, tangentWS.w);
+				return TransformTangentToWorld(normalTS, tangentToWorld);
+			}	
+			
+
+			fragOutput frag(Interpolators i)
 			{
 				UNITY_SETUP_INSTANCE_ID(i);
-
+				fragOutput o;
+				
 				// return float4(baseColor.xyz,1);
 				float2 screenPos = i.positionSV.xy / i.positionSV.w;
 
@@ -144,12 +181,72 @@ _DepthLevel ("Depth Level", Range(1, 3)) = 1
 
 				float4 baseColor = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, textureCoords);
 
+				float3 normal = normalize(SAMPLE_TEXTURE2D(_NormalViewSpace, sampler_NormalViewSpace, i.uv).xyz);
+				float3 tangent = normalize(ddy(worldPos));
+				tangent = TransformWorldToViewDir(i.tangentWS);
+				// normal = TransformViewToWorldNormal(normal);
+				// tangent = TransformViewToWorldNormal(tangent);
+				float3 binormal = cross(normal,tangent);
+				float3x3 tbn = float3x3(tangent, binormal, normal);
+
+				float3 normalLTS =  GetNormalTS(textureCoords);
+
+				binormal = normalize(ddx(worldPos));
+				tangent = normalize(ddy(worldPos));
+				
+				normal = normalize(cross(tangent, binormal));
+
+				tbn = float3x3(tangent, binormal, normal);
+
+				normal = normalize(SAMPLE_TEXTURE2D(_NormalViewSpace, sampler_NormalViewSpace, i.positionSV / _ScreenSize).xyz);
+				// normal = TransformViewToWorldNormal(normal);
+				normal = float4(mul(UNITY_MATRIX_I_V, normal));
+				
+				float4 tangent2 = normalize(SAMPLE_TEXTURE2D(_TangentViewSpace, sampler_TangentViewSpace, i.positionSV / _ScreenSize));
+
+				o.decalsNormalAtlas = float4(NormalTangentToWorld(GetNormalTS(textureCoords), normal, tangent2),1);
+
+				// o.decalsNormalAtlas = float4(normal,1);
+
+				// o.decalsNormalAtlas = float4(GetNormalTS(texCoord), 1);
+				// o.decalsNormalAtlas = SAMPLE_TEXTURE2D(_NormalViewSpace, sampler_NormalViewSpace, i.uv);
+				// o.decalsNormalAtlas = float4(mul(tbn, normalLTS), 1);
+				// o.decalsNormalAtlas = SAMPLE_TEXTURE2D(_NormalMap, sampler_BaseMap, texCoord);;
+				// float4 map = SAMPLE_TEXTURE2D(_NormalMap, sampler_BaseMap, texCoord);
+				// o.decalsNormalAtlas = float4(map.xyz, 1);
+
+				// o.decalsNormalAtlas = float4(mul(normal, UNITY_MATRIX_I_V));
+				
 				#if defined(_CLIPPING)
 					clip(baseColor.a - UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _Cutoff));
 				#endif
 
-				baseColor += UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_DECALS, _BaseColor);
-				return baseColor;
+				baseColor *= UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_DECALS, _BaseColor);
+				o.decalsAtlas = baseColor;
+
+
+
+				return o;
+
+				//Get values across and along the surface
+				float3 ddxWp = ddx(worldPos);
+				float3 ddyWp = ddy(worldPos);
+
+				//Determine the normal
+				normal = normalize(cross(ddyWp, ddxWp));
+
+				//Normalizing things is cool
+				binormal = normalize(ddxWp);
+				tangent = normalize(ddyWp);
+
+				float3x3 tangentToView;
+				tangentToView[0] = TransformWorldToViewNormal(tangent);
+				tangentToView[1] = TransformWorldToViewNormal(tangent);
+				tangentToView[2] = TransformWorldToViewNormal(tangent);
+
+				// normal = TransformWorldToViewNormal(CreateTangentToWorld(normal, tangent, ));
+				
+				return o;
 			}
 			
 			

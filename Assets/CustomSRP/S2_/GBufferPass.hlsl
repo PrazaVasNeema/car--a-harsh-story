@@ -13,6 +13,8 @@ CBUFFER_END
 struct MeshData {
     float4 position : POSITION;
     float3 normal   : NORMAL;
+    float4 tangentOS : TANGENT;
+
     UNITY_VERTEX_INPUT_INSTANCE_ID
 };
 
@@ -21,6 +23,8 @@ struct Interpolators {
     float3 positionVS   : TEXCOORD0;
     float3 normalVS   : TEXCOORD1;
     float3 positionWS : TEXCOORD2;
+    float4 tangentWS : VAR_TANGENT;
+    float3 normalWS : TEXCOORD3;
 
     UNITY_VERTEX_INPUT_INSTANCE_ID
 };
@@ -29,6 +33,7 @@ struct fragOutput
 {
     float4 positionViewSpace : SV_Target0;
     float4 normalViewSpace : SV_Target1;
+    float4 tangentViewSpace : SV_Target2;
 };
 
 Interpolators vert(MeshData i)
@@ -45,6 +50,8 @@ Interpolators vert(MeshData i)
     // o.positionVS = mul(UNITY_MATRIX_V, i.position).xyz;
     // o.positionVS = mul(UNITY_MATRIX_P, TransformWorldToView(TransformObjectToWorld(i.position)));
     o.positionWS = TransformObjectToWorld(i.position);
+    o.tangentWS = float4(TransformObjectToWorldDir(i.tangentOS.xyz), i.tangentOS.w);
+    o.normalWS = TransformObjectToWorldNormal(i.normal);
     return o;
 }
 
@@ -79,7 +86,9 @@ fragOutput frag(Interpolators i)
     // o.normalViewSpace = float4(mul(i.positionVS, UNITY_MATRIX_I_V).xyz, 1);
 
     // o.positionViewSpace = float4(i.positionWS, 1);
-    // o.normalViewSpace = float4(TransformViewToWorld(i.positionVS.xyz), 1);
+    // o.normalViewSpace = float4(TransformViewToWorld(i.normalVS.xyz), 1);
+    // o.normalViewSpace = float4(i.normalWS, 1);
+    // o.normalViewSpace = float4(mul(i.normalVS, UNITY_MATRIX_I_V));
     // float4 offset = mul(UNITY_MATRIX_P, i.positionVS.xy.xyz);
     // offset.xyz /= offset.w; // Perspective divide
     // offset.xy = offset.xy * 0.5 + 0.5; // UV space
@@ -94,6 +103,9 @@ fragOutput frag(Interpolators i)
 
     // o.positionViewSpace = float4(i.position);
     // o.positionViewSpace = float4(1,1,1,1);
+
+    o.tangentViewSpace = i.tangentWS;
+    
     return o;
     
 }
