@@ -2,7 +2,7 @@ Shader "CustomSRP/Decals"
 {
 	Properties
 	{
-		_BaseMap("DecalTexture", 2D) = "white" {}
+		_BaseMap("DecalTexture", 2D) = "(0,0,0,0)" {}
 		_BaseColor("Color", Color) = (1.0, 1.0, 1.0, 1.0)
 		_Metallic ("Metallic", Range(0, 1)) = 0
 		_Roughness ("Roughness", Range(0, 1)) = 0.5
@@ -36,6 +36,9 @@ _DepthLevel ("Depth Level", Range(1, 3)) = 1
 			Tags {
 				"LightMode" = "DecalsPass"
 			}
+			
+			Blend [_SrcBlend] [_DstBlend]
+			ZWrite [_ZWrite]
 
 			HLSLPROGRAM
 			#pragma target 3.5
@@ -53,6 +56,7 @@ _DepthLevel ("Depth Level", Range(1, 3)) = 1
 			SAMPLER(sampler_BaseMap);
 
 			TEXTURE2D(_NormalMap);
+			SAMPLER(sampler_NormalMap);
 			
 			TEXTURE2D(_PositionViewSpace);
 			SAMPLER(sampler_PositionViewSpace);
@@ -126,7 +130,7 @@ _DepthLevel ("Depth Level", Range(1, 3)) = 1
 			};
 
 			float3 GetNormalTS (float2 baseUV) {
-				float4 map = SAMPLE_TEXTURE2D(_NormalMap, sampler_BaseMap, baseUV);
+				float4 map = SAMPLE_TEXTURE2D(_NormalMap, sampler_NormalMap, baseUV);
 				float scale = UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _NormalScale);
 				float3 normal = DecodeNormal(map, scale);
 				return normal;
@@ -204,8 +208,11 @@ _DepthLevel ("Depth Level", Range(1, 3)) = 1
 				
 				float4 tangent2 = normalize(SAMPLE_TEXTURE2D(_TangentViewSpace, sampler_TangentViewSpace, i.positionSV / _ScreenSize));
 
-				o.decalsNormalAtlas = float4(NormalTangentToWorld(GetNormalTS(textureCoords), normal, tangent2),1);
 
+				
+				o.decalsNormalAtlas = float4(NormalTangentToWorld(GetNormalTS(textureCoords), normal, tangent2),1);
+				// if (normal.b == 1)
+				// 	o.decalsNormalAtlas = 0;
 				// o.decalsNormalAtlas = float4(normal,1);
 
 				// o.decalsNormalAtlas = float4(GetNormalTS(texCoord), 1);

@@ -55,7 +55,7 @@ namespace CustomSRP.Runtime
                 enableDynamicBatching = false,
                 enableInstancing = true,
             };
-            var filteringSettings = new FilteringSettings(RenderQueueRange.opaque);
+            var filteringSettings = new FilteringSettings(RenderQueueRange.transparent);
 
             RAPI.Context.DrawRenderers(RAPI.CullingResults, ref drawingSettings, ref filteringSettings);
             
