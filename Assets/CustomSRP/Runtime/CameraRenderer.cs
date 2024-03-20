@@ -32,7 +32,7 @@ namespace CustomSRP.Runtime
 			m_gBuffers.Render();
 			m_ssaoMk2.Render();
 			m_decals.Render();
-			
+			//
 			
 			m_lighting.Setup(RAPI.Context, RAPI.CullingResults, shadowSettings);
 			Setup();

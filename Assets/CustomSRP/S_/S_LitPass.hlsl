@@ -92,17 +92,19 @@ float4 frag(Interpolators i) : SV_TARGET
 	baseColor *= UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _BaseColor);
 	float ssao = SAMPLE_TEXTURE2D(_SSAOAtlasBlurred, sampler_SSAOAtlasBlurred, i.positionCS / _ScreenSize).r;
 	float4 decals = SAMPLE_TEXTURE2D(_DecalsAtlas, sampler_DecalsAtlas, i.positionCS / _ScreenSize);
-	baseColor *= ssao;
-	if (decals.a >0)
-		baseColor = decals;
+	baseColor *= 1;
 	
+	// if (decals.a >0)
+	// 	baseColor = decals;
+	//
 		
 	SurfaceData surfaceData;
 	surfaceData.normal = NormalTangentToWorld(GetNormalTS(i.uv), i.normalWS, i.tangentWS);
 	// return float4(i.tangentWS.www,1);
 
 	// return float4(surfaceData.normal, 1);
-	float4 decalsNormals = SAMPLE_TEXTURE2D(_DecalsAtlasNormals, sampler_DecalsAtlasNormals, i.positionCS / _ScreenSize);
+	float2 dflkhgfgklh = i.positionCS / _ScreenSize;
+	float4 decalsNormals = SAMPLE_TEXTURE2D(_DecalsAtlasNormals, sampler_DecalsAtlasNormals, dflkhgfgklh);
 	if (decalsNormals.a >0)
 	{
 		// float scale = UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _NormalScale);
