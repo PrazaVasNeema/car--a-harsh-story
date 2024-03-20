@@ -90,21 +90,30 @@ float4 frag(Interpolators i) : SV_TARGET
 	UNITY_SETUP_INSTANCE_ID(i);
 	float4 baseColor = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, i.uv);
 	baseColor *= UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _BaseColor);
-	float ssao = SAMPLE_TEXTURE2D(_SSAOAtlasBlurred, sampler_SSAOAtlasBlurred, i.positionCS / _ScreenSize).r;
-	float4 decals = SAMPLE_TEXTURE2D(_DecalsAtlas, sampler_DecalsAtlas, i.positionCS / _ScreenSize);
-	baseColor *= 1;
+
+	float2 screenSpaceCoordinates;
+	#if UNITY_REVERSED_Z
+		screenSpaceCoordinates = float2((i.positionCS.x / _ScreenSize.x), (1 - i.positionCS.y / _ScreenSize.y));
+	#else
+		screenSpaceCoordinates = i.positionCS / _ScreenSize;
+	#endif
+
 	
-	// if (decals.a >0)
-	// 	baseColor = decals;
-	//
+	float ssao = SAMPLE_TEXTURE2D(_SSAOAtlasBlurred, sampler_SSAOAtlasBlurred, screenSpaceCoordinates).r;
+	float4 decals = SAMPLE_TEXTURE2D(_DecalsAtlas, sampler_DecalsAtlas, screenSpaceCoordinates);
+	baseColor *= ssao;
+	
+	if (decals.a >0)
+		baseColor = decals;
+	
 		
 	SurfaceData surfaceData;
 	surfaceData.normal = NormalTangentToWorld(GetNormalTS(i.uv), i.normalWS, i.tangentWS);
 	// return float4(i.tangentWS.www,1);
-
+	// return float4((i.positionCS.x / _ScreenSize.x), (1 - i.positionCS.y / _ScreenSize.y) ,0,1);
 	// return float4(surfaceData.normal, 1);
-	float2 dflkhgfgklh = i.positionCS / _ScreenSize;
-	float4 decalsNormals = SAMPLE_TEXTURE2D(_DecalsAtlasNormals, sampler_DecalsAtlasNormals, dflkhgfgklh);
+
+	float4 decalsNormals = SAMPLE_TEXTURE2D(_DecalsAtlasNormals, sampler_DecalsAtlasNormals, screenSpaceCoordinates);
 	if (decalsNormals.a >0)
 	{
 		// float scale = UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _NormalScale);
@@ -121,7 +130,7 @@ float4 frag(Interpolators i) : SV_TARGET
 	surfaceData.depth = -TransformWorldToView(i.positionWS).z;
 	surfaceData.metallic = UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _Metallic);
 	#ifdef _PREMULTIPLY_ALPHA
-	surfaceData.color = computeDiffuseColor(baseColor.rgb, surfaceData.metallic) * baseColor.a;
+		surfaceData.color = computeDiffuseColor(baseColor.rgb, surfaceData.metallic) * baseColor.a;
 	#else
 	surfaceData.color = computeDiffuseColor(baseColor.rgb, surfaceData.metallic);
 	#endif

@@ -125,7 +125,7 @@ float3 getRandom(in float2 uv) {
 
                 float4 position = tex2D(_PositionViewSpace, texCoord).xyzw;
                 // position = float4(position.xy, -position.w, position.w);
-
+                // return float4(1,1,1,1);
                 if(position.a <= 0)
                     return 0;
                 

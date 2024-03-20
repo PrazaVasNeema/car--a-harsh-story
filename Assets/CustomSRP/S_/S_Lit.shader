@@ -40,7 +40,7 @@ _DepthLevel ("Depth Level", Range(1, 3)) = 1
 
 			
 			#define CHECK _WorkingVar
-			#pragma target 3.5
+			// #pragma target 3.5
 			// #pragma enable_d3d11_debug_symbols
 			#pragma multi_compile_instancing
 			#pragma multi_compile _ _DIRECTIONAL_PCF_NONE _DIRECTIONAL_PCF2x2 _DIRECTIONAL_PCF4x4 _DIRECTIONAL_PCF6x6 _DIRECTIONAL_PCF8x8
@@ -186,7 +186,7 @@ CBUFFER_END
 
 			HLSLPROGRAM
 			#pragma target 3.5
-			#pragma multi_compile_instancing
+			// #pragma multi_compile_instancing
 			#pragma enable_d3d11_debug_symbols
 			#pragma vertex vert
 			#pragma fragment frag
