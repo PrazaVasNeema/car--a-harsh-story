@@ -32,7 +32,7 @@ namespace CustomSRP.Runtime
 			m_gBuffers.Render();
 			m_ssao.Render(customRenderPipelineAsset.SSAOSettings);
 			m_decals.Render();
-			//
+			
 			
 			m_lighting.Setup(customRenderPipelineAsset.shadowSettings);
 			Setup();

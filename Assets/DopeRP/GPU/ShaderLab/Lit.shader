@@ -41,7 +41,7 @@ Shader "DopeRP/Shaders/Lit"
 
 			
 			#pragma target 3.5
-			#pragma enable_d3d11_debug_symbols
+			// #pragma enable_d3d11_debug_symbols
 			#pragma multi_compile_instancing
 			// #pragma multi_compile _ _DIRECTIONAL_PCF_NONE _DIRECTIONAL_PCF2x2 _DIRECTIONAL_PCF4x4 _DIRECTIONAL_PCF6x6 _DIRECTIONAL_PCF8x8
 			#pragma multi_compile _ _DIR_LIGHT_ON
