@@ -12,7 +12,6 @@ namespace CustomSRP.Runtime
 
         public OnChangedCallAttribute(string methodNameNoArguments)
         {
-            // Debug.Log("Test2");
             methodName = methodNameNoArguments;
         }
     }
@@ -30,29 +29,9 @@ namespace CustomSRP.Runtime
             EditorGUI.PropertyField(position, property, label);
             if (EditorGUI.EndChangeCheck())
             {
-                // Debug.Log("Target Object Type: " + property.serializedObject.targetObject.GetType().FullName);
-// Debug.Log(property.serializedObject.FindProperty("ssaoSettings"));
+
                 OnChangedCallAttribute at = attribute as OnChangedCallAttribute;
 
-                SerializedProperty targetProperty;
-                Debug.Log("Test2");
-
-                // if (!string.IsNullOrEmpty(at.propertyName))
-                //     targetProperty = property.serializedObject.FindProperty(at.propertyName);
-                // else
-                // {
-                //     targetProperty = property;
-                //     Debug.Log("Test4");
-                //
-                // }
-
-                Debug.Log("Test3");
-
-                // Debug.Log(at.methodName);
-                Debug.Log("Target Object Type: " + property.serializedObject.targetObject.GetType().FullName);
-
-// Debug.Log(property.serializedObject.targetObject.GetType().GetMethods());
-// Debug.Log(property.serializedObject.targetObject.GetType().GetMethod(at.methodName, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public));
                 MethodInfo method = property.serializedObject.targetObject.GetType().GetMethods()
                     .Where(m => m.Name == at.methodName).First();
 

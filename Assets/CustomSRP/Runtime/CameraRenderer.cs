@@ -45,13 +45,13 @@ namespace CustomSRP.Runtime
 			// RAPI.CleanupTempRT(SSAO.SSAODepthNormalsAtlas);
 			// RAPI.CleanupTempRT(SSAO.SSAOAtlas);
 			
-			RAPI.CleanupTempRT(GBuffers.positionViewSpaceAtlas);
-			RAPI.CleanupTempRT(GBuffers.normalViewSpaceAtlas);
+			RAPI.CleanupTempRT(SProps.GBuffer.PositionViewSpaceAtlas);
+			RAPI.CleanupTempRT(SProps.GBuffer.NormalViewSpaceAtlas);
+			RAPI.CleanupTempRT(SProps.GBuffer.TangentViewSpaceAtlas);
 			RAPI.CleanupTempRT(SProps.SSAO.SSAORawAtlas);
 			RAPI.CleanupTempRT(SProps.SSAO.SSAOBlurAtlas);
 			RAPI.CleanupTempRT(Decals.DecalsAtlas);
 			RAPI.CleanupTempRT(Decals.DecalsAtlasNormals);
-			RAPI.CleanupTempRT(GBuffers.TangentViewSpaceAtlas);
 
 
 			//lighting.Cleanup();

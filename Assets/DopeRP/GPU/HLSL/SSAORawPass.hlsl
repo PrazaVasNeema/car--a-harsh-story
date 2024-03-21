@@ -81,7 +81,6 @@ static float3 samples[64] =
 
 UNITY_INSTANCING_BUFFER_START(PerMaterialSSAO)
 
-    // UNITY_DEFINE_INSTANCED_PROP(float, _RandomSize)
     UNITY_DEFINE_INSTANCED_PROP(float, _SampleRadius)
     UNITY_DEFINE_INSTANCED_PROP(float, _Bias)
     UNITY_DEFINE_INSTANCED_PROP(float, _Magnitude)
@@ -113,18 +112,25 @@ struct MeshData
 {
     float4 position : POSITION;
     float2 uv : TEXCOORD0;
+
+    UNITY_VERTEX_INPUT_INSTANCE_ID
 };
 
 struct Interpolators
 {
     float4 positionSV : SV_POSITION;
     float2 uv : TEXCOORD0;
+
+    UNITY_VERTEX_INPUT_INSTANCE_ID
 };
 
 
 Interpolators vert (MeshData i)
 {
+    UNITY_SETUP_INSTANCE_ID(i);
     Interpolators o;
+    UNITY_TRANSFER_INSTANCE_ID(i, o);
+
     o.uv = i.uv;
     o.positionSV = TransformObjectToHClip(i.position);
     return o;
@@ -133,18 +139,16 @@ Interpolators vert (MeshData i)
 
 float4 frag (Interpolators i) : SV_Target
 {
+    UNITY_SETUP_INSTANCE_ID(i);
 
     float4 fragPositionVS = SAMPLE_TEXTURE2D(_PositionViewSpace, sampler_PositionViewSpace, i.uv);
 
-    // return fragPositionVS;
-    // clip(fragPositionVS.a);
+    clip(fragPositionVS.a);
 
     float3 normalVS = normalize(SAMPLE_TEXTURE2D(_NormalViewSpace, sampler_NormalViewSpace, i.uv).xyz);
-    // return float4(normalVS,1);
 
     float3 randomVec = float3(normalize(SAMPLE_TEXTURE2D(_NoiseTexture, sampler_NoiseTexture, i.uv * _NoiseScale) * 2.0f - 1.0f).xy,0);
 
-    // return float4(randomVec,1);
     
     float3 tangent = normalize(randomVec - normalVS * dot(randomVec, normalVS));
     float3 binormal = cross(normalVS, tangent);
@@ -157,7 +161,6 @@ float4 frag (Interpolators i) : SV_Target
     {
         float3 samplePositionVS = mul(tbn, samples[j]);
         samplePositionVS = fragPositionVS + samplePositionVS * _SampleRadius;
-        // return float4(samplePositionVS,1);
 
         float4 offsetUV = mul(_LensProjection, samplePositionVS);
         offsetUV.xyz /= offsetUV.w;
@@ -165,35 +168,22 @@ float4 frag (Interpolators i) : SV_Target
 
         float4 offsetPositionVS = SAMPLE_TEXTURE2D(_PositionViewSpace, sampler_PositionViewSpace, offsetUV.xy);
 
-        // return float4(i.uv, 0,1);
-        // return float4(offsetUV.xy, 0,1);
-        // return fragPositionVS;
 
         float intensity = smoothstep(HALF_ZERO, HALF_ONE, _SampleRadius / abs(fragPositionVS.z - offsetPositionVS.z));
         occlusion += when_ge(offsetPositionVS.z, samplePositionVS.z + _Bias) * intensity;
-        // occlusion += (offsetPositionVS.z >= samplePositionVS.z + _Bias ? 1.0 : 0.0) * intensity ;
 
         
     }
 
     occlusion /= SAMPLES_COUNT;
-    // return occlusion;
     occlusion  = pow(occlusion, _Magnitude);
     occlusion  = _Contrast * (occlusion - 0.5) + 0.5;
                 
     float4 fragColor = HALF_ONE - occlusion;  
-    // return float4(random,1.0);
 
-    // return tex2D(_NormalViewSpace, i.uv).xyzw;
+    
     return fragColor;
-    return occlusion;
-    occlusion  = pow(occlusion, _Magnitude);
-    occlusion  = _Contrast * (occlusion - HALF_HALF) + HALF_HALF;
-
-    // float4 fragColor = HALF_ONE - occlusion;
-
-    return fragColor;
-
+     
 }
 
 #endif

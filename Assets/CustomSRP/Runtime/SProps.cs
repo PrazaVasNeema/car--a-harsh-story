@@ -30,6 +30,21 @@ namespace CustomSRP.Runtime
             public static int NoiseScale = Shader.PropertyToID("_NoiseScale");
 
         }
+
+        public static class GBuffer
+        {
+            public static ShaderTagId GBufferPassId = new ShaderTagId("GBufferPass");
+            
+            public static string GBufferPassName = "GBufferPass";
+            
+            public static int PositionViewSpaceAtlas = Shader.PropertyToID("_PositionViewSpace");
+            public static int NormalViewSpaceAtlas = Shader.PropertyToID("_NormalViewSpace");
+            public static int TangentViewSpaceAtlas = Shader.PropertyToID("_TangentViewSpace");
+
+            public static int CameraNearPlane = Shader.PropertyToID("_CameraNearPlane");
+            public static int CameraFarPlane = Shader.PropertyToID("_CameraFarPlane");
+
+        }
         
     }
 }
