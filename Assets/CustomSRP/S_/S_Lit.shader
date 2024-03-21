@@ -174,42 +174,10 @@ CBUFFER_END
 			#pragma enable_d3d11_debug_symbols
 			#pragma vertex vert
 			#pragma fragment frag
-			#include "Assets/CustomSRP/S2_/GBUFFERPass.hlsl"
+			#include "Assets/DopeRP/GPU/HLSL/GBufferPass.hlsl"
 			ENDHLSL
 		}
-
-		Pass {
-			Name "SSAOPass"
-			Tags {
-				"LightMode" = "SSAOPass2"
-			}
-
-			HLSLPROGRAM
-			#pragma target 3.5
-			// #pragma multi_compile_instancing
-			#pragma enable_d3d11_debug_symbols
-			#pragma vertex vert
-			#pragma fragment frag
-			#include "Assets/CustomSRP/S2_/SSAOPass2.hlsl"
-			ENDHLSL
-		}
-
-		Pass {
-			Name "SSAOPass2Blurred"
-			Tags {
-				"LightMode" = "SSAOPass2Blurred"
-			}
-
-			HLSLPROGRAM
-			#pragma target 3.5
-			#pragma multi_compile_instancing
-			#pragma enable_d3d11_debug_symbols
-			#pragma vertex vert
-			#pragma fragment frag
-			#include "Assets/CustomSRP/S2_/SSAOPassBlur.hlsl"
-			ENDHLSL
-		}
-
-
+		
 	}
+
 }

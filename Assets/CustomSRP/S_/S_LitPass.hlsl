@@ -27,11 +27,11 @@ SAMPLER(sampler_SSAOAtlas);
 TEXTURE2D(_SSAOAtlasBlurred);
 SAMPLER(sampler_SSAOAtlasBlurred);
 
-TEXTURE2D(_DecalsAtlas);
-SAMPLER(sampler_DecalsAtlas);
+TEXTURE2D(_DecalsAlbedoAtlas);
+SAMPLER(sampler_DecalsAlbedoAtlas);
 
-TEXTURE2D(_DecalsAtlasNormals);
-SAMPLER(sampler_DecalsAtlasNormals);
+TEXTURE2D(_DecalsNormalAtlas);
+SAMPLER(sampler_DecalsNormalAtlas);
 
 TEXTURE2D(_NormalMap);
 
@@ -107,7 +107,7 @@ float4 frag(Interpolators i) : SV_TARGET
 
 	
 	float ssao = SAMPLE_TEXTURE2D(_SSAOBlurAtlas, sampler_SSAOBlurAtlas, screenSpaceCoordinates).r;
-	float4 decals = SAMPLE_TEXTURE2D(_DecalsAtlas, sampler_DecalsAtlas, screenSpaceCoordinates);
+	float4 decals = SAMPLE_TEXTURE2D(_DecalsAlbedoAtlas, sampler_DecalsAlbedoAtlas, screenSpaceCoordinates);
 	baseColor *= ssao;
 
 	if (decals.a >0)
@@ -120,7 +120,7 @@ float4 frag(Interpolators i) : SV_TARGET
 	// return float4((i.positionCS.x / _ScreenSize.x), (1 - i.positionCS.y / _ScreenSize.y) ,0,1);
 	// return float4(surfaceData.normal, 1);
 
-	float4 decalsNormals = SAMPLE_TEXTURE2D(_DecalsAtlasNormals, sampler_DecalsAtlasNormals, screenSpaceCoordinates);
+	float4 decalsNormals = SAMPLE_TEXTURE2D(_DecalsNormalAtlas, sampler_DecalsNormalAtlas, screenSpaceCoordinates);
 	if (decalsNormals.a >0)
 	{
 		// float scale = UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _NormalScale);

@@ -33,6 +33,7 @@ namespace CustomSRP.Runtime
 
         public static class GBuffer
         {
+            
             public static ShaderTagId GBufferPassId = new ShaderTagId("GBufferPass");
             
             public static string GBufferPassName = "GBufferPass";
@@ -44,6 +45,18 @@ namespace CustomSRP.Runtime
             public static int CameraNearPlane = Shader.PropertyToID("_CameraNearPlane");
             public static int CameraFarPlane = Shader.PropertyToID("_CameraFarPlane");
 
+        }
+        
+        public static class Decals
+        {
+            
+            public static ShaderTagId DecalsPassId = new ShaderTagId("DecalsPass");
+
+            public static int DecalsAlbedoAtlas = Shader.PropertyToID("_DecalsAlbedoAtlas");
+            public static int DecalsNormalAtlas = Shader.PropertyToID("_DecalsNormalAtlas");
+            
+            public static int ScreenSize = Shader.PropertyToID("_ScreenSize");
+            
         }
         
     }

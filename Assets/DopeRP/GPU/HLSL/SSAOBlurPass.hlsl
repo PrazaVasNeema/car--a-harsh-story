@@ -3,6 +3,8 @@
 
 #include "Assets/DopeRP/GPU/HLSL/Common/Common.hlsl"
 
+#define ITER_COUNT 2
+
 TEXTURE2D(_SSAORawAtlas);
 SAMPLER(sampler_SSAORawAtlas);
 
@@ -38,17 +40,22 @@ Interpolators vert (MeshData i)
 
 float4 frag (Interpolators i) : SV_Target
 {
+    
     float2 texelSize = 1/_ScreenSize.xy;
     float result = 0;
-    for (int x = -2; x < 2; ++x) 
+    
+    UNITY_UNROLL
+    for (int x = -ITER_COUNT; x < ITER_COUNT; ++x) 
     {
-        for (int y = -2; y < 2; ++y) 
+        UNITY_UNROLL
+        for (int y = -ITER_COUNT; y < ITER_COUNT; ++y) 
         {
             float2 offset = float2(float(x), float(y)) * texelSize.xy;
             result += SAMPLE_TEXTURE2D(_SSAORawAtlas, sampler_SSAORawAtlas, i.uv + offset).r;
         }
     }
-    float4 FragColor = result / (4.0 * 4.0);
+    
+    float4 FragColor = result / (pow4(ITER_COUNT));
     return FragColor;
     
 }
