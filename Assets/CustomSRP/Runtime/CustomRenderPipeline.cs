@@ -9,13 +9,13 @@ namespace CustomSRP.Runtime
 		
 		bool useDynamicBatching, useGPUInstancing;
 
-		private ShadowSettings m_shadowSettings;
+		private CustomRenderPipelineAsset m_customRenderPipelineAsset;
 
 		public CustomRenderPipeline (bool useDynamicBatching, bool useGPUInstancing, bool useSRPBatcher,
-			ShadowSettings shadowSettings) {
+			CustomRenderPipelineAsset customRenderPipelineAsset) {
 			// GraphicsSettings.useScriptableRenderPipelineBatching = true;
 			// GraphicsSettings.lightsUseLinearIntensity = true;
-			m_shadowSettings = shadowSettings;
+			m_customRenderPipelineAsset = customRenderPipelineAsset;
 			this.useDynamicBatching = useDynamicBatching;
 			this.useGPUInstancing = useGPUInstancing;
 			GraphicsSettings.useScriptableRenderPipelineBatching = useSRPBatcher;
@@ -26,7 +26,7 @@ namespace CustomSRP.Runtime
 		{
 			RAPI.Context = context;
 			for (int i = 0; i < cameras.Length; i++) {
-				renderer.Render(cameras[i], useDynamicBatching, useGPUInstancing, m_shadowSettings);
+				renderer.Render(cameras[i], useDynamicBatching, useGPUInstancing, m_customRenderPipelineAsset);
 			}
 		}
 	}

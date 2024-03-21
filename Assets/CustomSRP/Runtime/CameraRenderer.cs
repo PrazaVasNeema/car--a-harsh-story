@@ -11,18 +11,19 @@ namespace CustomSRP.Runtime
 		private static ShaderTagId litShaderTagId = new ShaderTagId("CustomLit");
 
 		private readonly Lighting m_lighting = new Lighting();
-		private readonly SSAO m_ssao = new SSAO();
 		private readonly RenderBuffers m_renderBuffers = new RenderBuffers();
 		private readonly GBuffers m_gBuffers = new GBuffers();
-		private readonly SSAOmk2 m_ssaoMk2 = new SSAOmk2();
 		private readonly Decals m_decals = new Decals();
 
+		private readonly SSAO m_ssao = new SSAO();
 
-		public void Render(Camera camera, bool useDynamicBatching, bool useGPUInstancing, ShadowSettings shadowSettings)
+
+		public void Render(Camera camera, bool useDynamicBatching, bool useGPUInstancing,
+			CustomRenderPipelineAsset customRenderPipelineAsset)
 		{
 			RAPI.CurCamera = camera;
 			PrepareUIForSceneWindow();
-			if (!RAPI.Cull(shadowSettings.maxDistance)) {
+			if (!RAPI.Cull(customRenderPipelineAsset.shadowSettings.maxDistance)) {
 				return;
 			}
 			
@@ -30,11 +31,11 @@ namespace CustomSRP.Runtime
 			RAPI.Context.SetupCameraProperties(RAPI.CurCamera);
 
 			m_gBuffers.Render();
-			m_ssaoMk2.Render();
+			m_ssao.Render(customRenderPipelineAsset.SSAOSettings);
 			m_decals.Render();
 			//
 			
-			m_lighting.Setup(RAPI.Context, RAPI.CullingResults, shadowSettings);
+			m_lighting.Setup(RAPI.Context, RAPI.CullingResults, customRenderPipelineAsset.shadowSettings);
 			Setup();
 			
 			DrawVisibleGeometry(useDynamicBatching, useGPUInstancing);
@@ -46,7 +47,8 @@ namespace CustomSRP.Runtime
 			
 			RAPI.CleanupTempRT(GBuffers.positionViewSpaceAtlas);
 			RAPI.CleanupTempRT(GBuffers.normalViewSpaceAtlas);
-			RAPI.CleanupTempRT(SSAOmk2.SSAOAtlas);
+			RAPI.CleanupTempRT(SProps.SSAO.SSAORawAtlas);
+			RAPI.CleanupTempRT(SProps.SSAO.SSAOBlurAtlas);
 			RAPI.CleanupTempRT(Decals.DecalsAtlas);
 			RAPI.CleanupTempRT(Decals.DecalsAtlasNormals);
 			RAPI.CleanupTempRT(GBuffers.TangentViewSpaceAtlas);

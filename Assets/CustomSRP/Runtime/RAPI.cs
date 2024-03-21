@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -58,6 +59,24 @@ namespace CustomSRP.Runtime
                 else {
                     Buffer.DisableShaderKeyword(keywords[i]);
                 }
+            }
+        }
+        
+        public static void SetKeywords <TEnum> (TEnum enabledIndex) where TEnum : Enum
+        {
+            var values = Enum.GetValues(typeof(TEnum));
+
+            for (int i = 0; i < values.Length; i++)
+            {
+                var value = values.GetValue(i);
+                string keyword = value.ToString();
+                
+                if(value.Equals(enabledIndex))
+                {
+                    Buffer.EnableShaderKeyword(keyword);
+                }
+                else
+                    Buffer.DisableShaderKeyword(keyword);
             }
         }
     }

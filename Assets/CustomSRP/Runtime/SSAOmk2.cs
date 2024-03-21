@@ -41,12 +41,12 @@ namespace CustomSRP.Runtime
             RAPI.Buffer.SetRenderTarget(SSAOAtlas, RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store);
             RAPI.Buffer.ClearRenderTarget(true, true, Color.clear);
             
-            RAPI.Buffer.SetGlobalTexture("_NormalMapSSAO", CustomRenderPipelineAsset.instance.SSAOSettings.normalMapTexture);
+            RAPI.Buffer.SetGlobalTexture("_NormalMapSSAO", CustomRenderPipelineAsset.instance.SSAOSettings.noiseTexture);
             RAPI.Buffer.SetGlobalFloat("_randomSize", CustomRenderPipelineAsset.instance.SSAOSettings.randomSize);
-            RAPI.Buffer.SetGlobalFloat("_Radius", CustomRenderPipelineAsset.instance.SSAOSettings.gSampleRad);
-            RAPI.Buffer.SetGlobalFloat("_Contrast", CustomRenderPipelineAsset.instance.SSAOSettings.gIntensity);
-            RAPI.Buffer.SetGlobalFloat("_Magnitude", CustomRenderPipelineAsset.instance.SSAOSettings.gScale);
-            RAPI.Buffer.SetGlobalFloat("_Bias", CustomRenderPipelineAsset.instance.SSAOSettings.gBias);
+            RAPI.Buffer.SetGlobalFloat("_Radius", CustomRenderPipelineAsset.instance.SSAOSettings.sampleRadius);
+            RAPI.Buffer.SetGlobalFloat("_Contrast", CustomRenderPipelineAsset.instance.SSAOSettings.contrast);
+            RAPI.Buffer.SetGlobalFloat("_Magnitude", CustomRenderPipelineAsset.instance.SSAOSettings.magnitude);
+            RAPI.Buffer.SetGlobalFloat("_Bias", CustomRenderPipelineAsset.instance.SSAOSettings.bias);
             RAPI.Buffer.SetGlobalVector("_ScreenSize", new Vector4(RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight, 0f, 0f));
             GetSSAOSamples();
             SetNoise();
