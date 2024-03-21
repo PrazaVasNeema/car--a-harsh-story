@@ -34,6 +34,6 @@ MonoBehaviour:
     randomSize: 12
     sampleRadius: 0.6
     bias: 0.005
-    magnitude: 1.374
+    magnitude: 1.231
     contrast: 1.1
     SSAOMaterial: {fileID: 2100000, guid: 60abf83f57f21544994c9a37aa5bb374, type: 2}

@@ -146,9 +146,7 @@ float4 frag (Interpolators i) : SV_Target
     clip(fragPositionVS.a);
 
     float3 normalVS = normalize(SAMPLE_TEXTURE2D(_NormalViewSpace, sampler_NormalViewSpace, i.uv).xyz);
-
     float3 randomVec = float3(normalize(SAMPLE_TEXTURE2D(_NoiseTexture, sampler_NoiseTexture, i.uv * _NoiseScale) * 2.0f - 1.0f).xy,0);
-
     
     float3 tangent = normalize(randomVec - normalVS * dot(randomVec, normalVS));
     float3 binormal = cross(normalVS, tangent);
@@ -171,8 +169,6 @@ float4 frag (Interpolators i) : SV_Target
 
         float intensity = smoothstep(HALF_ZERO, HALF_ONE, _SampleRadius / abs(fragPositionVS.z - offsetPositionVS.z));
         occlusion += when_ge(offsetPositionVS.z, samplePositionVS.z + _Bias) * intensity;
-
-        
     }
 
     occlusion /= SAMPLES_COUNT;
@@ -180,7 +176,6 @@ float4 frag (Interpolators i) : SV_Target
     occlusion  = _Contrast * (occlusion - 0.5) + 0.5;
                 
     float4 fragColor = HALF_ONE - occlusion;  
-
     
     return fragColor;
      

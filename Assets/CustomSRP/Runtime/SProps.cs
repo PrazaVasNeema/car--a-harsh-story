@@ -6,6 +6,32 @@ namespace CustomSRP.Runtime
     public static class SProps
     {
         
+        public static class CameraRenderer
+        {
+            
+            public static ShaderTagId UnlitShaderTagId = new ShaderTagId("SRPDefaultUnlit");
+            public static ShaderTagId LitShaderTagId = new ShaderTagId("Lit");
+            
+            public static int ScreenSize = Shader.PropertyToID("_ScreenSize");
+            
+        }
+        
+        public static class LightingMain
+        {
+            public static string DirLightOnKeyword = "_DIR_LIGHT_ON";
+            public static string OtherLightnCountKeyword_base = "_OTHER_LIGHT_COUNT_";
+            
+            public static int DirLightDirectionId = Shader.PropertyToID("_DirLightDirection");
+            public static int DirLightColorId = Shader.PropertyToID("_DirLightColor");
+            // public static int DirLightIntensityId = Shader.PropertyToID("_DirLightIntensity");
+            
+            public static int OtherLightCountId = Shader.PropertyToID("_OtherLightCount");
+            public static int OtherLightPositionsId = Shader.PropertyToID("_OtherLightPositions");
+            public static int OtherLightColorsId = Shader.PropertyToID("_OtherLightColors");
+            // public static int OtherLightIntensitiesId = Shader.PropertyToID("_OtherLightIntensities");
+            
+        }
+        
         public static class SSAO
         {
             

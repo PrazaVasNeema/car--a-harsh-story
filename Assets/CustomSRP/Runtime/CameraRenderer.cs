@@ -7,8 +7,7 @@ namespace CustomSRP.Runtime
 		
 		private const string BUFFER_NAME = "RenderCamera";
 
-		private static ShaderTagId unlitShaderTagId = new ShaderTagId("SRPDefaultUnlit");
-		private static ShaderTagId litShaderTagId = new ShaderTagId("CustomLit");
+
 
 		private readonly Lighting m_lighting = new Lighting();
 		private readonly RenderBuffers m_renderBuffers = new RenderBuffers();
@@ -35,7 +34,7 @@ namespace CustomSRP.Runtime
 			m_decals.Render();
 			//
 			
-			m_lighting.Setup(RAPI.Context, RAPI.CullingResults, customRenderPipelineAsset.shadowSettings);
+			m_lighting.Setup(customRenderPipelineAsset.shadowSettings);
 			Setup();
 			
 			DrawVisibleGeometry(useDynamicBatching, useGPUInstancing);
@@ -70,11 +69,15 @@ namespace CustomSRP.Runtime
 
 		void DrawVisibleGeometry (bool useDynamicBatching, bool useGPUInstancing)
 		{
+			RAPI.Buffer.SetGlobalVector(SProps.SSAO.ScreenSize, new Vector4(RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight,
+				(float)1/RAPI.CurCamera.pixelWidth , (float)1/RAPI.CurCamera.pixelHeight));
+
+			
 			var sortingSettings = new SortingSettings(RAPI.CurCamera)
 			{
 				criteria = SortingCriteria.CommonOpaque
 			};
-			var drawingSettings = new DrawingSettings(unlitShaderTagId, sortingSettings)
+			var drawingSettings = new DrawingSettings(SProps.CameraRenderer.UnlitShaderTagId, sortingSettings)
 			{
 				enableDynamicBatching = useDynamicBatching,
 				enableInstancing = useGPUInstancing,
@@ -85,7 +88,7 @@ namespace CustomSRP.Runtime
 				PerObjectData.LightProbeProxyVolume |
 				PerObjectData.OcclusionProbeProxyVolume
 			};
-			drawingSettings.SetShaderPassName(1, litShaderTagId);
+			drawingSettings.SetShaderPassName(1, SProps.CameraRenderer.LitShaderTagId);
 			var filteringSettings = new FilteringSettings(RenderQueueRange.opaque);
 
 			RAPI.Context.DrawRenderers(RAPI.CullingResults, ref drawingSettings, ref filteringSettings);
