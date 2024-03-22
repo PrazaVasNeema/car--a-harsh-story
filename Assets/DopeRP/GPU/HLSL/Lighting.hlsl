@@ -15,14 +15,14 @@ CBUFFER_START(_LightingMain)
 	// #if defined(_DIR_LIGHT_ON)
 		float3 _DirLightDirection;
 		float3 _DirLightColor;
-		// float _DirLightIntensity;
 	// #endif
 
 	// #if defined(MAX_OTHER_LIGHT_COUNT)
 		int _OtherLightCount;
 		float4 _OtherLightPositions[MAX_OTHER_LIGHT_COUNT];
 		float4 _OtherLightColors[MAX_OTHER_LIGHT_COUNT];
-		// float4 _OtherLightIntensities[MAX_OTHER_LIGHT_COUNT];
+		float4 _OtherLightDirections[MAX_OTHER_LIGHT_COUNT];
+		float4 _OtherLightSpotAngles[MAX_OTHER_LIGHT_COUNT];
 	// #endif
 
 CBUFFER_END
@@ -78,7 +78,9 @@ Light GetOtherLight (int index, SurfaceData surfaceWS) {
 	light.direction = normalize(ray);
 	float distanceSqr = max(dot(ray, ray), 0.00001);
 	float rangeAttenuation = Square(saturate(1.0 - Square(distanceSqr * _OtherLightPositions[index].w)));
-	light.attenuation = rangeAttenuation / distanceSqr * when_lt(index, _OtherLightCount);
+	float4 spotAngles = _OtherLightSpotAngles[index];
+	float spotAttenuation = Square(saturate(dot(_OtherLightDirections[index].xyz, light.direction) * spotAngles.x + spotAngles.y));
+	light.attenuation = spotAttenuation * rangeAttenuation / distanceSqr * when_lt(index, _OtherLightCount);
 	return light;
 }
 
@@ -124,7 +126,7 @@ float3 GetLighting(SurfaceData surfaceData)
 
 
 	#if defined(_OTHER_LIGHT_COUNT_20) || defined(_OTHER_LIGHT_COUNT_15) || defined(_OTHER_LIGHT_COUNT_10) || defined(_OTHER_LIGHT_COUNT_5)
-
+	
 	light = GetOtherLight(0, surfaceData);
 	color += GetLighting(surfaceData, light);
 

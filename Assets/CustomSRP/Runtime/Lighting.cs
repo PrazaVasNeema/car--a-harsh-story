@@ -14,10 +14,8 @@ namespace CustomSRP.Runtime
 
 		// Dir light
 
-		// private static int dirLightShadowDataId = Shader.PropertyToID("_DirectionalLightShadowData");
 		private static Vector4 DirLightDirection = new Vector4();
 		private static Vector4 DirLightColor = new Vector4();
-		// private static Vector4 DirLightIntensity = new Vector4();
 		// private static Vector4 _dirLightShadowData = new Vector4();
 		
 		// ---
@@ -26,7 +24,8 @@ namespace CustomSRP.Runtime
 		
 		private static Vector4[] OtherLightPositions = new Vector4[MAX_OTHER_LIGHT_COUNT];
 		private static Vector4[] OtherLightColors = new Vector4[MAX_OTHER_LIGHT_COUNT];
-		// private static Vector4[] OtherLightIntensities = new Vector4[MAX_OTHER_LIGHT_COUNT];
+		private static Vector4[] OtherLightDirections = new Vector4[MAX_OTHER_LIGHT_COUNT];
+		private static Vector4[] OtherLightSpotAngles = new Vector4[MAX_OTHER_LIGHT_COUNT];
 		
 		// ---
 		
@@ -53,14 +52,22 @@ namespace CustomSRP.Runtime
 			{
 				switch (visibleLight.lightType) {
 					case LightType.Directional:
-						if (dirLightCount < MAX_DIR_LIGHT_COUNT) {
+						if (dirLightCount < MAX_DIR_LIGHT_COUNT) 
+						{
 							SetupDirectionalLight(visibleLight);
 							dirLightCount++;
 						}
 						break;
 					case LightType.Point:
-						if (otherLightCount < MAX_OTHER_LIGHT_COUNT) {
+						if (otherLightCount < MAX_OTHER_LIGHT_COUNT) 
+						{
 							SetupPointLight(otherLightCount++, visibleLight);
+						}
+						break;
+					case LightType.Spot:
+						if (otherLightCount < MAX_DIR_LIGHT_COUNT) 
+						{
+							SetupSpotLight(otherLightCount++, visibleLight);
 						}
 						break;
 				}
@@ -72,7 +79,6 @@ namespace CustomSRP.Runtime
 				RAPI.SetKeyword(SProps.LightingMain.DirLightOnKeyword, true);
 				RAPI.Buffer.SetGlobalVector(SProps.LightingMain.DirLightDirectionId, -DirLightDirection);
 				RAPI.Buffer.SetGlobalVector(SProps.LightingMain.DirLightColorId, DirLightColor);
-				// RAPI.Buffer.SetGlobalVector(SProps.LightingMain.DirLightIntensityId, DirLightIntensity);
 				// RAPI.Buffer.SetGlobalVector(dirLightShadowDataId, _dirLightShadowData);
 				
 			}
@@ -88,7 +94,8 @@ namespace CustomSRP.Runtime
 				
 				RAPI.Buffer.SetGlobalVectorArray(SProps.LightingMain.OtherLightPositionsId, OtherLightPositions);
 				RAPI.Buffer.SetGlobalVectorArray(SProps.LightingMain.OtherLightColorsId, OtherLightColors);
-				// RAPI.Buffer.SetGlobalVectorArray(SProps.LightingMain.DirLightIntensityId, OtherLightIntensities);
+				RAPI.Buffer.SetGlobalVectorArray(SProps.LightingMain.OtherLightDirectionsId, OtherLightDirections);
+				RAPI.Buffer.SetGlobalVectorArray(SProps.LightingMain.OtherLightSpotAnglesId, OtherLightSpotAngles);
 				
 			}
 			
@@ -115,13 +122,31 @@ namespace CustomSRP.Runtime
 			// _dirLightShadowData = m_shadows.ReserveDirectionalShadows(visibleLight.light);
 		}
 		
-		void SetupPointLight (int index, VisibleLight visibleLight) {
+		void SetupPointLight (int index, VisibleLight visibleLight) 
+		{
 			Vector4 position = visibleLight.localToWorldMatrix.GetColumn(3);
 			// 1/range^2
 			position.w = 1f / Mathf.Max(visibleLight.range * visibleLight.range, 0.00001f);
 			OtherLightPositions[index] = position;
 			OtherLightColors[index] = visibleLight.finalColor;
+			OtherLightSpotAngles[index] = new Vector4(0f, 1f);
 		}
+		
+		void SetupSpotLight (int index, VisibleLight visibleLight) {
+			OtherLightColors[index] = visibleLight.finalColor;
+			Vector4 position = visibleLight.localToWorldMatrix.GetColumn(3);
+			position.w = 1f / Mathf.Max(visibleLight.range * visibleLight.range, 0.00001f);
+			OtherLightPositions[index] = position;
+			OtherLightDirections[index] = -visibleLight.localToWorldMatrix.GetColumn(2);
+			
+			Light light = visibleLight.light;
+			float innerCos = Mathf.Cos(Mathf.Deg2Rad * 0.5f * light.innerSpotAngle);
+			float outerCos = Mathf.Cos(Mathf.Deg2Rad * 0.5f * visibleLight.spotAngle);
+			float angleRangeInv = 1f / Mathf.Max(innerCos - outerCos, 0.001f);
+			OtherLightSpotAngles[index] = new Vector4(angleRangeInv, -outerCos * angleRangeInv);
+		}
+		
+		
 		
 	}
 	

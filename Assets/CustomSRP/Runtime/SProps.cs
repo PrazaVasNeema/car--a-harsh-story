@@ -23,12 +23,14 @@ namespace CustomSRP.Runtime
             
             public static int DirLightDirectionId = Shader.PropertyToID("_DirLightDirection");
             public static int DirLightColorId = Shader.PropertyToID("_DirLightColor");
-            // public static int DirLightIntensityId = Shader.PropertyToID("_DirLightIntensity");
+            private static int DirLightShadowDataId = Shader.PropertyToID("_DirectionalLightShadowData");
             
             public static int OtherLightCountId = Shader.PropertyToID("_OtherLightCount");
             public static int OtherLightPositionsId = Shader.PropertyToID("_OtherLightPositions");
             public static int OtherLightColorsId = Shader.PropertyToID("_OtherLightColors");
-            // public static int OtherLightIntensitiesId = Shader.PropertyToID("_OtherLightIntensities");
+            
+            public static int OtherLightDirectionsId = Shader.PropertyToID("_OtherLightDirections");
+            public static int OtherLightSpotAnglesId = Shader.PropertyToID("_OtherLightSpotAngles");
             
         }
         
