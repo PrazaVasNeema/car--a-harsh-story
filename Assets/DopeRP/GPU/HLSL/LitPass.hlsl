@@ -10,6 +10,7 @@
 UNITY_INSTANCING_BUFFER_START(LitBasePerMaterial)
 
 	UNITY_DEFINE_INSTANCED_PROP(float4, _BaseColor)
+	UNITY_DEFINE_INSTANCED_PROP(float4, _EmissionColor)
 	UNITY_DEFINE_INSTANCED_PROP(float4, _AlbedoMap_ST)
 	UNITY_DEFINE_INSTANCED_PROP(float, _NormalScale)
 
@@ -26,6 +27,7 @@ CBUFFER_START(LitMain)
 CBUFFER_END
 
 TEXTURE2D(_AlbedoMap);
+TEXTURE2D(_EmissionMap);
 SAMPLER(sampler_AlbedoMap);
 
 TEXTURE2D(_atlas1);
@@ -50,6 +52,8 @@ TEXTURE2D(_DecalsNormalAtlas);
 SAMPLER(sampler_DecalsNormalAtlas);
 
 TEXTURE2D(_NormalMap);
+
+
 
 
 TEXTURE2D(_SSAORawAtlas);
@@ -94,6 +98,12 @@ Interpolators vert(MeshData i)
 	o.tangentWS = float4(TransformObjectToWorldDir(i.tangentOS.xyz), i.tangentOS.w);
 	
 	return o;
+}
+
+float3 GetEmission (float2 baseUV) {
+	float4 map = SAMPLE_TEXTURE2D(_EmissionMap, sampler_AlbedoMap, baseUV);
+	float4 color = UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _EmissionColor);
+	return map.rgb * color.rgb;
 }
 
 float3 GetNormalTS (float2 baseUV) {
@@ -161,6 +171,7 @@ float4 frag(Interpolators i) : SV_TARGET
 	// color += IndirectBRDF(surfaceData, gi.specular);
 
 	fragColor += GetLighting(surfaceData);
+	fragColor += GetEmission(i.uv);
 	
 	return float4(fragColor, surfaceData.alpha);
 	

@@ -65,7 +65,7 @@ namespace CustomSRP.Runtime
 						}
 						break;
 					case LightType.Spot:
-						if (otherLightCount < MAX_DIR_LIGHT_COUNT) 
+						if (otherLightCount < MAX_OTHER_LIGHT_COUNT) 
 						{
 							SetupSpotLight(otherLightCount++, visibleLight);
 						}
@@ -103,9 +103,12 @@ namespace CustomSRP.Runtime
 
 			for (int i = 0; i <= (MAX_OTHER_LIGHT_COUNT - 1) / 5; i++)
 			{
+				Debug.Log(otherLightCountDiv5);
 				string keyword = SProps.LightingMain.OtherLightnCountKeyword_base + (i+1) * 5;
 				if (otherLightCount != 0 && i == otherLightCountDiv5)
 				{
+					Debug.Log(keyword);
+
 					RAPI.SetKeyword(keyword, true);
 				}
 				else

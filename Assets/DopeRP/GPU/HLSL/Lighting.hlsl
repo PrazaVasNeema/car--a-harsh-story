@@ -146,7 +146,6 @@ float3 GetLighting(SurfaceData surfaceData)
 	
 
 	#if defined(_OTHER_LIGHT_COUNT_20) || defined(_OTHER_LIGHT_COUNT_15) || defined(_OTHER_LIGHT_COUNT_10)
-
 	
 	light = GetOtherLight(5, surfaceData);
 	color += GetLighting(surfaceData, light);
