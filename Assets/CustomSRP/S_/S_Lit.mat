@@ -82,7 +82,7 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _Metallic: 0
+    - _Metallic: 0.005
     - _Metalness: 0
     - _Mode: 0
     - _NormalScale: 1
@@ -90,7 +90,7 @@ Material:
     - _Parallax: 0.02
     - _PremulAlpha: 0
     - _ReceiveShadows: 1
-    - _Reflectance: 0.473
+    - _Reflectance: 0.44
     - _Roughness: 0.476
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1

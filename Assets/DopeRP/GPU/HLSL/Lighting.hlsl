@@ -47,23 +47,24 @@ struct Light {
 
 // Working with BRDF
 
-float3 isotropicLobe(const SurfaceData surfaceData, const float3 h,
-		float NoV, float NoL, float NoH, float LoH) {
+float3 isotropicLobe(const SurfaceData surfaceData, const float3 h, float NoV, float NoL, float NoH, float LoH)
+{
 
 	float D = distribution(surfaceData.roughness, NoH, h);
 	float V = visibility(surfaceData.roughness, NoV, NoL);
 	float3  F = fresnel(surfaceData.f0, LoH);
 
-	return (D * V) * F;
+	return F * (D * V);
 }
 
 float3 specularLobe(const SurfaceData surfaceData, const float3 lightDir, const float3 h,
-		float NoV, float NoL, float NoH, float LoH) {
+	float NoV, float NoL, float NoH, float LoH)
+{
 	return isotropicLobe(surfaceData, h, NoV, NoL, NoH, LoH);
 }
 
 float3 diffuseLobe(const SurfaceData surfaceData, float NoV, float NoL, float LoH) {
-	return surfaceData.color * diffuse(surfaceData.roughness, NoV, NoL, LoH);
+	return surfaceData.color * diffuse(surfaceData.roughness, NoV, NoL, LoH).xxx;
 }
 
 // ----
@@ -96,9 +97,14 @@ float3 GetLighting(SurfaceData surfaceData, Light light)
 	
 	float3 Fr = specularLobe(surfaceData, light.direction, h, NoV, NoL, NoH, LoH);
 	float3 Fd = diffuseLobe(surfaceData, NoV, NoL, LoH);
+	// Fr = 1;
 	// Fd = dot(surfaceData.normal, -_lightDir);
 	// float3 color = Fd * 0.5 + 0.5;
-	float3 color = saturate((Fd + Fr) * light.color * NoL * light.attenuation);
+	float3 energyCompensation = 1.0 + surfaceData.f0 * (1.0 / 0.1 - 1.0);
+
+	float3 color = Fd + Fr;
+
+	color = color * light.color * NoL * light.attenuation;
 	
 	return color;
 }

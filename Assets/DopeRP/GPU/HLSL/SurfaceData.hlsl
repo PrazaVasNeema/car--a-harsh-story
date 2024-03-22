@@ -9,7 +9,7 @@ struct SurfaceData {
 	float alpha;
 	float metallic;
 	float roughness;
-	float f0;
+	float3 f0;
 	float depth;
 };
 

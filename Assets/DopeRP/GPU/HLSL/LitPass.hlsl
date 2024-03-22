@@ -145,7 +145,8 @@ float4 frag(Interpolators i) : SV_TARGET
 		baseColor = decals;
 	
 	SurfaceData surfaceData;
-	surfaceData.normal = NormalTangentToWorld(GetNormalTS(i.uv), i.normalWS, i.tangentWS);
+	surfaceData.normal = NormalTangentToWorld(GetNormalTS(i.uv), normalize(i.normalWS), normalize(i.tangentWS));
+	// surfaceData.normal = normalize(i.normalWS);
 	
 	float4 decalsNormals = SAMPLE_TEXTURE2D(_DecalsNormalAtlas, sampler_DecalsNormalAtlas, screenSpaceCoordinates);
 	if (decalsNormals.a >0)
@@ -159,13 +160,12 @@ float4 frag(Interpolators i) : SV_TARGET
 	#ifdef _PREMULTIPLY_ALPHA
 		surfaceData.color = computeDiffuseColor(baseColor.rgb, surfaceData.metallic) * baseColor.a;
 	#else
-	surfaceData.color = computeDiffuseColor(baseColor.rgb, surfaceData.metallic);
+		surfaceData.color = computeDiffuseColor(baseColor.rgb, surfaceData.metallic);
 	#endif
 	surfaceData.positionWS = i.positionWS;
 	surfaceData.alpha = baseColor.a;
 	surfaceData.roughness = perceptualRoughnessToRoughness(UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _Roughness));
 	surfaceData.f0 = computeReflectance(baseColor, surfaceData.metallic, UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _Reflectance));
-	
 	float3 fragColor = 0;;
 	
 	GI gi = GetGI(GI_FRAGMENT_DATA(input), surfaceData);

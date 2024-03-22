@@ -4,6 +4,12 @@
 #include "Assets/DopeRP/GPU/HLSL/Common/CommonMath.hlsl"
 #include "Assets/DopeRP/GPU/HLSL/SurfaceData.hlsl"
 
+
+float3 F_Schlick(const float3 f0, float f90, float VoH) {
+	// Schlick 1994, "An Inexpensive BRDF Model for Physically-Based Rendering"
+	return f0 + (f90 - f0) * pow5(1.0 - VoH);
+}
+
 float F_Schlick(float f0, float f90, float VoH) {
 	return f0 + (f90 - f0) * pow5(1.0 - VoH);
 }
@@ -65,8 +71,8 @@ float visibility(float roughness, float NoV, float NoL) {
 }
 
 float3 fresnel(const float3 f0, float LoH) {
-	float questionMarl = 50.0 * 0.33;
-	float f90 = saturate(dot(f0, float3(questionMarl, questionMarl, questionMarl)));
+	float questionMark = 50.0 * 0.33;
+	float f90 = saturate(dot(f0, float3(questionMark, questionMark, questionMark)));
 	return F_Schlick(f0, f90, LoH);
 
 }
@@ -95,11 +101,9 @@ float diffuse(float roughness, float NoV, float NoL, float LoH) {
 	return Fd_Burley(roughness, NoV, NoL, LoH);
 }
 
-float3 IndirectBRDF (
-	SurfaceData surfaceData, float3 specular
-) {
+float3 IndirectBRDF (SurfaceData surfaceData, float3 specular) {
 
-	float3 reflection = specular * surfaceData.metallic;
+	float3 reflection = specular * surfaceData.f0 * (1-surfaceData.roughness);
 	reflection /= surfaceData.roughness * surfaceData.roughness + 1.0;
 	return reflection;
 }
