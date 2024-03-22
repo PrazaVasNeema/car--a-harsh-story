@@ -5,7 +5,6 @@
 #include "Assets/DopeRP/GPU/HLSL/SurfaceData.hlsl"
 #include "Assets/DopeRP/GPU/HLSL/BRDF.hlsl"
 // #include "Assets/DopeRP/GPU/HLSL/Shadows.hlsl"
-// #include "Assets/DopeRP/GPU/HLSL/GI.hlsl"
 
 #define MAX_OTHER_LIGHT_COUNT 20
 

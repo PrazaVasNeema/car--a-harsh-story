@@ -4,6 +4,7 @@
 
 #include "Assets/DopeRP/GPU/HLSL/Common/Common.hlsl"
 #include "Assets/DopeRP/GPU/HLSL/SurfaceData.hlsl"
+#include "Assets/DopeRP/GPU/HLSL/GI.hlsl"
 #include "Assets/DopeRP/GPU/HLSL/Lighting.hlsl"
 
 
@@ -68,7 +69,7 @@ struct MeshData {
 	float2 uv         : TEXCOORD0;
 	float4 tangentOS : TANGENT;
 	
-	// GI_ATTRIBUTE_DATA
+	GI_ATTRIBUTE_DATA
 	UNITY_VERTEX_INPUT_INSTANCE_ID
 };
 
@@ -79,7 +80,7 @@ struct Interpolators {
 	float2 uv         : TEXCOORD0;
 	float4 tangentWS : VAR_TANGENT;
 	
-	// GI_VARYINGS_DATA
+	GI_VARYINGS_DATA
 	UNITY_VERTEX_INPUT_INSTANCE_ID
 };
 
@@ -88,7 +89,7 @@ Interpolators vert(MeshData i)
 	UNITY_SETUP_INSTANCE_ID(i);
 	Interpolators o;
 	UNITY_TRANSFER_INSTANCE_ID(i, o);
-	// TRANSFER_GI_DATA(input, output);
+	TRANSFER_GI_DATA(input, output);
 	
 	o.positionWS = TransformObjectToWorld(i.positionOS.xyz);
 	o.positionCS = TransformWorldToHClip(o.positionWS);
@@ -167,8 +168,8 @@ float4 frag(Interpolators i) : SV_TARGET
 	
 	float3 fragColor = 0;;
 	
-	// GI gi = GetGI(GI_FRAGMENT_DATA(input), surfaceData);
-	// color += IndirectBRDF(surfaceData, gi.specular);
+	GI gi = GetGI(GI_FRAGMENT_DATA(input), surfaceData);
+	fragColor += IndirectBRDF(surfaceData, gi.specular);
 
 	fragColor += GetLighting(surfaceData);
 	fragColor += GetEmission(i.uv);
