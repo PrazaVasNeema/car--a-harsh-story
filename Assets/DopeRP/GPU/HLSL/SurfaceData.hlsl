@@ -11,6 +11,14 @@ struct SurfaceData {
 	float roughness;
 	float3 f0;
 	float depth;
+
+	// // #if defined(MATERIAL_HAS_REFRACTION)
+	// 	float etaRI;
+	// 	float etaIR;
+	// 	float transmission;
+	// 	float uThickness;
+	// 	float3  absorption;
+	// // #endif
 };
 
 #endif

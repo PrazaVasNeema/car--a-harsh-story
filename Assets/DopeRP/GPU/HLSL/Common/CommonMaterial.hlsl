@@ -24,4 +24,9 @@ float3 computeReflectance(const float4 baseColor, float metallic, float reflecta
     return baseColor.rgb * metallic + 0.16 * reflectance * reflectance * (1.0 - metallic);
 }
 
+float f0ToIor(float f0) {
+    float r = sqrt(f0);
+    return (1.0 + r) / (1.0 - r);
+}
+
 #endif

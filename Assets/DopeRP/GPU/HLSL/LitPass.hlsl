@@ -139,7 +139,9 @@ float4 frag(Interpolators i) : SV_TARGET
 	
 	float ssao = SAMPLE_TEXTURE2D(_SSAOBlurAtlas, sampler_SSAOBlurAtlas, screenSpaceCoordinates).r;
 	float4 decals = SAMPLE_TEXTURE2D(_DecalsAlbedoAtlas, sampler_DecalsAlbedoAtlas, screenSpaceCoordinates);
-	baseColor *= ssao;
+	if (ssao > 0)
+		baseColor *= ssao;
+	// baseColor *= 1;
 
 	if (decals.a > 0)
 		baseColor = decals;
@@ -166,13 +168,44 @@ float4 frag(Interpolators i) : SV_TARGET
 	surfaceData.alpha = baseColor.a;
 	surfaceData.roughness = perceptualRoughnessToRoughness(UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _Roughness));
 	surfaceData.f0 = computeReflectance(baseColor, surfaceData.metallic, UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _Reflectance));
+// return float4(surfaceData.f0.xyz, 1);
+	// const float airIor = 1.0;
+	// float materialor = f0ToIor(surfaceData.f0.g);
+	// surfaceData.etaIR = airIor / materialor;  // air -> material
+	// surfaceData.etaRI = materialor / airIor;  // material -> air
+
+	// #if defined(MATERIAL_HAS_TRANSMISSION)
+	// surfaceData.transmission = saturate(material.transmission);
+	// #else
+	// surfaceData.transmission = 1.0;
+	// #endif
+	//
+	// #if defined(MATERIAL_HAS_ABSORPTION)
+	// #if defined(MATERIAL_HAS_THICKNESS) || defined(MATERIAL_HAS_MICRO_THICKNESS)
+	// surfaceData.absorption = max(0.0, material.absorption);
+	// #else
+	// surfaceData.absorption = saturate(material.absorption);
+	// #endif
+	// #else
+	// surfaceData.absorption = 0.0;
+	// #endif
+	// #if defined(MATERIAL_HAS_THICKNESS)
+	// pixel.thickness = max(0.0, material.thickness);
+	// #endif
+	// #if defined(MATERIAL_HAS_MICRO_THICKNESS) && (REFRACTION_TYPE == REFRACTION_TYPE_THIN)
+	// pixel.uThickness = max(0.0, material.microThickness);
+	// #else
+	// surfaceData.uThickness = 0.0;
+	// #endif
+	// #endif
+	
 	float3 fragColor = 0;;
 	
 	GI gi = GetGI(GI_FRAGMENT_DATA(input), surfaceData);
-	fragColor += IndirectBRDF(surfaceData, gi.specular);
+	fragColor += IndirectBRDF(surfaceData, gi.specular)* 0.1;
 
 	fragColor += GetLighting(surfaceData);
-	fragColor += GetEmission(i.uv);
+	fragColor += GetEmission(i.uv) ;
 	
 	return float4(fragColor, surfaceData.alpha);
 	

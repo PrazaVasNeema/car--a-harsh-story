@@ -83,8 +83,8 @@ Material:
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _PremulAlpha: 1
-    - _Reflectance: 0.515
-    - _Roughness: 0.177
+    - _Reflectance: 0.569
+    - _Roughness: 0.17
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
