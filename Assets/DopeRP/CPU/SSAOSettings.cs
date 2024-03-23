@@ -1,9 +1,6 @@
-using System;
 using UnityEngine;
-using UnityEngine.Serialization;
 
-
-namespace CustomSRP.Runtime
+namespace DopeRP.CPU
 {
     
     [System.Serializable]

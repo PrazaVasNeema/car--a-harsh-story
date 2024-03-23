@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace CustomSRP.Runtime
+namespace DopeRP.CPU
 {
 	public partial class CameraRenderer {
 		

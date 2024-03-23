@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace CustomSRP.Runtime
+namespace DopeRP.CPU
 {
 	public class CustomRenderPipeline : RenderPipeline
 	{
-		CameraRenderer renderer = new CameraRenderer();
+		DopeRP.CPU.CameraRenderer renderer = new DopeRP.CPU.CameraRenderer();
 		
 		bool useDynamicBatching, useGPUInstancing;
 

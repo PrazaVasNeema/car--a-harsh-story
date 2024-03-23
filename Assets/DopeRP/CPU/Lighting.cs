@@ -1,8 +1,7 @@
-﻿using Unity.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace CustomSRP.Runtime
+namespace DopeRP.CPU
 {
 	public class Lighting
 	{

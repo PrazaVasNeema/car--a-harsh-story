@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace CustomSRP.Runtime
+namespace DopeRP.CPU
 {
     [System.Serializable]
     public class ShadowSettings

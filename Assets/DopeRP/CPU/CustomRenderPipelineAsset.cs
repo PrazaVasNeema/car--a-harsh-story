@@ -1,8 +1,7 @@
 using UnityEngine;
 using UnityEngine.Rendering;
-using UnityEngine.Serialization;
 
-namespace CustomSRP.Runtime
+namespace DopeRP.CPU
 {
 	[CreateAssetMenu(menuName = "Rendering/Custom Render Pipeline")]
 	public class CustomRenderPipelineAsset : RenderPipelineAsset

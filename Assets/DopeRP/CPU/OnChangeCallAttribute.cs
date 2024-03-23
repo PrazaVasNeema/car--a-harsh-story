@@ -3,7 +3,7 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace CustomSRP.Runtime
+namespace DopeRP.CPU
 {
 
     public class OnChangedCallAttribute : PropertyAttribute
@@ -37,7 +37,7 @@ namespace CustomSRP.Runtime
 
                 if (method != null && method.GetParameters().Count() == 0) // Only instantiate methods with 0 parameters
                     method.Invoke(property.serializedObject.targetObject, null);
-                
+
             }
         }
     }

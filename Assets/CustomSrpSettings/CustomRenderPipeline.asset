@@ -21,16 +21,16 @@ MonoBehaviour:
     maxDistance: 300
     distanceFade: 0.1
     directional:
-      atlasSize: 8192
-      filter: 4
+      atlasSize: 4096
+      filter: 2
       cascades: 1
       cascadeRatio1: 0.073
       cascadeRatio2: 0.319
       cascadeRatio3: 0.5
-  m_SSAO: 0
-  m_decalsOn: 0
+  m_SSAO: 1
+  m_decalsOn: 1
   ssaoSettings:
-    samplesCount: 2
+    samplesCount: 0
     noiseTexture: {fileID: 2800000, guid: 4d2d26443ff3f2c4980e45942ce45e79, type: 3}
     randomSize: 12
     sampleRadius: 0.6

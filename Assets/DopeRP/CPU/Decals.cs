@@ -1,9 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace CustomSRP.Runtime
+namespace DopeRP.CPU
 {
     public class Decals
     {
