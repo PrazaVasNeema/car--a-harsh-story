@@ -30,13 +30,27 @@ namespace CustomSRP.Runtime
 		// ---
 		
 		private Shadows m_shadows = new Shadows();
+		private bool m_shadowsOn;
 
 		public void Setup(ShadowSettings shadowSettings)
 		{
 			RAPI.Buffer.BeginSample(BUFFER_NAME);
-			m_shadows.Setup(shadowSettings);
-			SetupLights();
-			m_shadows.Render();
+			
+			if (shadowSettings.shadowsOn)
+			{
+				m_shadowsOn = true;
+				RAPI.SetKeyword("SHADOWS_ON", m_shadowsOn);
+				m_shadows.Setup(shadowSettings);
+				SetupLights();
+				m_shadows.Render();
+			}
+			else
+			{
+				m_shadowsOn = false;
+				RAPI.SetKeyword("SHADOWS_ON", m_shadowsOn);
+				SetupLights();
+			}
+
 			RAPI.Buffer.EndSample(BUFFER_NAME);
 			RAPI.Context.ExecuteCommandBuffer(RAPI.Buffer);
 			RAPI.Buffer.Clear();
@@ -79,7 +93,8 @@ namespace CustomSRP.Runtime
 				RAPI.SetKeyword(SProps.LightingMain.DirLightOnKeyword, true);
 				RAPI.Buffer.SetGlobalVector(SProps.LightingMain.DirLightDirectionId, -DirLightDirection);
 				RAPI.Buffer.SetGlobalVector(SProps.LightingMain.DirLightColorId, DirLightColor);
-				RAPI.Buffer.SetGlobalVector(SProps.LightingMain.DirLightShadowDataId, DirLightShadowData);
+				if (m_shadowsOn)
+					RAPI.Buffer.SetGlobalVector(SProps.LightingMain.DirLightShadowDataId, DirLightShadowData);
 				
 			}
 			else
@@ -122,7 +137,8 @@ namespace CustomSRP.Runtime
 		{
 			DirLightDirection = -visibleLight.localToWorldMatrix.GetColumn(2);
 			DirLightColor = visibleLight.finalColor;
-			DirLightShadowData = m_shadows.ReserveDirectionalShadows(visibleLight.light);
+			if (m_shadowsOn)
+				DirLightShadowData = m_shadows.ReserveDirectionalShadows(visibleLight.light);
 		}
 		
 		void SetupPointLight (int index, VisibleLight visibleLight) 

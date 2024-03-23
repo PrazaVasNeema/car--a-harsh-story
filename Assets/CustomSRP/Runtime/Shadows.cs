@@ -66,11 +66,10 @@ namespace CustomSRP.Runtime
             int tileOffset = 0 * cascadeCount;
             Vector3 ratios = m_settings.directional.CascadeRatios;
             
-            float cullingFactor = Mathf.Max(0f, 0.8f - m_settings.directional.cascadeFade);
             
             for (int i = 0; i < cascadeCount; i++) {
                 RAPI.CullingResults.ComputeDirectionalShadowMatricesAndCullingPrimitives(0, i, cascadeCount, ratios, tileSize, m_light.nearPlaneOffset, out Matrix4x4 viewMatrix, out Matrix4x4 projectionMatrix, out ShadowSplitData splitData);
-                splitData.shadowCascadeBlendCullingFactor = cullingFactor;
+                splitData.shadowCascadeBlendCullingFactor = 1;
                 shadowSettings.splitData = splitData;
                 
                 SetCascadeData(i, splitData.cullingSphere, tileSize);
@@ -89,7 +88,7 @@ namespace CustomSRP.Runtime
             RAPI.Buffer.SetGlobalVectorArray(SProps.Shadows.CascadesCullingSpheresId, CascadeCullingSpheres);
             RAPI.Buffer.SetGlobalVectorArray(SProps.Shadows.CascadeDataId, CascadeData);
             RAPI.Buffer.SetGlobalMatrixArray(SProps.Shadows.DirShadowMatricesId, DirShadowMatrices);
-            float f = 1f - m_settings.directional.cascadeFade;
+            float f = (float).9;
             RAPI.Buffer.SetGlobalVector(SProps.Shadows.ShadowDistanceFadeId, new Vector4(1f / m_settings.maxDistance, 1f / m_settings.distanceFade, 1f / (1f - f * f)));
             RAPI.SetKeywords(m_settings.directional.filter);
             // RAPI.SetKeywords(cascadeBlendKeywords, (int)m_settings.directional.cascadeBlend);

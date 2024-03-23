@@ -11,6 +11,7 @@ struct SurfaceData {
 	float roughness;
 	float3 f0;
 	float depth;
+	float dither;
 
 	// // #if defined(MATERIAL_HAS_REFRACTION)
 	// 	float etaRI;

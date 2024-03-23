@@ -3,7 +3,10 @@ using UnityEngine;
 namespace CustomSRP.Runtime
 {
     [System.Serializable]
-    public class ShadowSettings {
+    public class ShadowSettings
+    {
+
+        public bool shadowsOn;
         
         public enum TextureSize {
             _256 = 256, _512 = 512, _1024 = 1024,
@@ -30,15 +33,7 @@ namespace CustomSRP.Runtime
             public float cascadeRatio1, cascadeRatio2, cascadeRatio3;
             public Vector3 CascadeRatios =>
                 new Vector3(cascadeRatio1, cascadeRatio2, cascadeRatio3);
-
-            [Range(0.001f, 1f)]
-            public float cascadeFade;
-
-            public enum CascadeBlendMode {
-                Hard, Soft, Dither
-            }
             
-            public CascadeBlendMode cascadeBlend;
 
         }
         
@@ -58,8 +53,6 @@ namespace CustomSRP.Runtime
             cascadeRatio1 = 0.1f,
             cascadeRatio2 = 0.25f,
             cascadeRatio3 = 0.5f,
-            cascadeFade = 0.1f,
-            cascadeBlend = Directional.CascadeBlendMode.Hard
         };
     }
 }

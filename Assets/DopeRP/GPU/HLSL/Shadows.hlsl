@@ -10,16 +10,16 @@
 
 #if defined(_DIRECTIONAL_PCF2x2)
     #define PCF_VALUE 1
-    #define PCF_MULT_VALIE 0.25
+    #define PCF_MULT_VALUE 0.25
 #elif defined(_DIRECTIONAL_PCF4x4)
     #define PCF_VALUE 3
-    #define PCF_MULT_VALIE 0.0625
+    #define PCF_MULT_VALUE 0.0625
 #elif defined(_DIRECTIONAL_PCF6x6)
     #define PCF_VALUE 5
-    #define PCF_MULT_VALIE 0.028
+    #define PCF_MULT_VALUE 0.028
 #elif defined(_DIRECTIONAL_PCF8x8)
     #define PCF_VALUE 7
-    #define PCF_MULT_VALIE 0.015625
+    #define PCF_MULT_VALUE 0.015625
 #endif
 
 TEXTURE2D_SHADOW(_DirectionalShadowAtlas);
@@ -38,9 +38,7 @@ CBUFFER_END
 
 struct ShadowData {
     int cascadeIndex;
-    float cascadeBlend;
     float strength;
-    float3 color;
 };
 
 struct DirectionalShadowData {
@@ -52,19 +50,12 @@ float FadedShadowStrength (float distance, float scale, float fade) {
     return saturate((1.0 - distance * scale) * fade);
 }
 
-bool CalculateCascadeIter(out ShadowData shadowData, int i)
-{
-    
-}
-
 ShadowData GetShadowData (SurfaceData surfaceData) {
     ShadowData data;
-    data.cascadeBlend = 1.0;
     data.strength = FadedShadowStrength(surfaceData.depth, _ShadowDistanceFade.x, _ShadowDistanceFade.y);
     
     int i = 0;
-    // float4 sphere;
-    // float distanceSqr;
+
     float fade;
 
     float4 forLoopConditions = float4(1,0,0,0);
@@ -107,8 +98,7 @@ ShadowData GetShadowData (SurfaceData surfaceData) {
      fade = FadedShadowStrength(distanceSqr, _CascadeData[0].x, _ShadowDistanceFade.z) * checkCombo;
      
      data.strength *= (1 * or(not(checkCombo),when_neq(0, _CascadeCount - 1))  + (fade) * when_eq(0, _CascadeCount - 1) * checkCombo);
-     data.cascadeBlend = data.cascadeBlend * or(not(checkCombo),when_eq(0, _CascadeCount - 1))
-     + fade * when_neq(0, _CascadeCount - 1) * checkCombo;
+
 
      checkIter_2 = not(checkIter_1);
      
@@ -126,8 +116,7 @@ ShadowData GetShadowData (SurfaceData surfaceData) {
      fade = FadedShadowStrength(distanceSqr, _CascadeData[1].x, _ShadowDistanceFade.z) * checkCombo;
      
      data.strength *= (1 * or(not(checkCombo),when_neq(0, _CascadeCount - 1))  + (fade) * when_eq(0, _CascadeCount - 1) * checkCombo);
-     data.cascadeBlend = data.cascadeBlend * or(not(checkCombo),when_eq(0, _CascadeCount - 1))
-     + fade * when_neq(0, _CascadeCount - 1) * checkCombo;
+
 
      checkIter_2 = not(checkIter_1);
      
@@ -148,8 +137,7 @@ ShadowData GetShadowData (SurfaceData surfaceData) {
     fade = FadedShadowStrength(distanceSqr, _CascadeData[2].x, _ShadowDistanceFade.z) * checkCombo;
      
     data.strength *= (1 * or(not(checkCombo),when_neq(0, _CascadeCount - 1))  + (fade) * when_eq(0, _CascadeCount - 1) * checkCombo);
-    data.cascadeBlend = data.cascadeBlend * or(not(checkCombo),when_eq(0, _CascadeCount - 1))
-    + fade * when_neq(0, _CascadeCount - 1) * checkCombo;
+
 
     checkIter_2 = not(checkIter_1);
      
@@ -166,8 +154,7 @@ ShadowData GetShadowData (SurfaceData surfaceData) {
     fade = FadedShadowStrength(distanceSqr, _CascadeData[3].x, _ShadowDistanceFade.z) * checkCombo;
      
     data.strength *= (1 * or(not(checkCombo),when_neq(0, _CascadeCount - 1))  + (fade) * when_eq(0, _CascadeCount - 1) * checkCombo);
-    data.cascadeBlend = data.cascadeBlend * or(not(checkCombo),when_eq(0, _CascadeCount - 1))
-    + fade * when_neq(0, _CascadeCount - 1) * checkCombo;
+
 
     checkIter_2 = not(checkIter_1);
      
@@ -176,41 +163,15 @@ ShadowData GetShadowData (SurfaceData surfaceData) {
     #endif
 
 
+    float iEqCascadeCount = when_eq(i, _CascadeCount);
+    data.strength = data.strength * not(iEqCascadeCount);
 
-    data.strength = data.strength * when_neq(i, _CascadeCount);
-    // // #if defined(_CASCADE_BLEND_DITHER)
-    // i += when_eq(i, _CascadeCount) * when_lt(data.cascadeBlend < surfaceData.d)
-    // else if (data.cascadeBlend < surfaceWS.dither) {
-    //     i += 1;
-    // }
-    // #endif
-    #if !defined(_CASCADE_BLEND_SOFT)
-    data.cascadeBlend = 1.0;
-    #endif
-    // data.strength = data.strength * when_neq(i, _CascadeCount);
+    
 
-    // Тут идут бленды
     
     data.cascadeIndex = i;
     
-    switch (i)
-    {
-    case 0:
-        data.color = float3(1,0,0);
-        break;
-    case 1:
-        data.color = float3(0,1,0);
-        break;
-    case 2:
-        data.color = float3(0,0,1);
-        break;
-    case 3:
-        data.color = float3(1,1,0);
-        break;
-    case 4:
-        data.color = float3(1,1,1);
-        break;
-    }
+
     
     return data;
 }
@@ -221,7 +182,7 @@ float SampleDirectionalShadowAtlas (float3 positionSTS) {
 
 float offset_lookup(float3 coords)
 {
-    #if defined(PCF_VALUE) && defined(PCF_MULT_VALIE)
+    #if defined(PCF_VALUE) && defined(PCF_MULT_VALUE)
     float y;
     float x;
     float sum;
@@ -232,7 +193,7 @@ float offset_lookup(float3 coords)
             offset = float2(_DirectionalShadowAtlas_TexelSize.x * x, _DirectionalShadowAtlas_TexelSize.y * y);
             sum += SampleDirectionalShadowAtlas((coords + float3(offset.x,offset.y, 0)));
         }
-    return sum * PCF_MULT_VALIE;
+    return sum * PCF_MULT_VALUE;
 
     // return sum * 1/
 	
@@ -252,14 +213,9 @@ float GetDirectionalShadowAttenuation (
     }
     float3 normalBias = surfaceData.normal * (directional.normalBias * _CascadeData[global.cascadeIndex].y);
     float3 positionSTS = mul(_DirectionalShadowMatrices[global.cascadeIndex], float4(surfaceData.positionWS + normalBias, 1.0)).xyz;
-    // float shadow = offset_lookup(positionSTS);
-    // float shadow = SampleDirectionalShadowAtlas(positionSTS);
+
     float shadow = offset_lookup(positionSTS);
-    if (global.cascadeBlend < 1.0) {
-        normalBias = surfaceData.normal * (directional.normalBias * _CascadeData[global.cascadeIndex + 1].y);
-        positionSTS = mul(_DirectionalShadowMatrices[global.cascadeIndex + 1],float4(surfaceData.positionWS + normalBias, 1.0)).xyz;
-        shadow = lerp(offset_lookup(positionSTS), shadow, global.cascadeBlend);
-    }
+
     return lerp(1.0, shadow, directional.strength);
 }
 

@@ -16,17 +16,16 @@ MonoBehaviour:
   useGPUInstancing: 1
   useSRPBatcher: 0
   m_shadowsSettings:
-    maxDistance: 1500
+    maxDistance: 300
     distanceFade: 0.1
     directional:
       atlasSize: 8192
-      filter: 4
-      cascades: 1
+      filter: 0
+      cascades: 0
       cascadeRatio1: 0.073
       cascadeRatio2: 0.319
       cascadeRatio3: 0.5
       cascadeFade: 0.1
-      cascadeBlend: 1
   SSAO: 1
   ssaoSettings:
     samplesCount: 2

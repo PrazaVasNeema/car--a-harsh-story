@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Serialization;
 
 namespace CustomSRP.Runtime
 {
@@ -10,12 +11,16 @@ namespace CustomSRP.Runtime
 		public static CustomRenderPipelineAsset instance;
 		[SerializeField]
 		bool useDynamicBatching = true, useGPUInstancing = true, useSRPBatcher = true;
+		[SerializeField] 
+		private bool m_shadows;
+		public bool shadows => m_shadows;
 		[SerializeField] private ShadowSettings m_shadowsSettings = default;
 		public ShadowSettings shadowSettings => m_shadowsSettings;
 
 		[Header("-------------------------")]
 		[SerializeField] 
-		public bool SSAO;
+		private bool m_SSAO;
+		public bool SSAO => m_SSAO;
 		[SerializeField] 
 		private SSAOSettings ssaoSettings;
 		public SSAOSettings SSAOSettings => ssaoSettings;

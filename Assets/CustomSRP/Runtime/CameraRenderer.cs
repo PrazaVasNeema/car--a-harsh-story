@@ -27,7 +27,15 @@ namespace CustomSRP.Runtime
 			RAPI.Context.SetupCameraProperties(RAPI.CurCamera);
 
 			m_gBuffers.Render();
-			m_ssao.Render(customRenderPipelineAsset.SSAOSettings);
+			if (customRenderPipelineAsset.SSAO)
+			{
+				m_ssao.Render(customRenderPipelineAsset.SSAOSettings);
+				RAPI.SetKeyword("SSAO_ON", true);
+			}
+			else
+			{
+				RAPI.SetKeyword("SSAO_ON", false);
+			}
 			m_decals.Render();
 			
 			
@@ -46,6 +54,7 @@ namespace CustomSRP.Runtime
 			RAPI.CleanupTempRT(SProps.SSAO.SSAOBlurAtlas);
 			RAPI.CleanupTempRT(SProps.Decals.DecalsAlbedoAtlas);
 			RAPI.CleanupTempRT(SProps.Decals.DecalsNormalAtlas);
+			RAPI.Context.DrawSkybox(RAPI.CurCamera);
 
 			Submit();
 		}

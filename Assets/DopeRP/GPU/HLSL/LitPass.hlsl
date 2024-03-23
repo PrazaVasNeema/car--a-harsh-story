@@ -136,11 +136,17 @@ float4 frag(Interpolators i) : SV_TARGET
 	#else
 		screenSpaceCoordinates = i.positionCS * _ScreenSize.zw;
 	#endif
+
+	#if defined(SSAO_ON)
 	
 	float ssao = SAMPLE_TEXTURE2D(_SSAOBlurAtlas, sampler_SSAOBlurAtlas, screenSpaceCoordinates).r;
-	float4 decals = SAMPLE_TEXTURE2D(_DecalsAlbedoAtlas, sampler_DecalsAlbedoAtlas, screenSpaceCoordinates);
 	if (ssao > 0)
 		baseColor *= ssao;
+
+	#endif
+
+	float4 decals = SAMPLE_TEXTURE2D(_DecalsAlbedoAtlas, sampler_DecalsAlbedoAtlas, screenSpaceCoordinates);
+
 	// baseColor *= 1;
 
 	if (decals.a > 0)
@@ -168,6 +174,7 @@ float4 frag(Interpolators i) : SV_TARGET
 	surfaceData.alpha = baseColor.a;
 	surfaceData.roughness = perceptualRoughnessToRoughness(UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _Roughness));
 	surfaceData.f0 = computeReflectance(baseColor, surfaceData.metallic, UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _Reflectance));
+	surfaceData.dither = InterleavedGradientNoise(i.positionCS.xy, 0);
 // return float4(surfaceData.f0.xyz, 1);
 	// const float airIor = 1.0;
 	// float materialor = f0ToIor(surfaceData.f0.g);
