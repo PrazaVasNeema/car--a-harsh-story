@@ -46,10 +46,10 @@ Shader "DopeRP/Shaders/Lit"
 			#pragma target 3.5
 			// #pragma enable_d3d11_debug_symbols
 			#pragma multi_compile_instancing
-			// #pragma multi_compile _ _DIRECTIONAL_PCF_NONE _DIRECTIONAL_PCF2x2 _DIRECTIONAL_PCF4x4 _DIRECTIONAL_PCF6x6 _DIRECTIONAL_PCF8x8
+			#pragma multi_compile _ _DIRECTIONAL_PCF_NONE _DIRECTIONAL_PCF2x2 _DIRECTIONAL_PCF4x4 _DIRECTIONAL_PCF6x6 _DIRECTIONAL_PCF8x8
 			#pragma multi_compile _ _DIR_LIGHT_ON
 			#pragma multi_compile _ _OTHER_LIGHT_COUNT_20 _OTHER_LIGHT_COUNT_15 _OTHER_LIGHT_COUNT_10 _OTHER_LIGHT_COUNT_5
-			// #pragma multi_compile _ CASCEDE_COUNT_2 CASCEDE_COUNT_4
+			#pragma multi_compile _ CASCADE_COUNT_2 CASCADE_COUNT_4
 			#pragma shader_feature _PREMULTIPLY_ALPHA
 			// #pragma shader_feature _RECEIVE_SHADOWS
 			#pragma vertex vert
@@ -58,23 +58,23 @@ Shader "DopeRP/Shaders/Lit"
 			ENDHLSL
 		}
 
-//		Pass {
-//			Tags {
-//				"LightMode" = "ShadowCaster"
-//			}
-//
-//			ColorMask 0
-//
-//			HLSLPROGRAM
-//			#pragma target 3.5
-//			#pragma vertex ShadowCasterPassVertex
-//			#pragma shader_feature _ _SHADOWS_CLIP _SHADOWS_DITHER
-//			#pragma multi_compile_instancing
-//			#pragma enable_d3d11_debug_symbols
-//			#pragma fragment ShadowCasterPassFragment
-//			#include "Assets/CustomSRP/Shaders/ShadowCasterPass.hlsl"
-//			ENDHLSL
-//		}
+		Pass {
+			Tags {
+				"LightMode" = "ShadowCaster"
+			}
+
+			ColorMask 0
+
+			HLSLPROGRAM
+			#pragma target 3.5
+			#pragma vertex ShadowCasterPassVertex
+			#pragma shader_feature _ _SHADOWS_CLIP _SHADOWS_DITHER
+			#pragma multi_compile_instancing
+			#pragma enable_d3d11_debug_symbols
+			#pragma fragment ShadowCasterPassFragment
+			#include "Assets/CustomSRP/Shaders/ShadowCasterPass.hlsl"
+			ENDHLSL
+		}
 
 		Pass {
 			Name "GBufferPass"

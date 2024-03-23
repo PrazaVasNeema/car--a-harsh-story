@@ -4,7 +4,7 @@
 #include "Assets/DopeRP/GPU/HLSL/Common/Common.hlsl"
 #include "Assets/DopeRP/GPU/HLSL/SurfaceData.hlsl"
 #include "Assets/DopeRP/GPU/HLSL/BRDF.hlsl"
-// #include "Assets/DopeRP/GPU/HLSL/Shadows.hlsl"
+#include "Assets/DopeRP/GPU/HLSL/Shadows.hlsl"
 
 #define MAX_OTHER_LIGHT_COUNT 20
 
@@ -14,6 +14,7 @@ CBUFFER_START(_LightingMain)
 	// #if defined(_DIR_LIGHT_ON)
 		float3 _DirLightDirection;
 		float3 _DirLightColor;
+		float4 _DirectionalLightShadowData;
 	// #endif
 
 	// #if defined(MAX_OTHER_LIGHT_COUNT)
@@ -35,14 +36,12 @@ struct Light {
 	
 };
 
-// DirectionalShadowData GetDirectionalShadowData (ShadowData shadowData){
-// 	DirectionalShadowData data;
-// 	data.strength =
-// 		_DirectionalLightShadowData.x * shadowData.strength;
-//
-// 	data.normalBias = _DirectionalLightShadowData.z;
-// 	return data;
-// }
+DirectionalShadowData GetDirectionalShadowData (ShadowData shadowData){
+	DirectionalShadowData data;
+	data.strength = _DirectionalLightShadowData.x * shadowData.strength;
+	data.normalBias = _DirectionalLightShadowData.z;
+	return data;
+}
 
 
 // Working with BRDF
@@ -115,19 +114,23 @@ float3 GetLighting(SurfaceData surfaceData)
 
 	Light light;
 	
-	#ifdef _DIR_LIGHT_ON
+	// #ifdef _DIR_LIGHT_ON
 
 	light.direction = -_DirLightDirection;
 	light.color = _DirLightColor;
-	light.attenuation = 1;
 	
-	// ShadowData shadowData = GetShadowData(surfaceData);
-	// DirectionalShadowData dirShadowData = GetDirectionalShadowData(shadowData);
-	// dirLight.attenuation = GetDirectionalShadowAttenuation(dirShadowData, shadowData, surfaceData);
+	ShadowData shadowData = GetShadowData(surfaceData);
+	DirectionalShadowData dirShadowData = GetDirectionalShadowData(shadowData);
+	light.attenuation = GetDirectionalShadowAttenuation(dirShadowData, shadowData, surfaceData);
 
 	color = GetLighting(surfaceData, light);
+	// color = light.attenuation;
+	// color = shadowData.color;
+	// color = shadowData.strength;
+
+	// return color;
 	// color = 1;
-	#endif	
+	// #endif	
 
 
 	#if defined(_OTHER_LIGHT_COUNT_20) || defined(_OTHER_LIGHT_COUNT_15) || defined(_OTHER_LIGHT_COUNT_10) || defined(_OTHER_LIGHT_COUNT_5)

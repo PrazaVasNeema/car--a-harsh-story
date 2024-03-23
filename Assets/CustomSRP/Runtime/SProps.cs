@@ -23,7 +23,7 @@ namespace CustomSRP.Runtime
             
             public static int DirLightDirectionId = Shader.PropertyToID("_DirLightDirection");
             public static int DirLightColorId = Shader.PropertyToID("_DirLightColor");
-            private static int DirLightShadowDataId = Shader.PropertyToID("_DirectionalLightShadowData");
+            public static int DirLightShadowDataId = Shader.PropertyToID("_DirectionalLightShadowData");
             
             public static int OtherLightCountId = Shader.PropertyToID("_OtherLightCount");
             public static int OtherLightPositionsId = Shader.PropertyToID("_OtherLightPositions");
@@ -31,6 +31,19 @@ namespace CustomSRP.Runtime
             
             public static int OtherLightDirectionsId = Shader.PropertyToID("_OtherLightDirections");
             public static int OtherLightSpotAnglesId = Shader.PropertyToID("_OtherLightSpotAngles");
+            
+        }
+        
+        public static class Shadows
+        {
+            
+            public static int DirShadowAtlasId = Shader.PropertyToID("_DirectionalShadowAtlas");
+            public static int DirShadowMatricesId = Shader.PropertyToID("_DirectionalShadowMatrices");
+            public static int CascadesCountId = Shader.PropertyToID("_CascadeCount");
+            public static int CascadesCullingSpheresId = Shader.PropertyToID("_CascadeCullingSpheres");
+            public static int CascadeDataId = Shader.PropertyToID("_CascadeData");
+            public static int ShadowAtlasSizeId = Shader.PropertyToID("_ShadowAtlasSize");
+            public static int ShadowDistanceFadeId = Shader.PropertyToID("_ShadowDistanceFade");
             
         }
         

@@ -11,11 +11,11 @@ namespace CustomSRP.Runtime
         }
         
         public enum FilterMode {
-            PCFNONE, PCF2x2, PCF4x4, PCF6x6, PCF8x8
+            _DIRECTIONAL_PCF_NONE, _DIRECTIONAL_PCF2x2, _DIRECTIONAL_PCF4x4, _DIRECTIONAL_PCF6x6, _DIRECTIONAL_PCF8x8
         }
         
         public enum Cascades {
-            _2X, _4X
+            CASCADE_COUNT_2, CASCADE_COUNT_4
         }
         
         [System.Serializable]
@@ -53,8 +53,8 @@ namespace CustomSRP.Runtime
 
         public Directional directional = new Directional {
             atlasSize = TextureSize._1024,
-            filter = FilterMode.PCF2x2,
-            cascades = Cascades._4X,
+            filter = FilterMode._DIRECTIONAL_PCF2x2,
+            cascades = Cascades.CASCADE_COUNT_4,
             cascadeRatio1 = 0.1f,
             cascadeRatio2 = 0.25f,
             cascadeRatio3 = 0.5f,

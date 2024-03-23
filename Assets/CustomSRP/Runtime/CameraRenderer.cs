@@ -7,8 +7,6 @@ namespace CustomSRP.Runtime
 		
 		private const string BUFFER_NAME = "RenderCamera";
 
-
-
 		private readonly Lighting m_lighting = new Lighting();
 		private readonly RenderBuffers m_renderBuffers = new RenderBuffers();
 		private readonly GBuffers m_gBuffers = new GBuffers();
@@ -26,7 +24,6 @@ namespace CustomSRP.Runtime
 				return;
 			}
 			
-			// m_ssao.Render();
 			RAPI.Context.SetupCameraProperties(RAPI.CurCamera);
 
 			m_gBuffers.Render();
@@ -40,10 +37,8 @@ namespace CustomSRP.Runtime
 			DrawVisibleGeometry(useDynamicBatching, useGPUInstancing);
 			DrawUnsupportedShaders();
 			DrawGizmos();
-			RAPI.CleanupTempRT(Shadows.dirShadowAtlasId);
-			// RAPI.CleanupTempRT(SSAO.SSAODepthNormalsAtlas);
-			// RAPI.CleanupTempRT(SSAO.SSAOAtlas);
 			
+			RAPI.CleanupTempRT(SProps.Shadows.DirShadowAtlasId);
 			RAPI.CleanupTempRT(SProps.GBuffer.PositionViewSpaceAtlas);
 			RAPI.CleanupTempRT(SProps.GBuffer.NormalViewSpaceAtlas);
 			RAPI.CleanupTempRT(SProps.GBuffer.TangentViewSpaceAtlas);
@@ -51,9 +46,6 @@ namespace CustomSRP.Runtime
 			RAPI.CleanupTempRT(SProps.SSAO.SSAOBlurAtlas);
 			RAPI.CleanupTempRT(SProps.Decals.DecalsAlbedoAtlas);
 			RAPI.CleanupTempRT(SProps.Decals.DecalsNormalAtlas);
-
-
-			//lighting.Cleanup();
 
 			Submit();
 		}
@@ -69,7 +61,7 @@ namespace CustomSRP.Runtime
 
 		void DrawVisibleGeometry (bool useDynamicBatching, bool useGPUInstancing)
 		{
-			RAPI.Buffer.SetGlobalVector(SProps.SSAO.ScreenSize, new Vector4(RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight,
+			RAPI.Buffer.SetGlobalVector(SProps.CameraRenderer.ScreenSize, new Vector4(RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight,
 				(float)1/RAPI.CurCamera.pixelWidth , (float)1/RAPI.CurCamera.pixelHeight));
 
 			

@@ -27,14 +27,13 @@ TEXTURE2D_SHADOW(_DirectionalShadowAtlas);
 SAMPLER_CMP(SHADOW_SAMPLER);
 
 CBUFFER_START(_CustomShadows)
-    int _CascadeCount;
-float4 _CascadeCullingSpheres[MAX_CASCADE_COUNT];
-float4 _CascadeData[MAX_CASCADE_COUNT];
-float4x4 _DirectionalShadowMatrices
-    [MAX_SHADOWED_DIRECTIONAL_LIGHT_COUNT * MAX_CASCADE_COUNT];
-float4 _ShadowAtlasSize;
-float4 _ShadowDistanceFade;
-float2 _DirectionalShadowAtlas_TexelSize;
+int _CascadeCount;
+    float4 _CascadeCullingSpheres[MAX_CASCADE_COUNT];
+    float4 _CascadeData[MAX_CASCADE_COUNT];
+    float4x4 _DirectionalShadowMatrices[MAX_SHADOWED_DIRECTIONAL_LIGHT_COUNT * MAX_CASCADE_COUNT];
+    float4 _ShadowAtlasSize;
+    float4 _ShadowDistanceFade;
+    float2 _DirectionalShadowAtlas_TexelSize;
 CBUFFER_END
 
 struct ShadowData {
@@ -97,7 +96,7 @@ ShadowData GetShadowData (SurfaceData surfaceData) {
 
     // i = 0;
     
-    #if defined(CASCEDE_COUNT_4) || defined(CASCEDE_COUNT_2)
+    #if defined(CASCADE_COUNT_4) || defined(CASCADE_COUNT_2)
     
      sphere = _CascadeCullingSpheres[0] * checkIter_2;
      distanceSqr = DistanceSquared(surfaceData.positionWS, sphere.xyz) * checkIter_2;
@@ -138,7 +137,7 @@ ShadowData GetShadowData (SurfaceData surfaceData) {
     
     // //--- ---
     
-    #if defined(CASCEDE_COUNT_4)
+    #if defined(CASCADE_COUNT_4)
     
     sphere = _CascadeCullingSpheres[2];
     distanceSqr = DistanceSquared(surfaceData.positionWS, sphere.xyz);
@@ -245,9 +244,9 @@ float offset_lookup(float3 coords)
 float GetDirectionalShadowAttenuation (
     DirectionalShadowData directional, ShadowData global, SurfaceData surfaceData
 ) {
-    #if !defined(_RECEIVE_SHADOWS)
-        return 1.0;
-    #endif
+    // #if !defined(_RECEIVE_SHADOWS)
+    //     return 1.0;
+    // #endif
     if (directional.strength <= 0.0) {
         return 1.0;
     }
