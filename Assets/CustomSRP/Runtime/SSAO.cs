@@ -14,7 +14,7 @@ namespace CustomSRP.Runtime
 
         public void Render(SSAOSettings ssaoSettings)
         {
-            RAPI.Buffer.BeginSample(BUFFER_NAME);
+            
             RAPI.ExecuteBuffer();
             
             
@@ -49,7 +49,7 @@ namespace CustomSRP.Runtime
 
             RAPI.Buffer.SetGlobalTexture("_SSAOBlurAtlas", SProps.SSAO.SSAOBlurAtlas);
             
-            RAPI.Buffer.EndSample(BUFFER_NAME);
+            
             RAPI.ExecuteBuffer();
             
         }

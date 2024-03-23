@@ -22,6 +22,9 @@ namespace CustomSRP.Runtime
 		private bool m_SSAO;
 		public bool SSAO => m_SSAO;
 		[SerializeField] 
+		private bool m_decalsOn;
+		public bool decalsOn => m_decalsOn;
+		[SerializeField] 
 		private SSAOSettings ssaoSettings;
 		public SSAOSettings SSAOSettings => ssaoSettings;
 		

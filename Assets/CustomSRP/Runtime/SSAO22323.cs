@@ -37,7 +37,7 @@ namespace CustomSRP.Runtime
         public void Render()
         {
 
-            RAPI.Buffer.BeginSample(BUFFER_NAME);
+            
 
             RAPI.Buffer.GetTemporaryRT(SSAODepthNormalsAtlas, RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight, 32, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
             RAPI.Buffer.SetRenderTarget(SSAODepthNormalsAtlas, RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store);
@@ -61,7 +61,7 @@ namespace CustomSRP.Runtime
 
             RAPI.Context.DrawRenderers(RAPI.CullingResults, ref drawingSettings, ref filteringSettings);
             
-            RAPI.Buffer.EndSample(BUFFER_NAME);
+            
             RAPI.ExecuteBuffer();
             
             int i = 0;

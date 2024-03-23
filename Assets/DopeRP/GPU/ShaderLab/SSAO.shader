@@ -22,7 +22,7 @@ Shader "DopeRP/Shaders/SSAO"
 			HLSLPROGRAM
 			#pragma target 3.5
 			#pragma multi_compile_instancing
-			#pragma enable_d3d11_debug_symbols
+			// #pragma enable_d3d11_debug_symbols
 			#pragma multi_compile _SAMPLES_COUNT16 _SAMPLES_COUNT32 _SAMPLES_COUNT64 
 			#pragma vertex vert
 			#pragma fragment frag
@@ -39,7 +39,7 @@ Shader "DopeRP/Shaders/SSAO"
 			HLSLPROGRAM
 			#pragma target 3.5
 			#pragma multi_compile_instancing
-			#pragma enable_d3d11_debug_symbols
+			// #pragma enable_d3d11_debug_symbols
 			#pragma vertex vert
 			#pragma fragment frag
 			#include "Assets/DopeRP/GPU/HLSL/SSAOBlurPass.hlsl"

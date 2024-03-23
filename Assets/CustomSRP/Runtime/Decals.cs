@@ -13,7 +13,7 @@ namespace CustomSRP.Runtime
         public void Render()
         {
             
-            RAPI.Buffer.BeginSample(BUFFER_NAME);
+            
             RAPI.ExecuteBuffer();
             
             
@@ -53,7 +53,7 @@ namespace CustomSRP.Runtime
             RAPI.Buffer.SetGlobalTexture("_DecalsAtlas", SProps.Decals.DecalsAlbedoAtlas);
             RAPI.Buffer.SetGlobalTexture("_DecalsAtlasNormals", SProps.Decals.DecalsNormalAtlas);
 
-            RAPI.Buffer.EndSample(BUFFER_NAME);
+            
             RAPI.ExecuteBuffer();
             
         }

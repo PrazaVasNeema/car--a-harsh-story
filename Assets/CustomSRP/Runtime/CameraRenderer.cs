@@ -26,7 +26,8 @@ namespace CustomSRP.Runtime
 			
 			RAPI.Context.SetupCameraProperties(RAPI.CurCamera);
 
-			m_gBuffers.Render();
+			if ( customRenderPipelineAsset.SSAO || customRenderPipelineAsset.decalsOn)
+				m_gBuffers.Render();
 			if (customRenderPipelineAsset.SSAO)
 			{
 				m_ssao.Render(customRenderPipelineAsset.SSAOSettings);
@@ -36,9 +37,18 @@ namespace CustomSRP.Runtime
 			{
 				RAPI.SetKeyword("SSAO_ON", false);
 			}
-			m_decals.Render();
-			
-			
+
+			if (customRenderPipelineAsset.decalsOn)
+			{
+				RAPI.SetKeyword("DECALS_ON", true);
+				m_decals.Render();
+			}
+			else
+			{
+				RAPI.SetKeyword("DECALS_ON", false);
+			}
+
+
 			m_lighting.Setup(customRenderPipelineAsset.shadowSettings);
 			Setup();
 			
@@ -64,7 +74,7 @@ namespace CustomSRP.Runtime
 			var flags = RAPI.CurCamera.clearFlags;
 			RAPI.Buffer.ClearRenderTarget(flags <= CameraClearFlags.Depth, flags == CameraClearFlags.Color,
 				flags == CameraClearFlags.Color ? RAPI.CurCamera.backgroundColor.linear : Color.clear);
-			RAPI.Buffer.BeginSample(BUFFER_NAME);
+			
 			RAPI.ExecuteBuffer();
 		}
 
@@ -105,7 +115,7 @@ namespace CustomSRP.Runtime
 		}
 
 		void Submit () {
-			RAPI.Buffer.EndSample(BUFFER_NAME);
+			
 			RAPI.ExecuteBuffer();
 			RAPI.Context.Submit();
 		}

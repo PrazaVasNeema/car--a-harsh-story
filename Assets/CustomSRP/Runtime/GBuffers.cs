@@ -13,7 +13,7 @@ namespace CustomSRP.Runtime
         public void Render()
         {
             
-            RAPI.Buffer.BeginSample(BUFFER_NAME);
+            
             RAPI.ExecuteBuffer();
             
 
@@ -59,7 +59,7 @@ namespace CustomSRP.Runtime
             RAPI.Buffer.SetGlobalTexture("_NormalViewSpace", SProps.GBuffer.NormalViewSpaceAtlas);
             RAPI.Buffer.SetGlobalTexture("_TangentViewSpace", SProps.GBuffer.TangentViewSpaceAtlas);
             
-            RAPI.Buffer.EndSample(BUFFER_NAME);
+            
             RAPI.ExecuteBuffer();
             
         }

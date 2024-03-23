@@ -145,22 +145,28 @@ float4 frag(Interpolators i) : SV_TARGET
 
 	#endif
 
-	float4 decals = SAMPLE_TEXTURE2D(_DecalsAlbedoAtlas, sampler_DecalsAlbedoAtlas, screenSpaceCoordinates);
+	
 
 	// baseColor *= 1;
 
-	if (decals.a > 0)
-		baseColor = decals;
+
 	
 	SurfaceData surfaceData;
 	surfaceData.normal = NormalTangentToWorld(GetNormalTS(i.uv), normalize(i.normalWS), normalize(i.tangentWS));
 	// surfaceData.normal = normalize(i.normalWS);
+
+	#if defined(DECALS_ON)
 	
+	float4 decals = SAMPLE_TEXTURE2D(_DecalsAlbedoAtlas, sampler_DecalsAlbedoAtlas, screenSpaceCoordinates);
+	if (decals.a > 0)
+		baseColor = decals;
 	float4 decalsNormals = SAMPLE_TEXTURE2D(_DecalsNormalAtlas, sampler_DecalsNormalAtlas, screenSpaceCoordinates);
 	if (decalsNormals.a >0)
 	{
 		surfaceData.normal = decalsNormals;
 	}
+
+	#endif
 
 	surfaceData.viewDirection = normalize(_WorldSpaceCameraPos - i.positionWS);
 	surfaceData.depth = -TransformWorldToView(i.positionWS).z;

@@ -34,7 +34,7 @@ namespace CustomSRP.Runtime
         public void Render()
         {
             
-            RAPI.Buffer.BeginSample(BUFFER_NAME);
+            
             RAPI.ExecuteBuffer();
             
             RAPI.Buffer.GetTemporaryRT(SSAOAtlas, RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight, 0, FilterMode.Bilinear, RenderTextureFormat.ARGBFloat);
@@ -81,7 +81,7 @@ namespace CustomSRP.Runtime
 
             RAPI.Buffer.SetGlobalTexture("_SSAOAtlasBlurred", SSAOAtlasBlurred);
             
-            RAPI.Buffer.EndSample(BUFFER_NAME);
+            
             RAPI.ExecuteBuffer();
         }
         

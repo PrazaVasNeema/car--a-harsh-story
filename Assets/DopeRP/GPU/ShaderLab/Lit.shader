@@ -55,6 +55,7 @@ Shader "DopeRP/Shaders/Lit"
 			#pragma multi_compile _ CASCADE_COUNT_2 CASCADE_COUNT_4
 			
 			#pragma multi_compile _ SSAO_ON
+			#pragma multi_compile _ DECALS_ON
 			
 			#pragma shader_feature _PREMULTIPLY_ALPHA
 			// #pragma shader_feature _RECEIVE_SHADOWS
@@ -76,7 +77,7 @@ Shader "DopeRP/Shaders/Lit"
 			#pragma vertex ShadowCasterPassVertex
 			#pragma shader_feature _ _SHADOWS_CLIP _SHADOWS_DITHER
 			#pragma multi_compile_instancing
-			#pragma enable_d3d11_debug_symbols
+			// #pragma enable_d3d11_debug_symbols
 			#pragma fragment ShadowCasterPassFragment
 			#include "Assets/CustomSRP/Shaders/ShadowCasterPass.hlsl"
 			ENDHLSL
@@ -91,7 +92,7 @@ Shader "DopeRP/Shaders/Lit"
 			HLSLPROGRAM
 			#pragma target 3.5
 			#pragma multi_compile_instancing
-			#pragma enable_d3d11_debug_symbols
+			// #pragma enable_d3d11_debug_symbols
 			#pragma vertex vert
 			#pragma fragment frag
 			#include "Assets/DopeRP/GPU/HLSL/GBufferPass.hlsl"

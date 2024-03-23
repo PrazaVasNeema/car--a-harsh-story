@@ -51,7 +51,7 @@ namespace CustomSRP.Runtime
             RAPI.Buffer.GetTemporaryRT(SProps.Shadows.DirShadowAtlasId, atlasSize, atlasSize, 32, FilterMode.Bilinear, RenderTextureFormat.Shadowmap);
             RAPI.Buffer.SetRenderTarget(SProps.Shadows.DirShadowAtlasId, RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store);
             RAPI.Buffer.ClearRenderTarget(true, false, Color.clear);
-            RAPI.Buffer.BeginSample(BUFFER_NAME);
+            
 
             int cascadesCount = m_settings.directional.cascades == ShadowSettings.Cascades.CASCADE_COUNT_2 ? 2 : 4;
             
@@ -94,7 +94,7 @@ namespace CustomSRP.Runtime
             // RAPI.SetKeywords(cascadeBlendKeywords, (int)m_settings.directional.cascadeBlend);
             RAPI.Buffer.SetGlobalVector(SProps.Shadows.ShadowAtlasSizeId, new Vector4(atlasSize, 1f / atlasSize));
             RAPI.Buffer.SetGlobalFloat(SProps.Shadows.CascadesCountId, cascadeCount);
-            RAPI.Buffer.EndSample(BUFFER_NAME);
+            
             RAPI.ExecuteBuffer();
 
         }

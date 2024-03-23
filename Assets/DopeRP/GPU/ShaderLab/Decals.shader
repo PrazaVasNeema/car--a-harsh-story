@@ -36,7 +36,7 @@ Shader "DopeRP/Shaders/Decals"
 			HLSLPROGRAM
 			#pragma target 3.5
 			#pragma multi_compile_instancing
-			#pragma enable_d3d11_debug_symbols
+			// #pragma enable_d3d11_debug_symbols
 			#pragma shader_feature _CLIPPING
 			#pragma shader_feature _CONTRIBUTE_ALBEDO
 			#pragma shader_feature _CONTRIBUTE_NORMAL

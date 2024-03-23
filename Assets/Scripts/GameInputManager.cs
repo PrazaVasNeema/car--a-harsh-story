@@ -25,7 +25,6 @@ public class GameInputManager : MonoBehaviour
     private void Awake()
     {
         Instance= this;
-        Debug.Log(m_inputMapsDictionary);
         m_inputMapsDictionary.Add(InputMap.Spectator, new SpectatorActorInputManager(InputMap.Spectator.ToString(), m_playerInput.actions));
        // m_inputMapsDictionary.Add(InputMap.Car, new CarActorInputManager(InputMap.Car.ToString(), m_playerInput.actions));
     }

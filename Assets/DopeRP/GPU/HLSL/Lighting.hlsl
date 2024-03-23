@@ -131,7 +131,7 @@ float3 GetLighting(SurfaceData surfaceData)
 
 	#endif
 
-	color = GetLighting(surfaceData, light);
+	color += GetLighting(surfaceData, light);
 	// color = light.attenuation;
 	// color = shadowData.color;
 	// color = shadowData.strength;
