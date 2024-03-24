@@ -11,7 +11,7 @@ public class CollisionDetection : MonoBehaviour
     private void OnCollisionEnter(Collision other)
     {
 
-        
+        // foreach (var collider)
         Collider myCollider = other.GetContact(0).thisCollider;
 
         var targetEntity = myCollider.GetComponent<HealthComponentProvider>().GetEntity();

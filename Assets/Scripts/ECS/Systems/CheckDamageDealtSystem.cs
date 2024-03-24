@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Scellecs.Morpeh.Systems;
 using UnityEngine;
 using Unity.IL2CPP.CompilerServices;
@@ -21,11 +22,20 @@ public sealed class CheckDamageDealtSystem : UpdateSystem {
         {
             foreach (var change in changes)
             {
+                if (change.collision.contactCount == 0)
+                    continue;
                 float damageAmount = change.collision.impulse.sqrMagnitude;
                 Debug.Log($"1: {damageAmount >= m_settingsData.spawnDecalsHPThreshold}, 2: {change.targetEntity.Has<IsDamageDecalReceiver>()}");
+                Debug.Log($"change.collision.GetContact(0): {change.collision.GetContact(0)}");
+                Debug.Log($"change.collision.GetContacts(0): {change.collision.contactCount}");
                 if (damageAmount >= m_settingsData.spawnDecalsHPThreshold && change.targetEntity.Has<IsDamageDecalReceiver>())
                 {
-                    Debug.Log("Test1");
+                    // List<ContactPoint> contact = new List<ContactPoint>();
+                    // Debug.Log("Test1");
+                    // foreach (var VARIABLE in change.collision.contacts)
+                    // {
+                    //     
+                    // }
                     this.World.GetRequest<SpawnDamageDecalRequest>().Publish(new SpawnDamageDecalRequest { targetEntity = change.targetEntity, ContactPoint = change.collision.GetContact(0)}, true);
                 }
                 this.World.GetRequest<DoDamageRequest>().Publish(new DoDamageRequest { targetEntity = change.targetEntity, damageAmount = damageAmount}, true);
