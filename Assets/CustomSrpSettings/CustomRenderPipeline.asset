@@ -27,7 +27,7 @@ MonoBehaviour:
       cascadeRatio1: 0.073
       cascadeRatio2: 0.319
       cascadeRatio3: 0.5
-  m_SSAO: 1
+  m_SSAO: 0
   m_decalsOn: 1
   ssaoSettings:
     samplesCount: 0

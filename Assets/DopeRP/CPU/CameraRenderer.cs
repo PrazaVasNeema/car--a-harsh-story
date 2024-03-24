@@ -64,7 +64,7 @@ namespace DopeRP.CPU
 			RAPI.CleanupTempRT(SProps.SSAO.SSAOBlurAtlas);
 			RAPI.CleanupTempRT(SProps.Decals.DecalsAlbedoAtlas);
 			RAPI.CleanupTempRT(SProps.Decals.DecalsNormalAtlas);
-			RAPI.Context.DrawSkybox(RAPI.CurCamera);
+			// RAPI.Context.DrawSkybox(RAPI.CurCamera);
 
 			Submit();
 		}
