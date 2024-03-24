@@ -154,8 +154,28 @@ Shader "DopeRP/Shaders/Decals"
 					float3 normal = normalize(SAMPLE_TEXTURE2D(_NormalViewSpace, sampler_NormalViewSpace, i.positionSV.xy * _ScreenSize.zw).xyz);
 					normal = float4(mul(UNITY_MATRIX_I_V, normal));
 					float4 tangent = normalize(SAMPLE_TEXTURE2D(_TangentViewSpace, sampler_TangentViewSpace, i.positionSV.xy * _ScreenSize.zw));
+
+					float4 normalOutput = float4(NormalTangentToWorld(GetNormalTS(texCoords), normal, tangent),1);
+				
+					// float isFlat = or(when_eq((int)normalOutput.x*10, 5), when_eq((int)normalOutput.x*10, 128)) * when_eq(normalOutput.y, 128) * when_eq(normalOutput.z, 255);
+
+					float3 targetValue = float3(0.5, 0.5, 1);
+					float epsilon = .05; // Tolerance for the comparison
 					
-					o.decalsNormalAtlas = float4(NormalTangentToWorld(GetNormalTS(texCoords), normal, tangent),1);
+					bool isEqual = all(abs(GetNormalTS(texCoords) - targetValue) < epsilon);
+					isEqual = all(abs(GetNormalTS(texCoords) - DecodeNormal(targetValue.xyzz, 1)) < epsilon);
+
+					
+				
+					o.decalsNormalAtlas = float4(NormalTangentToWorld(GetNormalTS(texCoords), normal, tangent),1) * (1-isEqual);
+
+					o.decalsNormalAtlas = float4(GetNormalTS(texCoords),1);
+					o.decalsNormalAtlas = SAMPLE_TEXTURE2D(_NormalMap, sampler_NormalMap, texCoords);
+
+									o.decalsNormalAtlas = float4(NormalTangentToWorld(GetNormalTS(texCoords), normal, tangent),1) * (1-isEqual);
+
+
+				// o.decalsNormalAtlas = 0;
 
 				#else
 
@@ -170,7 +190,9 @@ Shader "DopeRP/Shaders/Decals"
 	
 					#if defined(_CLIPPING)
 						o.decalsAlbedoAtlas = 0;
-						clip(baseColor.a - UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _Cutoff));
+						// #if !defined(_CONTRIBUTE_NORMAL)
+							clip(baseColor.a - UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _Cutoff));
+						// #endif
 					#endif
 	
 					baseColor *= UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_DECALS, _BaseColor);

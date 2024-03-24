@@ -22,9 +22,11 @@ public sealed class CheckDamageDealtSystem : UpdateSystem {
             foreach (var change in changes)
             {
                 float damageAmount = change.collision.impulse.sqrMagnitude;
-                if (damageAmount >= m_settingsData.spawnDecalsHPThreshold)
+                Debug.Log($"1: {damageAmount >= m_settingsData.spawnDecalsHPThreshold}, 2: {change.targetEntity.Has<IsDamageDecalReceiver>()}");
+                if (damageAmount >= m_settingsData.spawnDecalsHPThreshold && change.targetEntity.Has<IsDamageDecalReceiver>())
                 {
-                    this.World.GetRequest<SpawnDamageDecalRequest>().Publish(new SpawnDamageDecalRequest { ContactPoint = change.collision.GetContact(0)});
+                    Debug.Log("Test1");
+                    this.World.GetRequest<SpawnDamageDecalRequest>().Publish(new SpawnDamageDecalRequest { targetEntity = change.targetEntity, ContactPoint = change.collision.GetContact(0)}, true);
                 }
                 this.World.GetRequest<DoDamageRequest>().Publish(new DoDamageRequest { targetEntity = change.targetEntity, damageAmount = damageAmount}, true);
             }

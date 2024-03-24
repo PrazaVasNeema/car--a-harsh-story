@@ -5,5 +5,6 @@ using UnityEngine;
 
 public struct SpawnDamageDecalRequest : IRequestData
 {
+    public Entity targetEntity;
     public ContactPoint ContactPoint;
 }

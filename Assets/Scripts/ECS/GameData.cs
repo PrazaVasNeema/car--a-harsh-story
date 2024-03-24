@@ -13,6 +13,7 @@ public class GameData : MonoBehaviour
 
     public World currentWorld;
     
+    
     private void Awake()
     {
         if (instance != null)
