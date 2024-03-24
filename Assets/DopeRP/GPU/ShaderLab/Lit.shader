@@ -79,7 +79,7 @@ Shader "DopeRP/Shaders/Lit"
 			#pragma multi_compile_instancing
 			// #pragma enable_d3d11_debug_symbols
 			#pragma fragment ShadowCasterPassFragment
-			#include "Assets/CustomSRP/Shaders/ShadowCasterPass.hlsl"
+			#include "Assets/DopeRP/GPU/HLSL/ShadowCasterPass.hlsl"
 			ENDHLSL
 		}
 
