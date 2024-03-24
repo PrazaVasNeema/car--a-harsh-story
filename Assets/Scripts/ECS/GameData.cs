@@ -12,10 +12,14 @@ public class GameData : MonoBehaviour
     public DamageSystemSettingSO damageSystemSetting => m_damageSystemSetting;
 
     public World currentWorld;
+
+    [SerializeField]
+    private Transform m_brokenDetailsPlaceholder;
     
     
     private void Awake()
     {
+        
         if (instance != null)
         {
             Debug.LogWarning("instance not null");
@@ -25,5 +29,11 @@ public class GameData : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         Cursor.visible = false;
+       
+    }
+    
+    public void AddBrokenDetail(GameObject detail)
+    {
+        detail.transform.SetParent(m_brokenDetailsPlaceholder);
     }
 }

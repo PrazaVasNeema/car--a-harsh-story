@@ -18,6 +18,15 @@ public class CollisionDetection : MonoBehaviour
         
         GameData.instance.currentWorld.GetEvent<OnCollisionEnterEvent>().NextFrame(new OnCollisionEnterEvent { targetEntity = targetEntity, collision = other });
         Debug.Log("test");
+        
+        PublishCollisionEvent(other, targetEntity);
+    }
+
+    public void PublishCollisionEvent(Collision collision, Entity affectedEntity)
+    {
+        
+        GameData.instance.currentWorld.GetEvent<OnCollisionEnterEvent>().NextFrame(new OnCollisionEnterEvent { targetEntity = affectedEntity, collision = collision });
+        
     }
     
 }

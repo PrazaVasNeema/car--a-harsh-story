@@ -25,15 +25,35 @@ public sealed class BreakMeshSystem : UpdateSystem {
         foreach (var breakThisRequest in breakThisRequest.Consume())
         {
             var entity = breakThisRequest.targetEntity;
-            if (entity.Has<IsBreakableMesh>())
+            if (breakThisRequest.breakCompletely)
             {
-                var transform = entity.GetComponent<TransformRef>().transform;
-                var meshDestroy = transform.AddComponent<MeshDestroy>();
-                meshDestroy.DestroyMesh(entity.GetComponent<IsBreakableMesh>().CutCascades);
+                if (entity.Has<IsBreakableMesh>())
+                {
+                    var transform = entity.GetComponent<TransformRef>().transform;
+                    var meshDestroy = transform.AddComponent<MeshDestroy>();
+                    meshDestroy.DestroyMesh(entity.GetComponent<IsBreakableMesh>().CutCascades);
+                }
+                else if (entity.Has<IsDetachable>())
+                {
+                    GameData.instance.AddBrokenDetail(entity.GetComponent<TransformRef>().transform.gameObject);
+                    var transform = entity.GetComponent<TransformRef>().transform;
+                    if (transform.TryGetComponent(out HingeJoint a))
+                    {
+                        Destroy(a);
+                    }
+                }
             }
-            else if (entity.Has<IsBreakableChange>())
+            else
             {
-               
+                if (entity.Has<IsHingeJoint>())
+                {
+                    // hingeJoint.limits.min = 
+                    var isHingeJoint = entity.GetComponent<IsHingeJoint>();
+                    
+                    isHingeJoint.hingeJoint.limits = new JointLimits() { min = isHingeJoint.minAngle, max = isHingeJoint.maxAngle };
+                    
+                    Debug.Log("test4234");
+                }
             }
         }
     }

@@ -28,8 +28,15 @@ public sealed class DoDamageSystem : UpdateSystem {
             healthComponent.HP = (int)(healthComponent.HP - doDamageRequest.damageAmount);
             if (healthComponent.HP <= 0)
             {
-                this.World.GetRequest<BreakThisRequest>().Publish(new BreakThisRequest {targetEntity = doDamageRequest.targetEntity}, true);
+                this.World.GetRequest<BreakThisRequest>().Publish(new BreakThisRequest {targetEntity = doDamageRequest.targetEntity, breakCompletely = true}, true);
                 // doDamageRequest.targetEntity.RemoveComponent<HealthComponent>();
+            }
+            else
+            {
+                if (doDamageRequest.targetEntity.Has<IsHingeJoint>() && healthComponent.HP <= doDamageRequest.targetEntity.GetComponent<IsHingeJoint>().HPThreshold)
+                {
+                    this.World.GetRequest<BreakThisRequest>().Publish(new BreakThisRequest {targetEntity = doDamageRequest.targetEntity, breakCompletely = false}, true);
+                }
             }
         }
     }

@@ -24,6 +24,7 @@ public sealed class CheckDamageDealtSystem : UpdateSystem {
             {
                 if (change.collision.contactCount == 0)
                     continue;
+                Debug.Log($"Entity: {change.targetEntity.ID}");
                 float damageAmount = change.collision.impulse.sqrMagnitude;
                 Debug.Log($"1: {damageAmount >= m_settingsData.spawnDecalsHPThreshold}, 2: {change.targetEntity.Has<IsDamageDecalReceiver>()}");
                 Debug.Log($"change.collision.GetContact(0): {change.collision.GetContact(0)}");
