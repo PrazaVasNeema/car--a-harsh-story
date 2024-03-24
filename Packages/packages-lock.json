@@ -1,5 +1,49 @@
 {
   "dependencies": {
+    "com.codewriter.morpeh.events": {
+      "version": "https://github.com/codewriter-packages/Morpeh.Events.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "8eecc3bf9440af87ef3c66bf7a1ff210ff361c03"
+    },
+    "com.codewriter.triinspector": {
+      "version": "https://github.com/codewriter-packages/Tri-Inspector.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.localization": "1.0.0"
+      },
+      "hash": "57e726cc4f2c8d3488011f312d5b22dab2b19dc5"
+    },
+    "com.farco.morpeh.helpers": {
+      "version": "https://github.com/SH42913/morpeh.helpers.git?path=/Assets/Morpeh.Helpers",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "027147a64ba55253a3745b06374707aba4af299b"
+    },
+    "com.scellecs.morpeh": {
+      "version": "https://github.com/scellecs/morpeh.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "2eb519ce4a4c3d0cc3096e92d0db1166aa69d88a"
+    },
+    "com.unity.addressables": {
+      "version": "1.21.19",
+      "depth": 2,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.scriptablebuildpipeline": "1.21.21",
+        "com.unity.modules.assetbundle": "1.0.0",
+        "com.unity.modules.imageconversion": "1.0.0",
+        "com.unity.modules.jsonserialize": "1.0.0",
+        "com.unity.modules.unitywebrequest": "1.0.0",
+        "com.unity.modules.unitywebrequestassetbundle": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+    },
     "com.unity.ai.navigation": {
       "version": "1.1.5",
       "depth": 0,
@@ -71,6 +115,23 @@
       },
       "url": "https://packages.unity.com"
     },
+    "com.unity.localization": {
+      "version": "1.4.4",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.addressables": "1.21.8",
+        "com.unity.nuget.newtonsoft-json": "3.0.2"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.nuget.newtonsoft-json": {
+      "version": "3.2.1",
+      "depth": 2,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
     "com.unity.performance.profile-analyzer": {
       "version": "1.2.2",
       "depth": 1,
@@ -88,6 +149,13 @@
         "com.unity.modules.terrain": "1.0.0",
         "com.unity.modules.jsonserialize": "1.0.0"
       }
+    },
+    "com.unity.scriptablebuildpipeline": {
+      "version": "1.21.21",
+      "depth": 3,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
     },
     "com.unity.settings-manager": {
       "version": "2.0.1",
