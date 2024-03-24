@@ -26,6 +26,11 @@ public sealed class DoDamageSystem : UpdateSystem {
             ref var healthComponent = ref doDamageRequest.targetEntity.GetComponent<HealthComponent>();
             // healthComponent.HP = (int)Mathf.Max(0, healthComponent.HP - doDamageRequest.damageAmount);
             healthComponent.HP = (int)(healthComponent.HP - doDamageRequest.damageAmount);
+            if (healthComponent.HP <= 0)
+            {
+                this.World.GetRequest<BreakThisRequest>().Publish(new BreakThisRequest {targetEntity = doDamageRequest.targetEntity}, true);
+                // doDamageRequest.targetEntity.RemoveComponent<HealthComponent>();
+            }
         }
     }
 }

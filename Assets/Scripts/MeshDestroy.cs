@@ -15,24 +15,11 @@ public class MeshDestroy : MonoBehaviour
     public int CutCascades = 1;
     public float ExplodeForce = 0;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (!m_meshDestroyed && Input.GetMouseButtonDown(0))
-        {
-            m_meshDestroyed = true;
-            DestroyMesh();
-        }
-    }
 
-    private void DestroyMesh()
+    public void DestroyMesh(int cutCascades)
     {
+        CutCascades = cutCascades;
         var originalMesh = GetComponent<MeshFilter>().mesh;
         originalMesh.RecalculateBounds();
         var parts = new List<PartMesh>();
