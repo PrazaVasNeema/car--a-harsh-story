@@ -7,8 +7,10 @@ using UnityEngine;
 [Il2CppSetOption(Option.NullChecks, false)]
 [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
 [Il2CppSetOption(Option.DivideByZeroChecks, false)]
-public struct IsBreakableMesh : IComponent {
-    public int CutCascades;
+public struct IsBreakableMesh : IComponent
+{
+    public GameObject whole;
+    public GameObject broken;
 }
 
 [Il2CppSetOption(Option.NullChecks, false)]

@@ -2,24 +2,37 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
-public class MeshDestroy : MonoBehaviour
+public class MeshDestroy2 : MonoBehaviour
 {
     private bool edgeSet = false;
     private Vector3 edgeVertex = Vector3.zero;
     private Vector2 edgeUV = Vector2.zero;
     private Plane edgePlane = new Plane();
 
-    private bool m_meshDestroyed = false;
-
     public int CutCascades = 1;
     public float ExplodeForce = 0;
+    
+    public int MaxDestroyLevel = 3;
 
-
-
-    public void DestroyMesh(int cutCascades)
+    // Start is called before the first frame update
+    void Start()
     {
-        CutCascades = cutCascades;
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            DestroyMesh();
+        }
+    }
+
+    private void DestroyMesh()
+    {
         var originalMesh = GetComponent<MeshFilter>().mesh;
         originalMesh.RecalculateBounds();
         var parts = new List<PartMesh>();
@@ -60,8 +73,7 @@ public class MeshDestroy : MonoBehaviour
         for (var i = 0; i < parts.Count; i++)
         {
             parts[i].MakeGameobject(this);
-            // parts[i].GameObject.GetComponent<Rigidbody>().AddForceAtPosition(parts[i].Bounds.center * ExplodeForce, transform.position);
-            // GameData.instance.AddBrokenGlass(parts[i].GameObject);
+            parts[i].GameObject.GetComponent<Rigidbody>().AddForceAtPosition(parts[i].Bounds.center * ExplodeForce, transform.position);
         }
 
         Destroy(gameObject);
@@ -256,8 +268,9 @@ public class MeshDestroy : MonoBehaviour
                 Triangles[i] = _Triangles[i].ToArray();
         }
 
-        public void MakeGameobject(MeshDestroy original)
+        public void MakeGameobject(MeshDestroy2 original)
         {
+            
             GameObject = new GameObject(original.name);
             GameObject.transform.position = original.transform.position;
             GameObject.transform.rotation = original.transform.rotation;
@@ -269,10 +282,10 @@ public class MeshDestroy : MonoBehaviour
             mesh.vertices = Vertices;
             mesh.normals = Normals;
             mesh.uv = UV;
-            for(var i = 0; i < Triangles.Length; i++)
+            for (var i = 0; i < Triangles.Length; i++)
                 mesh.SetTriangles(Triangles[i], i, true);
             Bounds = mesh.bounds;
-            
+
             var renderer = GameObject.AddComponent<MeshRenderer>();
             renderer.materials = original.GetComponent<MeshRenderer>().materials;
 
@@ -283,9 +296,15 @@ public class MeshDestroy : MonoBehaviour
             collider.convex = true;
 
             var rigidbody = GameObject.AddComponent<Rigidbody>();
-            // var meshDestroy = GameObject.AddComponent<MeshDestroy>();
-            // meshDestroy.CutCascades = original.CutCascades;
-            // meshDestroy.ExplodeForce = original.ExplodeForce;
+            var meshDestroy = GameObject.AddComponent<MeshDestroy2>();
+            meshDestroy.CutCascades = original.CutCascades;
+            meshDestroy.ExplodeForce = original.ExplodeForce;
+            meshDestroy.MaxDestroyLevel = original.MaxDestroyLevel - 1;
+            if (original.MaxDestroyLevel <= 0)
+            {
+                meshDestroy.enabled = false;
+                Destroy(GameObject, Random.Range(5, 20));
+            }
 
         }
 

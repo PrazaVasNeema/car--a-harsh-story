@@ -29,9 +29,11 @@ public sealed class BreakMeshSystem : UpdateSystem {
             {
                 if (entity.Has<IsBreakableMesh>())
                 {
-                    var transform = entity.GetComponent<TransformRef>().transform;
-                    var meshDestroy = transform.AddComponent<MeshDestroy>();
-                    meshDestroy.DestroyMesh(entity.GetComponent<IsBreakableMesh>().CutCascades);
+                    var a = entity.GetComponent<IsBreakableMesh>();
+                    a.whole.SetActive(false);
+                    GameData.instance.AddBrokenGlass(a.broken);
+                    a.broken.SetActive(true);
+                   
                     entity.Dispose();
                 }
                 else if (entity.Has<IsDetachable>())
