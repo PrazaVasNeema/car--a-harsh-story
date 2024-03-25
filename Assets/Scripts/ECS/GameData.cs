@@ -15,6 +15,8 @@ public class GameData : MonoBehaviour
 
     [SerializeField]
     private Transform m_brokenDetailsPlaceholder;
+    [SerializeField]
+    private Transform m_brokenGlassPlaceholder;
     
     
     private void Awake()
@@ -35,5 +37,10 @@ public class GameData : MonoBehaviour
     public void AddBrokenDetail(GameObject detail)
     {
         detail.transform.SetParent(m_brokenDetailsPlaceholder);
+    }
+    
+    public void AddBrokenGlass(GameObject glass)
+    {
+        glass.transform.SetParent(m_brokenGlassPlaceholder);
     }
 }
