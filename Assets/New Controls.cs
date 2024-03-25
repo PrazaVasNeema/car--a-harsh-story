@@ -53,6 +53,33 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MOVE_UPDOWN"",
+                    ""type"": ""Value"",
+                    ""id"": ""b885b81b-0805-4422-b4d6-c17fbb53d8ea"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""MOVE_SPEEDSLOW"",
+                    ""type"": ""Button"",
+                    ""id"": ""4754e991-eef6-4b1f-9249-211161fff848"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""FIRE"",
+                    ""type"": ""Button"",
+                    ""id"": ""7210f2c5-0222-4208-97d8-9e9412807f25"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -132,6 +159,83 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
                     ""action"": ""INTERACT"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""46593b37-1d1d-42af-907d-de11968d4268"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MOVE_UPDOWN"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""3bfd6db7-4cc3-42c1-aad3-1157217e9faf"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MOVE_UPDOWN"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""ce7a3d55-7566-4def-bf47-8d409254a388"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MOVE_UPDOWN"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""264cf934-aaba-47e8-8b51-430aaaeb617c"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MOVE_SPEEDSLOW"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""81375375-102b-401b-b7d4-1e4de53c4e57"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MOVE_SPEEDSLOW"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""71d48e1d-1ad5-4d39-9690-a682958da2b0"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MOVE_SPEEDSLOW"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ab0a8786-fcba-4fbe-b511-2b686de0920a"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""FIRE"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -171,6 +275,9 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
         m_SPECTATOR_MOVE = m_SPECTATOR.FindAction("MOVE", throwIfNotFound: true);
         m_SPECTATOR_MOUSE = m_SPECTATOR.FindAction("MOUSE", throwIfNotFound: true);
         m_SPECTATOR_INTERACT = m_SPECTATOR.FindAction("INTERACT", throwIfNotFound: true);
+        m_SPECTATOR_MOVE_UPDOWN = m_SPECTATOR.FindAction("MOVE_UPDOWN", throwIfNotFound: true);
+        m_SPECTATOR_MOVE_SPEEDSLOW = m_SPECTATOR.FindAction("MOVE_SPEEDSLOW", throwIfNotFound: true);
+        m_SPECTATOR_FIRE = m_SPECTATOR.FindAction("FIRE", throwIfNotFound: true);
         // CAR
         m_CAR = asset.FindActionMap("CAR", throwIfNotFound: true);
         m_CAR_Newaction = m_CAR.FindAction("New action", throwIfNotFound: true);
@@ -238,6 +345,9 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_SPECTATOR_MOVE;
     private readonly InputAction m_SPECTATOR_MOUSE;
     private readonly InputAction m_SPECTATOR_INTERACT;
+    private readonly InputAction m_SPECTATOR_MOVE_UPDOWN;
+    private readonly InputAction m_SPECTATOR_MOVE_SPEEDSLOW;
+    private readonly InputAction m_SPECTATOR_FIRE;
     public struct SPECTATORActions
     {
         private @NewControls m_Wrapper;
@@ -245,6 +355,9 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
         public InputAction @MOVE => m_Wrapper.m_SPECTATOR_MOVE;
         public InputAction @MOUSE => m_Wrapper.m_SPECTATOR_MOUSE;
         public InputAction @INTERACT => m_Wrapper.m_SPECTATOR_INTERACT;
+        public InputAction @MOVE_UPDOWN => m_Wrapper.m_SPECTATOR_MOVE_UPDOWN;
+        public InputAction @MOVE_SPEEDSLOW => m_Wrapper.m_SPECTATOR_MOVE_SPEEDSLOW;
+        public InputAction @FIRE => m_Wrapper.m_SPECTATOR_FIRE;
         public InputActionMap Get() { return m_Wrapper.m_SPECTATOR; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -263,6 +376,15 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
             @INTERACT.started += instance.OnINTERACT;
             @INTERACT.performed += instance.OnINTERACT;
             @INTERACT.canceled += instance.OnINTERACT;
+            @MOVE_UPDOWN.started += instance.OnMOVE_UPDOWN;
+            @MOVE_UPDOWN.performed += instance.OnMOVE_UPDOWN;
+            @MOVE_UPDOWN.canceled += instance.OnMOVE_UPDOWN;
+            @MOVE_SPEEDSLOW.started += instance.OnMOVE_SPEEDSLOW;
+            @MOVE_SPEEDSLOW.performed += instance.OnMOVE_SPEEDSLOW;
+            @MOVE_SPEEDSLOW.canceled += instance.OnMOVE_SPEEDSLOW;
+            @FIRE.started += instance.OnFIRE;
+            @FIRE.performed += instance.OnFIRE;
+            @FIRE.canceled += instance.OnFIRE;
         }
 
         private void UnregisterCallbacks(ISPECTATORActions instance)
@@ -276,6 +398,15 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
             @INTERACT.started -= instance.OnINTERACT;
             @INTERACT.performed -= instance.OnINTERACT;
             @INTERACT.canceled -= instance.OnINTERACT;
+            @MOVE_UPDOWN.started -= instance.OnMOVE_UPDOWN;
+            @MOVE_UPDOWN.performed -= instance.OnMOVE_UPDOWN;
+            @MOVE_UPDOWN.canceled -= instance.OnMOVE_UPDOWN;
+            @MOVE_SPEEDSLOW.started -= instance.OnMOVE_SPEEDSLOW;
+            @MOVE_SPEEDSLOW.performed -= instance.OnMOVE_SPEEDSLOW;
+            @MOVE_SPEEDSLOW.canceled -= instance.OnMOVE_SPEEDSLOW;
+            @FIRE.started -= instance.OnFIRE;
+            @FIRE.performed -= instance.OnFIRE;
+            @FIRE.canceled -= instance.OnFIRE;
         }
 
         public void RemoveCallbacks(ISPECTATORActions instance)
@@ -344,6 +475,9 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
         void OnMOVE(InputAction.CallbackContext context);
         void OnMOUSE(InputAction.CallbackContext context);
         void OnINTERACT(InputAction.CallbackContext context);
+        void OnMOVE_UPDOWN(InputAction.CallbackContext context);
+        void OnMOVE_SPEEDSLOW(InputAction.CallbackContext context);
+        void OnFIRE(InputAction.CallbackContext context);
     }
     public interface ICARActions
     {

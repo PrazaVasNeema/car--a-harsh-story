@@ -38,9 +38,10 @@ public sealed class SpawnDamageDecalSystem : UpdateSystem {
             Debug.Log(angle);
 
             // Vector3 off = thisRoom.RoomSpawnPoint.rotation.eulerAngles - _currentEnvironment.transform.rotation.eulerAngles;
-            
-            Instantiate(GameData.instance.damageSystemSetting.data.decalPrefabs[0], contactPoint.point - (float).1*contactPoint.normal,
-                Quaternion.LookRotation(contactPoint.normal, Vector3.up), spawnDecalRequest.targetEntity.GetComponent<TransformRef>().transform);
+            Quaternion a = Quaternion.LookRotation(-contactPoint.normal, Vector3.up); 
+            Debug.Log(a);
+            Instantiate(GameData.instance.damageSystemSetting.data.decalPrefabs[0], contactPoint.point + (float).1*contactPoint.normal,
+                a, spawnDecalRequest.targetEntity.GetComponent<TransformRef>().transform);
         }
     }
 }

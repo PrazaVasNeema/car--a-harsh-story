@@ -44,10 +44,14 @@ public class GameInputManager : MonoBehaviour
     public abstract class ActorInputManagerAbstract
     {
         public event EventHandler OnInteractAction;
+        public event EventHandler OnFireAction;
 
         protected const string MOVE = "MOVE";
         protected const string INTERACT = "INTERACT";
         protected const string MOUSE = "MOUSE";
+        protected const string MOVE_UPDOWN = "MOVE_UPDOWN";
+        protected const string MOVE_SPEEDSLOW = "MOVE_SPEEDSLOW";
+        protected const string FIRE = "FIRE";
 
         
         protected InputActionMap m_inputActionMap;
@@ -55,6 +59,9 @@ public class GameInputManager : MonoBehaviour
         protected InputAction m_moveAction;
         protected InputAction m_interactAction;
         protected InputAction m_mouseAction;
+        protected InputAction m_moveUpDownAction;
+        protected InputAction m_moveSpeedSlowAction;
+        protected InputAction m_fire;
 
 
         public ActorInputManagerAbstract(string mapName, InputActionAsset inputActionAsset)
@@ -63,18 +70,24 @@ public class GameInputManager : MonoBehaviour
             m_moveAction = m_inputActionMap.FindAction(MOVE);
             m_interactAction = m_inputActionMap.FindAction(INTERACT);
             m_mouseAction = m_inputActionMap.FindAction(MOUSE);
+            m_moveUpDownAction = m_inputActionMap.FindAction(MOVE_UPDOWN);
+            m_moveSpeedSlowAction = m_inputActionMap.FindAction(MOVE_SPEEDSLOW);
+            m_fire = m_inputActionMap.FindAction(FIRE);
             Enable();
         }
 
         public void Enable()
         {
             m_interactAction.started += InteractAction_performed;
+            m_fire.started += FireAction_performed;
+            Debug.Log(20);
 
         }
 
         public void Disable()
         {
             m_interactAction.started -= InteractAction_performed;
+            m_fire.started -= FireAction_performed;
 
         }
 
@@ -82,12 +95,30 @@ public class GameInputManager : MonoBehaviour
         {
             OnInteractAction?.Invoke(this, EventArgs.Empty);
         }
+        
+        private void FireAction_performed(InputAction.CallbackContext obj)
+        {
+            Debug.Log(10);
+            OnFireAction?.Invoke(this, EventArgs.Empty);
+        }
 
         public Vector2 GetMovementVectorNormalized()
         {
             Vector2 inputVector = m_moveAction.ReadValue<Vector2>();
             inputVector = inputVector.normalized;
             return inputVector;
+        }
+        
+        public float GetMovementUpDown()
+        {
+            float inputfloat = m_moveUpDownAction.ReadValue<float>();
+            return inputfloat;
+        }
+        
+        public float GetMovementSpeedSlow()
+        {
+            float inputfloat = m_moveSpeedSlowAction.ReadValue<float>();
+            return inputfloat;
         }
         
         public Vector2 GetMouseVec()
