@@ -22,7 +22,7 @@ public sealed class CheckDamageDealtSystem : UpdateSystem {
         {
             foreach (var change in changes)
             {
-                if (change.collision.contactCount == 0)
+                if (change.collision.contactCount == 0 || !change.targetEntity.Has<HealthComponent>())
                     continue;
                 Debug.Log($"Entity: {change.targetEntity.ID}");
                 float damageAmount = change.collision.impulse.sqrMagnitude;

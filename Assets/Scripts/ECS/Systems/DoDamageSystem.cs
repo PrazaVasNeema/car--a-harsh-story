@@ -21,6 +21,8 @@ public sealed class DoDamageSystem : UpdateSystem {
     public override void OnUpdate(float deltaTime) {
         foreach (var doDamageRequest in doDamageRequest.Consume())
         {
+            if (doDamageRequest.targetEntity.Has<IsDisabledMarker>())
+                continue;
             Debug.Log(doDamageRequest.targetEntity);
             Debug.Log(doDamageRequest.damageAmount);
             ref var healthComponent = ref doDamageRequest.targetEntity.GetComponent<HealthComponent>();
@@ -29,7 +31,8 @@ public sealed class DoDamageSystem : UpdateSystem {
             if (healthComponent.HP <= 0)
             {
                 this.World.GetRequest<BreakThisRequest>().Publish(new BreakThisRequest {targetEntity = doDamageRequest.targetEntity, breakCompletely = true}, true);
-                // doDamageRequest.targetEntity.RemoveComponent<HealthComponent>();
+                doDamageRequest.targetEntity.AddComponent<IsDisabledMarker>();
+
             }
             else
             {
