@@ -76,14 +76,14 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _Metallic: 0
+    - _Metallic: 0.539
     - _Mode: 0
     - _NormalScale: 1
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _PremulAlpha: 0
     - _Reflectance: 0.529
-    - _Roughness: 1
+    - _Roughness: 0.441
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
