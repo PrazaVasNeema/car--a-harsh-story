@@ -13,13 +13,18 @@ public class CollisionDetection : MonoBehaviour
 
         // foreach (var collider)
         Collider myCollider = other.GetContact(0).thisCollider;
+        if (myCollider.TryGetComponent<PartOfTheSystem>(out var part))
+        {
 
-        var targetEntity = myCollider.GetComponent<HealthComponentProvider>().GetEntity();
-        
-        GameData.instance.currentWorld.GetEvent<OnCollisionEnterEvent>().NextFrame(new OnCollisionEnterEvent { targetEntity = targetEntity, collision = other });
-        Debug.Log("test");
-        
-        PublishCollisionEvent(other, targetEntity);
+
+
+            var targetEntity = myCollider.GetComponent<HealthComponentProvider>().GetEntity();
+
+            GameData.instance.currentWorld.GetEvent<OnCollisionEnterEvent>().NextFrame(new OnCollisionEnterEvent { targetEntity = targetEntity, collision = other });
+            Debug.Log("test");
+
+            PublishCollisionEvent(other, targetEntity);
+        }
     }
 
     public void PublishCollisionEvent(Collision collision, Entity affectedEntity)
