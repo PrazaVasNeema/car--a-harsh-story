@@ -10,6 +10,8 @@ public class SpectatorMovementComponent : MonoBehaviour
 
     [SerializeField] private float m_mouseSensitivity = 5f;
 
+    [SerializeField] private Transform m_test;
+
     private Vector3 m_currentVelocity = Vector3.zero;
 
     private float rotY;
@@ -31,7 +33,7 @@ public class SpectatorMovementComponent : MonoBehaviour
         rotX -= mousePosition2D.y * m_mouseSensitivity;
         // Debug.Log($"rot x: {rotX}; rot y: {rotY}");
 
-        Camera.main.transform.eulerAngles = new Vector3(rotX, rotY, 0);
+        //Camera.main.transform.eulerAngles = new Vector3(rotX, rotY, 0);
 
         // Debug.Log($"x: {movementVector.x}; y: {movementVector.y}");
 
@@ -44,7 +46,8 @@ public class SpectatorMovementComponent : MonoBehaviour
         }
 
         var newPos = Vector3.SmoothDamp(transform.localPosition, newPos1, ref m_currentVelocity, 0.5f, m_maxSpeed * speedModifier);
-        transform.localPosition = newPos;
+        //transform.localPosition = newPos;
+        m_test.localPosition = newPos;
 
     }
 }

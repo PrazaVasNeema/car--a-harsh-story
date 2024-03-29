@@ -12,6 +12,8 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private PlayerActorControllerAbstract m_carController;
     private GameInputManager.InputMap m_currentMode;
 
+    [SerializeField] private CameraManager m_cameraManager;
+
     public void Start()
     {
         //m_playerSpectatorMovementComponent.Init(m_gameInputManager.GetActorInputMapManager(GameInputManager.InputMap.Spectator));
@@ -49,6 +51,7 @@ public class LevelManager : MonoBehaviour
 
 
             m_gameInputManager.SetCurrentMap(GameInputManager.InputMap.Spectator);
+            m_cameraManager.ChangeActiveVirtualCamera(1);
         }
         else
         {
@@ -56,6 +59,8 @@ public class LevelManager : MonoBehaviour
             m_carController.Activate();
 
             m_gameInputManager.SetCurrentMap(GameInputManager.InputMap.Car);
+            m_cameraManager.ChangeActiveVirtualCamera(0);
+
         }
 
         m_currentMode = currentMode;
