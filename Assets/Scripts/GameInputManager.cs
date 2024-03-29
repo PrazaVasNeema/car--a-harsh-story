@@ -77,6 +77,11 @@ public class GameInputManager : MonoBehaviour
             m_changeMode.started -= M_changeMode_started;
         }
 
+        public Vector2 GetMovementVector()
+        {
+            Vector2 inputVector = m_moveAction.ReadValue<Vector2>();
+            return inputVector;
+        }
 
         public Vector2 GetMovementVectorNormalized()
         {
@@ -172,6 +177,7 @@ public class GameInputManager : MonoBehaviour
     {
 
         public event EventHandler OnHandbreakAction;
+        public event EventHandler OnHandbreakActionCanceled;
 
         protected const string HANDBREAK = "HANDBREAK";
 
@@ -188,18 +194,27 @@ public class GameInputManager : MonoBehaviour
         public override void Enable()
         {
             base.Enable();
-            m_handbreak.started += M_handbreak_started; ;
+            m_handbreak.started += M_handbreak_started;
+            m_handbreak.canceled += M_handbreak_canceled;
         }
 
         public override void Disable()
         {
             base.Disable();
             m_handbreak.started -= M_handbreak_started;
+            m_handbreak.canceled -= M_handbreak_canceled;
         }
 
         private void M_handbreak_started(InputAction.CallbackContext obj)
         {
+            Debug.Log("Started");
             OnHandbreakAction?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void M_handbreak_canceled(InputAction.CallbackContext obj)
+        {
+            Debug.Log("Canceled");
+            OnHandbreakActionCanceled?.Invoke(this, EventArgs.Empty);
         }
     }
 }
