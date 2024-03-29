@@ -80,6 +80,15 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""CHANGE_MODE"",
+                    ""type"": ""Button"",
+                    ""id"": ""b23d090b-f1ab-4862-9282-91de46e1f1f3"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -236,6 +245,17 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
                     ""action"": ""FIRE"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d42f6a45-6956-48da-ac24-77fe0db429fc"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CHANGE_MODE"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -244,9 +264,27 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
             ""id"": ""73e3a31b-efae-4992-a826-2035c0147c6c"",
             ""actions"": [
                 {
-                    ""name"": ""New action"",
+                    ""name"": ""MOVE"",
+                    ""type"": ""Value"",
+                    ""id"": ""50ba99cb-04de-41da-8b58-293058023f80"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""CHANGE_MODE"",
                     ""type"": ""Button"",
-                    ""id"": ""1a6bb83d-9c20-453a-835f-d5be391cc45d"",
+                    ""id"": ""0533b166-6b31-491f-9f33-0ac53143ec1c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""HANDBREAK"",
+                    ""type"": ""Button"",
+                    ""id"": ""a491e5d4-229c-42f4-8c49-7b413b76423d"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -255,13 +293,79 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
             ],
             ""bindings"": [
                 {
-                    ""name"": """",
-                    ""id"": ""68ee424e-e37e-4b1e-a311-118f2d71bc09"",
-                    ""path"": """",
+                    ""name"": ""2D Vector"",
+                    ""id"": ""20765e6e-a1e1-4670-9635-ff9db2ee2be1"",
+                    ""path"": ""2DVector"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""New action"",
+                    ""action"": ""MOVE"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""9fc8187a-707c-4d56-9f32-a50df2c5aa59"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MOVE"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""8d6cc205-d683-4890-a655-8ab9710c35a4"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MOVE"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""47df875e-f931-4434-b1f1-018f7f04cdc3"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MOVE"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""963c22be-844e-45e8-bd23-833f715ae24c"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MOVE"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""051a0ad0-0e6b-446d-a676-c5e9fcf65496"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""HANDBREAK"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a4acf75a-3f78-4c67-aa3e-a32d4d094e9e"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CHANGE_MODE"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -278,9 +382,12 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
         m_SPECTATOR_MOVE_UPDOWN = m_SPECTATOR.FindAction("MOVE_UPDOWN", throwIfNotFound: true);
         m_SPECTATOR_MOVE_SPEEDSLOW = m_SPECTATOR.FindAction("MOVE_SPEEDSLOW", throwIfNotFound: true);
         m_SPECTATOR_FIRE = m_SPECTATOR.FindAction("FIRE", throwIfNotFound: true);
+        m_SPECTATOR_CHANGE_MODE = m_SPECTATOR.FindAction("CHANGE_MODE", throwIfNotFound: true);
         // CAR
         m_CAR = asset.FindActionMap("CAR", throwIfNotFound: true);
-        m_CAR_Newaction = m_CAR.FindAction("New action", throwIfNotFound: true);
+        m_CAR_MOVE = m_CAR.FindAction("MOVE", throwIfNotFound: true);
+        m_CAR_CHANGE_MODE = m_CAR.FindAction("CHANGE_MODE", throwIfNotFound: true);
+        m_CAR_HANDBREAK = m_CAR.FindAction("HANDBREAK", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -348,6 +455,7 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_SPECTATOR_MOVE_UPDOWN;
     private readonly InputAction m_SPECTATOR_MOVE_SPEEDSLOW;
     private readonly InputAction m_SPECTATOR_FIRE;
+    private readonly InputAction m_SPECTATOR_CHANGE_MODE;
     public struct SPECTATORActions
     {
         private @NewControls m_Wrapper;
@@ -358,6 +466,7 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
         public InputAction @MOVE_UPDOWN => m_Wrapper.m_SPECTATOR_MOVE_UPDOWN;
         public InputAction @MOVE_SPEEDSLOW => m_Wrapper.m_SPECTATOR_MOVE_SPEEDSLOW;
         public InputAction @FIRE => m_Wrapper.m_SPECTATOR_FIRE;
+        public InputAction @CHANGE_MODE => m_Wrapper.m_SPECTATOR_CHANGE_MODE;
         public InputActionMap Get() { return m_Wrapper.m_SPECTATOR; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -385,6 +494,9 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
             @FIRE.started += instance.OnFIRE;
             @FIRE.performed += instance.OnFIRE;
             @FIRE.canceled += instance.OnFIRE;
+            @CHANGE_MODE.started += instance.OnCHANGE_MODE;
+            @CHANGE_MODE.performed += instance.OnCHANGE_MODE;
+            @CHANGE_MODE.canceled += instance.OnCHANGE_MODE;
         }
 
         private void UnregisterCallbacks(ISPECTATORActions instance)
@@ -407,6 +519,9 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
             @FIRE.started -= instance.OnFIRE;
             @FIRE.performed -= instance.OnFIRE;
             @FIRE.canceled -= instance.OnFIRE;
+            @CHANGE_MODE.started -= instance.OnCHANGE_MODE;
+            @CHANGE_MODE.performed -= instance.OnCHANGE_MODE;
+            @CHANGE_MODE.canceled -= instance.OnCHANGE_MODE;
         }
 
         public void RemoveCallbacks(ISPECTATORActions instance)
@@ -428,12 +543,16 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
     // CAR
     private readonly InputActionMap m_CAR;
     private List<ICARActions> m_CARActionsCallbackInterfaces = new List<ICARActions>();
-    private readonly InputAction m_CAR_Newaction;
+    private readonly InputAction m_CAR_MOVE;
+    private readonly InputAction m_CAR_CHANGE_MODE;
+    private readonly InputAction m_CAR_HANDBREAK;
     public struct CARActions
     {
         private @NewControls m_Wrapper;
         public CARActions(@NewControls wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Newaction => m_Wrapper.m_CAR_Newaction;
+        public InputAction @MOVE => m_Wrapper.m_CAR_MOVE;
+        public InputAction @CHANGE_MODE => m_Wrapper.m_CAR_CHANGE_MODE;
+        public InputAction @HANDBREAK => m_Wrapper.m_CAR_HANDBREAK;
         public InputActionMap Get() { return m_Wrapper.m_CAR; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -443,16 +562,28 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
         {
             if (instance == null || m_Wrapper.m_CARActionsCallbackInterfaces.Contains(instance)) return;
             m_Wrapper.m_CARActionsCallbackInterfaces.Add(instance);
-            @Newaction.started += instance.OnNewaction;
-            @Newaction.performed += instance.OnNewaction;
-            @Newaction.canceled += instance.OnNewaction;
+            @MOVE.started += instance.OnMOVE;
+            @MOVE.performed += instance.OnMOVE;
+            @MOVE.canceled += instance.OnMOVE;
+            @CHANGE_MODE.started += instance.OnCHANGE_MODE;
+            @CHANGE_MODE.performed += instance.OnCHANGE_MODE;
+            @CHANGE_MODE.canceled += instance.OnCHANGE_MODE;
+            @HANDBREAK.started += instance.OnHANDBREAK;
+            @HANDBREAK.performed += instance.OnHANDBREAK;
+            @HANDBREAK.canceled += instance.OnHANDBREAK;
         }
 
         private void UnregisterCallbacks(ICARActions instance)
         {
-            @Newaction.started -= instance.OnNewaction;
-            @Newaction.performed -= instance.OnNewaction;
-            @Newaction.canceled -= instance.OnNewaction;
+            @MOVE.started -= instance.OnMOVE;
+            @MOVE.performed -= instance.OnMOVE;
+            @MOVE.canceled -= instance.OnMOVE;
+            @CHANGE_MODE.started -= instance.OnCHANGE_MODE;
+            @CHANGE_MODE.performed -= instance.OnCHANGE_MODE;
+            @CHANGE_MODE.canceled -= instance.OnCHANGE_MODE;
+            @HANDBREAK.started -= instance.OnHANDBREAK;
+            @HANDBREAK.performed -= instance.OnHANDBREAK;
+            @HANDBREAK.canceled -= instance.OnHANDBREAK;
         }
 
         public void RemoveCallbacks(ICARActions instance)
@@ -478,9 +609,12 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
         void OnMOVE_UPDOWN(InputAction.CallbackContext context);
         void OnMOVE_SPEEDSLOW(InputAction.CallbackContext context);
         void OnFIRE(InputAction.CallbackContext context);
+        void OnCHANGE_MODE(InputAction.CallbackContext context);
     }
     public interface ICARActions
     {
-        void OnNewaction(InputAction.CallbackContext context);
+        void OnMOVE(InputAction.CallbackContext context);
+        void OnCHANGE_MODE(InputAction.CallbackContext context);
+        void OnHANDBREAK(InputAction.CallbackContext context);
     }
 }

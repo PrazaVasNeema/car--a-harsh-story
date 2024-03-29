@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028352, g: 0.22571376, b: 0.30692244, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2775,6 +2775,7 @@ GameObject:
   - component: {fileID: 695818175}
   - component: {fileID: 695818174}
   - component: {fileID: 695818177}
+  - component: {fileID: 695818178}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -2866,12 +2867,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 695818173}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5ad8cc673ce43ff40a3fa9ed123e107d, type: 3}
+  m_Script: {fileID: 11500000, guid: b4d877ab950d6ac47b89b1bf283bc8a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_maxSpeed: 15
-  m_mouseSensitivity: 0.5
   m_attackManager: {fileID: 628119129}
+  m_spectatorMovementComponent: {fileID: 695818178}
+--- !u!114 &695818178
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 695818173}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4940399f77896e5419b995c7ba8289d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_maxSpeed: 10
+  m_mouseSensitivity: 2
 --- !u!1 &699122612
 GameObject:
   m_ObjectHideFlags: 0
@@ -5947,7 +5961,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_gameInputManager: {fileID: 1549374078}
-  m_playerSpectatorMovementComponent: {fileID: 695818177}
+  m_spectatorController: {fileID: 695818177}
+  m_carController: {fileID: 1902007296}
 --- !u!4 &1796538601
 Transform:
   m_ObjectHideFlags: 0
@@ -6528,6 +6543,65 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!1 &1902007294
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1902007297}
+  - component: {fileID: 1902007296}
+  - component: {fileID: 1902007295}
+  m_Layer: 0
+  m_Name: Car
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1902007295
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1902007294}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50af03275b405d9418ab22439b46f1a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_prometeoCarController: {fileID: 0}
+--- !u!114 &1902007296
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1902007294}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73e96f7fef803ed4fbd5e1d1b7f191c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_handleCarBehaviourComponent: {fileID: 1902007295}
+--- !u!4 &1902007297
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1902007294}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.029268524, y: 0.7070603, z: 0.70594287, w: 0.029222263}
+  m_LocalPosition: {x: 162.755, y: 0.766, z: 142.471}
+  m_LocalScale: {x: 2.3523016, y: 2.3523006, z: 2.352301}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2083907439
 GameObject:
   m_ObjectHideFlags: 0
@@ -19442,3 +19516,4 @@ SceneRoots:
   - {fileID: 358777999}
   - {fileID: 504894241}
   - {fileID: 201382258}
+  - {fileID: 1902007297}
