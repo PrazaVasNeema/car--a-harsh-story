@@ -11,6 +11,8 @@ public struct IsHingeJoint : IComponent {
     public int HPThreshold;
     public float minAngle;
     public float maxAngle;
+    public float bounciness;
+    public float bounceMinVelocity;
     [HideInInspector]
     public HingeJoint hingeJoint;
 }

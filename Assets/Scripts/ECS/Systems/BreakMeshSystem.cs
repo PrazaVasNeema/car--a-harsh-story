@@ -66,7 +66,8 @@ public sealed class BreakMeshSystem : UpdateSystem {
                     // hingeJoint.limits.min = 
                     var isHingeJoint = entity.GetComponent<IsHingeJoint>();
                     
-                    isHingeJoint.hingeJoint.limits = new JointLimits() { min = isHingeJoint.minAngle, max = isHingeJoint.maxAngle };
+                    isHingeJoint.hingeJoint.limits = new JointLimits() { min = isHingeJoint.minAngle, max = isHingeJoint.maxAngle, 
+                    bounciness = isHingeJoint.bounciness, bounceMinVelocity = isHingeJoint.bounceMinVelocity};
                     
                 }
             }
