@@ -21,27 +21,52 @@ public sealed class CheckDamageDealtSystem : UpdateSystem {
         {
         foreach (var change in changes)
         {
+                Debug.Log($"TEST: 1");
             if (change.collision.contactCount == 0)
                 continue;
             float damageAmount = change.collision.impulse.magnitude;
                 damageAmount = change.collision.GetContact(0).impulse.magnitude;
-            //Debug.Log($"EntityName: {change.targetEntity.GetComponent<TransformRef>().transform.name}");
-            if (damageAmount >= m_settingsData.spawnDecalsHPThreshold && change.targetEntity.Has<IsDamageDecalReceiver>())
+                Debug.Log($"TEST: 2");
+
+                //Debug.Log($"EntityName: {change.targetEntity.GetComponent<TransformRef>().transform.name}");
+                if (damageAmount >= m_settingsData.spawnDecalsHPThreshold && change.targetEntity.Has<IsDamageDecalReceiver>())
             {
-                // List<ContactPoint> contact = new List<ContactPoint>();
-                // Debug.Log("Test1");
-                // foreach (var VARIABLE in change.collision.contacts)
-                // {
-                //     
-                // }
-                this.World.GetRequest<SpawnDamageDecalRequest>().Publish(new SpawnDamageDecalRequest { targetEntity = change.targetEntity, ContactPoint = change.collision.GetContact(0) }, true);
+                    // List<ContactPoint> contact = new List<ContactPoint>();
+                    // Debug.Log("Test1");
+                    // foreach (var VARIABLE in change.collision.contacts)
+                    // {
+                    //     
+                    // }
+                    Debug.Log($"TEST: 3");
+
+                    this.World.GetRequest<SpawnDamageDecalRequest>().Publish(new SpawnDamageDecalRequest { targetEntity = change.targetEntity, ContactPoint = change.collision.GetContact(0) }, true);
             }
-            if (change.targetEntity.Has<HealthComponent>())
-                this.World.GetRequest<DoDamageRequest>().Publish(new DoDamageRequest { targetEntity = change.targetEntity, damageAmount = damageAmount }, true);
-            if (damageAmount >= m_settingsData.gigaSplashHPThreshold)
+                Debug.Log($"TEST: 4");
+
+                if (change.targetEntity.Has<HealthComponent>())
+                {
+                    Debug.Log($"TEST: 5");
+
+                    this.World.GetRequest<DoDamageRequest>().Publish(new DoDamageRequest { targetEntity = change.targetEntity, damageAmount = damageAmount }, true);
+                }
+                Debug.Log($"TEST: 6");
+
+                if (damageAmount >= m_settingsData.gigaSplashHPThreshold)
             {
-                var a = change.targetEntity.GetComponent<TransformRef>().transform;
+                    Debug.Log($"TEST: 7");
+
+                    var a = change.targetEntity.GetComponent<TransformRef>().transform;
+                    Debug.Log($"TEST: 8");
+
+                    if (a.GetComponentInParent<CollisionDetection>() == null)
+                        break;
                     var entitiesList = a.GetComponentInParent<CollisionDetection>().entitiesWithHealth;
+                    Debug.Log($"TEST: 9");
+
+                    Debug.Log($"Affected: {entitiesList.Count}");
+                    Debug.Log($"TEST: 10");
+
+                    Debug.Log($"AffectedNAMEE: {a.name}");
                     foreach (var entity in entitiesList)
                     {
                         var entityTransform = entity.GetComponent<TransformRef>().transform;

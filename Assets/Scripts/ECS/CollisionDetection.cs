@@ -7,11 +7,14 @@ using Scellecs.Morpeh;
 
 public class CollisionDetection : MonoBehaviour
 {
+    [SerializeField] private bool m_splashDamageEnabled = false;
     [SerializeField] private List<Entity> m_entitiesWithHealth;
     public List<Entity> entitiesWithHealth => m_entitiesWithHealth;
 
     private void Start()
     {
+        if (!m_splashDamageEnabled)
+            return;
         foreach (var collider in GetComponentsInChildren<Collider>())
         {
             if (collider.TryGetComponent<HealthComponentProvider>(out var a))
@@ -40,7 +43,8 @@ public class CollisionDetection : MonoBehaviour
     {
 
         if (GameData.instance.currentWorld != null) 
-        { 
+        {
+            Debug.Log($"NAMEEE: {gameObject.name}");
             GameData.instance.currentWorld.GetEvent<OnCollisionEnterEvent>().NextFrame(new OnCollisionEnterEvent { targetEntity = affectedEntity, collision = collision });
         }
 
