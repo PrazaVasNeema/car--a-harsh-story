@@ -29,6 +29,7 @@ public sealed class BreakMeshSystem : UpdateSystem {
             {
                 if (entity.Has<IsBreakableMesh>())
                 {
+                    entity.GetComponent<TransformRef>().transform.GetComponentInParent<CollisionDetection>().RemoveEntityFromTheList(entity);
                     var a = entity.GetComponent<IsBreakableMesh>();
                     a.whole.SetActive(false);
                     GameData.instance.AddBrokenGlass(a.broken);
@@ -38,6 +39,7 @@ public sealed class BreakMeshSystem : UpdateSystem {
                 }
                 else if (entity.Has<IsDetachable>())
                 {
+                    entity.GetComponent<TransformRef>().transform.GetComponentInParent<CollisionDetection>().RemoveEntityFromTheList(entity);
                     GameData.instance.AddBrokenDetail(entity.GetComponent<TransformRef>().transform.gameObject);
                     var transform = entity.GetComponent<TransformRef>().transform;
                     if (transform.TryGetComponent(out Rigidbody body))

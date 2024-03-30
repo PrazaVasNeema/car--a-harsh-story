@@ -7,10 +7,18 @@ using Scellecs.Morpeh;
 
 public class CollisionDetection : MonoBehaviour
 {
+    [SerializeField] private List<Entity> m_entitiesWithHealth;
+    public List<Entity> entitiesWithHealth => m_entitiesWithHealth;
 
     private void Start()
     {
-        
+        foreach (var collider in GetComponentsInChildren<Collider>())
+        {
+            if (collider.TryGetComponent<HealthComponentProvider>(out var a))
+            {
+                m_entitiesWithHealth.Add(a.Entity);
+            }
+        }
     }
 
     private void OnCollisionEnter(Collision other)
@@ -36,6 +44,11 @@ public class CollisionDetection : MonoBehaviour
             GameData.instance.currentWorld.GetEvent<OnCollisionEnterEvent>().NextFrame(new OnCollisionEnterEvent { targetEntity = affectedEntity, collision = collision });
         }
 
+    }
+
+    public void RemoveEntityFromTheList(Entity entityToRemove)
+    {
+        m_entitiesWithHealth.Remove(entityToRemove);
     }
     
 }

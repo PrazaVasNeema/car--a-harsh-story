@@ -44,7 +44,7 @@ public sealed class SpawnDamageDecalSystem : UpdateSystem {
             targetPosition = contactPoint.point;
             var b = Instantiate(GameData.instance.damageSystemSetting.data.decalPrefabs[0], targetPosition,
                 a);
-            b.transform.parent = spawnDecalRequest.targetEntity.GetComponent<TransformRef>().transform;
+            b.transform.parent =    spawnDecalRequest.targetEntity.GetComponent<TransformRef>().transform;
         }
     }
 }
