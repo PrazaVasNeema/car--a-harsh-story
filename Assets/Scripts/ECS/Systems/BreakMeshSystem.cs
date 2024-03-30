@@ -40,10 +40,20 @@ public sealed class BreakMeshSystem : UpdateSystem {
                 {
                     GameData.instance.AddBrokenDetail(entity.GetComponent<TransformRef>().transform.gameObject);
                     var transform = entity.GetComponent<TransformRef>().transform;
-                    transform.AddComponent<Rigidbody>();
-                    if (transform.TryGetComponent(out HingeJoint a))
+                    if (transform.TryGetComponent(out Rigidbody body))
                     {
-                        Destroy(a);
+                        if (transform.TryGetComponent(out HingeJoint hingeJoint))
+                        {
+                            Destroy(hingeJoint);
+                        }
+                        if (transform.TryGetComponent(out CollisionDetectionOutpost collisionDetectionOutpost))
+                        {
+                            Destroy(collisionDetectionOutpost);
+                        }
+                    }
+                    else
+                    {
+                        transform.AddComponent<Rigidbody>();
                     }
                 }
             }
@@ -56,7 +66,6 @@ public sealed class BreakMeshSystem : UpdateSystem {
                     
                     isHingeJoint.hingeJoint.limits = new JointLimits() { min = isHingeJoint.minAngle, max = isHingeJoint.maxAngle };
                     
-                    Debug.Log("test4234");
                 }
             }
         }

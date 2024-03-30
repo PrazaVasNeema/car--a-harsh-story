@@ -15,22 +15,15 @@ public sealed class CheckDamageDealtSystem : UpdateSystem {
     
     public override void OnAwake()
     {
-        this.filter = this.World.Filter.With<OnCollisionEnterEventKolhoz>().Build();
         m_settingsData = GameData.instance.damageSystemSetting.data;
 
         var onCollisionEnterEvent = this.World.GetEvent<OnCollisionEnterEvent>().Subscribe(changes =>
         {
-            Debug.Log("Test2");
             foreach (var change in changes)
             {
-                Debug.Log("Test3");
-                if (change.collision.contactCount == 0 || !change.targetEntity.Has<HealthComponent>())
+                if (change.collision.contactCount == 0)
                     continue;
-                Debug.Log($"Entity: {change.targetEntity.ID}");
                 float damageAmount = change.collision.impulse.sqrMagnitude;
-                Debug.Log($"1: {damageAmount >= m_settingsData.spawnDecalsHPThreshold}, 2: {change.targetEntity.Has<IsDamageDecalReceiver>()}");
-                Debug.Log($"change.collision.GetContact(0): {change.collision.GetContact(0)}");
-                Debug.Log($"change.collision.GetContacts(0): {change.collision.contactCount}");
                 if (damageAmount >= m_settingsData.spawnDecalsHPThreshold && change.targetEntity.Has<IsDamageDecalReceiver>())
                 {
                     // List<ContactPoint> contact = new List<ContactPoint>();
@@ -41,7 +34,8 @@ public sealed class CheckDamageDealtSystem : UpdateSystem {
                     // }
                     this.World.GetRequest<SpawnDamageDecalRequest>().Publish(new SpawnDamageDecalRequest { targetEntity = change.targetEntity, ContactPoint = change.collision.GetContact(0)}, true);
                 }
-                this.World.GetRequest<DoDamageRequest>().Publish(new DoDamageRequest { targetEntity = change.targetEntity, damageAmount = damageAmount}, true);
+                if (change.targetEntity.Has<HealthComponent>())
+                    this.World.GetRequest<DoDamageRequest>().Publish(new DoDamageRequest { targetEntity = change.targetEntity, damageAmount = damageAmount}, true);
             }
         });
     }

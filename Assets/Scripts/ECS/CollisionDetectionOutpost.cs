@@ -8,7 +8,8 @@ public class CollisionDetectionOutpost : MonoBehaviour
 {
     private Entity m_correspondingEntity;
     private CollisionDetection m_collisionDetectionHQ;
-    private bool test = false;
+
+    private bool isInitialized = false;
 
     private void Awake()
     {
@@ -18,17 +19,21 @@ public class CollisionDetectionOutpost : MonoBehaviour
 
     private void Start()
     {
-        m_correspondingEntity = GetComponent<HealthComponentProvider>().GetEntity();
-        m_collisionDetectionHQ = GetComponentInParent<CollisionDetection>();
-        Debug.Log(m_correspondingEntity.ID);
-        test = true;
+        if (TryGetComponent<EntityReverseProvider>(out var entityReverseProvider))
+        {
+            m_correspondingEntity = entityReverseProvider.GetEntity();
+            m_collisionDetectionHQ = GetComponentInParent<CollisionDetection>();
+            isInitialized = true;
+        }
+        else
+            Destroy(this);
+        
     }
 
     private void OnCollisionEnter(Collision other)
     {
-        if (test)
+        if (isInitialized)
             m_collisionDetectionHQ.PublishCollisionEvent(other, m_correspondingEntity);
-        
     }
     
     

@@ -7,14 +7,15 @@ using UnityEngine;
 [Il2CppSetOption(Option.NullChecks, false)]
 [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
 [Il2CppSetOption(Option.DivideByZeroChecks, false)]
-public struct HealthComponent : IComponent
-{
-    public int HP;
+public struct EntityReverse : IComponent {
 }
 
 [Il2CppSetOption(Option.NullChecks, false)]
 [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
 [Il2CppSetOption(Option.DivideByZeroChecks, false)]
-public sealed class HealthComponentProvider : MonoProvider<HealthComponent> {
-
+public sealed class EntityReverseProvider : MonoProvider<EntityReverse> {
+    public Entity GetEntity()
+    {
+        return this.Entity;
+    }
 }
