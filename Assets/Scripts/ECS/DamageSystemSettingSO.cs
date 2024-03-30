@@ -13,7 +13,13 @@ public class DamageSystemSettingSO : ScriptableObject
     public class Data
     {
         public float spawnDecalsHPThreshold = 10;
+        public float gigaSplashHPThreshold = 100;
+        public float gigaSplashSphereRadius = 2;
+        public float gigaSplashCastDistance = 2;
+        public LayerMask gigaSplashLayerMask;
         public float impactForceModifier;
         public List<GameObject> decalPrefabs;
+
+
     }
 }
