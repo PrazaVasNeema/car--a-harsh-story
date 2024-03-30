@@ -15,6 +15,8 @@ public struct IsHingeJoint : IComponent {
     public float bounceMinVelocity;
     [HideInInspector]
     public HingeJoint hingeJoint;
+    [HideInInspector]
+    public bool hasBeenDone;
 }
 
 [Il2CppSetOption(Option.NullChecks, false)]
@@ -28,5 +30,6 @@ public sealed class IsHingeJointProvider : MonoProvider<IsHingeJoint> {
         // this.GetData().hingeJoint = GetComponent<HingeJoint>();
         // hingeJoint.limits = joinLimit;
         this.GetData().hingeJoint.limits = new JointLimits() { min = 0, max = 0 };
+        this.GetData().hasBeenDone = false;
     }
 }

@@ -36,7 +36,7 @@ public sealed class DoDamageSystem : UpdateSystem {
             }
             else
             {
-                if (doDamageRequest.targetEntity.Has<IsHingeJoint>() && healthComponent.HP <= doDamageRequest.targetEntity.GetComponent<IsHingeJoint>().HPThreshold)
+                if (doDamageRequest.targetEntity.Has<IsHingeJoint>() && !doDamageRequest.targetEntity.GetComponent<IsHingeJoint>().hasBeenDone && healthComponent.HP <= doDamageRequest.targetEntity.GetComponent<IsHingeJoint>().HPThreshold)
                 {
                     this.World.GetRequest<BreakThisRequest>().Publish(new BreakThisRequest {targetEntity = doDamageRequest.targetEntity, breakCompletely = false}, true);
                 }

@@ -34,7 +34,8 @@ public sealed class BreakMeshSystem : UpdateSystem {
                     a.whole.SetActive(false);
                     GameData.instance.AddBrokenGlass(a.broken);
                     a.broken.SetActive(true);
-                   
+                    a.toBeLeft.SetActive(true);
+
                     entity.Dispose();
                 }
                 else if (entity.Has<IsDetachable>())
@@ -68,7 +69,8 @@ public sealed class BreakMeshSystem : UpdateSystem {
                     
                     isHingeJoint.hingeJoint.limits = new JointLimits() { min = isHingeJoint.minAngle, max = isHingeJoint.maxAngle, 
                     bounciness = isHingeJoint.bounciness, bounceMinVelocity = isHingeJoint.bounceMinVelocity};
-                    
+                    isHingeJoint.hasBeenDone = true;
+
                 }
             }
         }

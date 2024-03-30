@@ -11,6 +11,7 @@ public struct IsBreakableMesh : IComponent
 {
     public GameObject whole;
     public GameObject broken;
+    public GameObject toBeLeft;
 }
 
 [Il2CppSetOption(Option.NullChecks, false)]
