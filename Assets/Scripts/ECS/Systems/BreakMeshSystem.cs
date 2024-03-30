@@ -40,6 +40,7 @@ public sealed class BreakMeshSystem : UpdateSystem {
                 {
                     GameData.instance.AddBrokenDetail(entity.GetComponent<TransformRef>().transform.gameObject);
                     var transform = entity.GetComponent<TransformRef>().transform;
+                    transform.AddComponent<Rigidbody>();
                     if (transform.TryGetComponent(out HingeJoint a))
                     {
                         Destroy(a);
