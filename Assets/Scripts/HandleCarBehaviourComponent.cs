@@ -58,6 +58,15 @@ public class HandleCarBehaviourComponent : MonoBehaviour
         {
             m_prometeoCarController.ResetSteeringAngle();
         }
+
+        if(moveVector.y == -1 || m_handbreakStatus)
+        {
+            m_prometeoCarController.SetAcceleratingBackwards(true);
+        }
+        else
+        {
+            m_prometeoCarController.SetAcceleratingBackwards(false);
+        }
     }
 
     public void SetHandbrakeStatus(bool handbreakStatus)

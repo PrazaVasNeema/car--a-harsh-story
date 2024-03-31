@@ -12,6 +12,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Experimental.GlobalIllumination;
 using UnityEngine.UI;
 
 public class PrometeoCarController : MonoBehaviour
@@ -55,6 +56,7 @@ public class PrometeoCarController : MonoBehaviour
     collider components of the wheels. The wheel collider components and 3D meshes of the wheels cannot come from the same
     game object; they must be separate game objects.
     */
+    [SerializeField] private Transform m_checkForGround;
     public GameObject frontLeftMesh;
     public WheelCollider frontLeftCollider;
     [Space(10)]
@@ -104,6 +106,13 @@ public class PrometeoCarController : MonoBehaviour
     public AudioSource tireScreechSound; // This variable stores the sound of the tire screech (when the car is drifting).
     float initialCarEngineSoundPitch; // Used to store the initial pitch of the car engine sound.
 
+    //LIGHTS MINE
+    [Space(30)]
+    [SerializeField] private bool m_useBackLights;
+    [SerializeField] private GameObject m_leftBackLight;
+    [SerializeField] private GameObject m_rightBackLight;
+    private bool acceleratingBackwards = false;
+
     //CONTROLS
 
     [Space(20)]
@@ -116,7 +125,9 @@ public class PrometeoCarController : MonoBehaviour
     //CAR DATA
 
     [HideInInspector]
-    public float carSpeed; // Used to store the speed of the car.
+    public float carSpeed = 0; // Used to store the speed of the car.
+    [HideInInspector]
+    public float carSpeedPrevFrame; // Used to store the speed of the car.
     [HideInInspector]
     public bool isDrifting; // Used to know whether the car is drifting or not.
     [HideInInspector]
@@ -227,6 +238,22 @@ public class PrometeoCarController : MonoBehaviour
             }
         }
 
+        if (m_useBackLights)
+        {
+            InvokeRepeating("UseBackLights", 0f, 0.1f);
+        }
+        else if (!m_useBackLights)
+        {
+            if (m_leftBackLight != null)
+            {
+                m_leftBackLight.SetActive(false);
+            }
+            if (m_rightBackLight != null)
+            {
+                m_rightBackLight.SetActive(false);
+            }
+        }
+
         if (!useEffects)
         {
             if (RLWParticleSystem != null)
@@ -255,7 +282,7 @@ public class PrometeoCarController : MonoBehaviour
     {
 
         //CAR DATA
-
+        carSpeedPrevFrame = carSpeed;
         // We determine the speed of the car.
         carSpeed = (2 * Mathf.PI * frontLeftCollider.radius * frontLeftCollider.rpm * 60) / 1000;
         // Save the local velocity of the car in the x axis. Used to know if the car is drifting.
@@ -367,14 +394,14 @@ public class PrometeoCarController : MonoBehaviour
                     float engineSoundPitch = initialCarEngineSoundPitch + (Mathf.Abs(carRigidbody.velocity.magnitude) / 25f);
                     carEngineSound.pitch = engineSoundPitch;
                 }
-                if ((isDrifting) || (isTractionLocked && Mathf.Abs(carSpeed) > 12f))
+                if (IsGrounded() && (isDrifting) || (isTractionLocked && Mathf.Abs(carSpeed) > 12f))
                 {
                     if (!tireScreechSound.isPlaying)
                     {
                         tireScreechSound.Play();
                     }
                 }
-                else if ((!isDrifting) && (!isTractionLocked || Mathf.Abs(carSpeed) < 12f))
+                else if ((!isDrifting) && (!isTractionLocked || Mathf.Abs(carSpeed) < 12f) || !IsGrounded())
                 {
                     tireScreechSound.Stop();
                 }
@@ -395,6 +422,35 @@ public class PrometeoCarController : MonoBehaviour
                 tireScreechSound.Stop();
             }
         }
+
+    }
+
+
+    public void UseBackLights()
+    {
+
+        if (m_useBackLights)
+        {
+            try
+            {
+                if (acceleratingBackwards)
+                {
+                    m_leftBackLight.SetActive(true);
+                    m_rightBackLight.SetActive(true);
+                }
+                else
+                {
+                    m_leftBackLight.SetActive(false);
+                    m_rightBackLight.SetActive(false);
+                }
+               
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning(ex);
+            }
+        }
+
 
     }
 
@@ -841,6 +897,16 @@ public class PrometeoCarController : MonoBehaviour
     public void SetDeceleratingCar(bool deceleratingCarFlagValue)
     {
         deceleratingCar = deceleratingCarFlagValue;
+    }
+
+    public bool IsGrounded()
+    {
+        return Physics.Raycast(m_checkForGround.position, -m_checkForGround.up, (float)2.1);
+    }
+
+    public void SetAcceleratingBackwards(bool flagToSet)
+    {
+        acceleratingBackwards = flagToSet;
     }
 
 }
