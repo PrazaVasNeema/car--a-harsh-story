@@ -25,6 +25,7 @@ struct Interpolators {
     float3 positionWS : TEXCOORD2;
     float4 tangentWS : VAR_TANGENT;
     float3 normalWS : TEXCOORD3;
+    float4 positionCS: TEXCOORD4;
 
     UNITY_VERTEX_INPUT_INSTANCE_ID
 };
@@ -48,6 +49,8 @@ Interpolators vert(MeshData i)
     o.positionWS = TransformObjectToWorld(i.position);
     o.tangentWS = float4(TransformObjectToWorldDir(i.tangentOS.xyz), i.tangentOS.w);
     o.normalWS = TransformObjectToWorldNormal(i.normal);
+
+    o.positionCS = TransformObjectToHClip(i.position);
     return o;
 }
 
@@ -57,11 +60,38 @@ fragOutput frag(Interpolators i)
 
     fragOutput o;
     
-    o.normalViewSpace = float4(i.normalVS , 1);
+    o.normalViewSpace = mul(Inverse(GetViewToHClipMatrix()), i.position/i.position.w);
+
+    // o.normalViewSpace = float4(i.position.xy-100,0,1);
+
+    o.normalViewSpace = i.position;
+
+    o.normalViewSpace = i.positionCS;
+    
+    // o.normalViewSpace = i.positionCS/i.positionCS.w;
+
+    // o.normalViewSpace = mul(Inverse(GetViewToHClipMatrix()), i.positionCS/i.positionCS.w);
+
+
+    // o.normalViewSpace = float4(mul(Inverse(GetViewToWorldMatrix()), float4(i.positionVS, 1)).xyz, 1);
+
+    
 
     o.positionViewSpace = float4(i.positionVS.xyz, 1);
+
+    // o.positionViewSpace = float4(mul(GetViewToWorldMatrix(), float4(i.positionVS, 1)).xyz, 1);
+
+    // o.positionViewSpace = float4(i.positionWS, 1);
+
+    // o.positionViewSpace = float4(mul(UNITY_MATRIX_I_V, i.normalVS).xyz, 1);
+
+    // o.positionViewSpace = float4(i.normalVS, 1);
+
     
-    o.tangentViewSpace = i.tangentWS;
+    // o.positionViewSpace = float4(TransformViewToWorld(i.positionVS), 1);
+
+
+    o.tangentViewSpace = float4(i.positionWS, 1);
     
     return o;
     

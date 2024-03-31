@@ -19,6 +19,7 @@ namespace DopeRP.CPU
             RAPI.Buffer.GetTemporaryRT(SProps.GBuffer.PositionViewSpaceAtlas, (int)cameraWidthHeight.x, (int)cameraWidthHeight.y, 0, FilterMode.Bilinear, RenderTextureFormat.ARGBFloat);
             RAPI.Buffer.GetTemporaryRT(SProps.GBuffer.NormalViewSpaceAtlas, (int)cameraWidthHeight.x, (int)cameraWidthHeight.y, 0, FilterMode.Bilinear, RenderTextureFormat.ARGBFloat);
             RAPI.Buffer.GetTemporaryRT(SProps.GBuffer.TangentViewSpaceAtlas, (int)cameraWidthHeight.x, (int)cameraWidthHeight.y, 0, FilterMode.Bilinear, RenderTextureFormat.ARGBFloat);
+            RAPI.Buffer.GetTemporaryRT(Shader.PropertyToID("Test"), (int)cameraWidthHeight.x, (int)cameraWidthHeight.y, 32, FilterMode.Bilinear, RenderTextureFormat.Depth);
 
             RenderTargetIdentifier[] colorTargets = {
                 new RenderTargetIdentifier(SProps.GBuffer.PositionViewSpaceAtlas),
@@ -26,8 +27,7 @@ namespace DopeRP.CPU
                 new RenderTargetIdentifier(SProps.GBuffer.TangentViewSpaceAtlas)
 
             };
-            
-            RAPI.Buffer.SetRenderTarget(colorTargets, BuiltinRenderTextureType.CameraTarget);
+            RAPI.Buffer.SetRenderTarget(colorTargets, Shader.PropertyToID("Test"));
             RAPI.Buffer.ClearRenderTarget(true, true, Color.clear);
             
             RAPI.Buffer.SetGlobalFloat(SProps.GBuffer.CameraNearPlane, RAPI.CurCamera.nearClipPlane);
@@ -56,6 +56,7 @@ namespace DopeRP.CPU
             RAPI.Buffer.SetGlobalTexture("_PositionViewSpace", SProps.GBuffer.PositionViewSpaceAtlas);
             RAPI.Buffer.SetGlobalTexture("_NormalViewSpace", SProps.GBuffer.NormalViewSpaceAtlas);
             RAPI.Buffer.SetGlobalTexture("_TangentViewSpace", SProps.GBuffer.TangentViewSpaceAtlas);
+            RAPI.Buffer.SetGlobalTexture("Test", Shader.PropertyToID("Test"));
             
             
             RAPI.ExecuteBuffer();

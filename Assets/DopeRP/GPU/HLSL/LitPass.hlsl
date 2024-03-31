@@ -136,6 +136,7 @@ float4 frag(Interpolators i) : SV_TARGET
 	#else
 		screenSpaceCoordinates = i.positionCS * _ScreenSize.zw;
 	#endif
+	screenSpaceCoordinates = i.positionCS * _ScreenSize.zw;
 
 	#if defined(SSAO_ON)
 	
@@ -145,7 +146,8 @@ float4 frag(Interpolators i) : SV_TARGET
 
 	#endif
 
-	
+	float3 ssao2 = SAMPLE_TEXTURE2D(_SSAOBlurAtlas, sampler_SSAOBlurAtlas, screenSpaceCoordinates).rgb;
+	return float4(ssao2,1);
 
 	// baseColor *= 1;
 

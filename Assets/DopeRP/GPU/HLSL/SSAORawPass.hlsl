@@ -95,6 +95,12 @@ CBUFFER_START(SSAORaw)
     float4x4 _LensProjection;
     float2 _NoiseScale;
 
+    float2 _nearFarPlanes;
+    float4x4 adfgdgf_WorldToCameraMatrix;
+float4x4 adfgdgf_CameraToWorldMatrix;
+
+float4x4 _INVERSE_P;
+
 CBUFFER_END
 
 
@@ -107,6 +113,8 @@ SAMPLER(sampler_PositionViewSpace);
 TEXTURE2D(_NormalViewSpace);
 SAMPLER(sampler_NormalViewSpace);
 
+TEXTURE2D(Test);
+SAMPLER(samplerTest);
 
 struct MeshData
 {
@@ -121,6 +129,8 @@ struct Interpolators
     float4 positionSV : SV_POSITION;
     float2 uv : TEXCOORD0;
 
+    float3 camRelativeWorldPos : TEXCOORD1;
+
     UNITY_VERTEX_INPUT_INSTANCE_ID
 };
 
@@ -133,15 +143,121 @@ Interpolators vert (MeshData i)
 
     o.uv = i.uv;
     o.positionSV = TransformObjectToHClip(i.position);
+
+    o.camRelativeWorldPos = mul(unity_ObjectToWorld, float4(i.position.xyz, 1.0)).xyz - _WorldSpaceCameraPos;
     return o;
 }
 
+// This function reconstructs the view space position from the depth value
+float3 ReconstructViewSpacePosition(float2 uv, float depth)
+{
+    // Convert UV and depth into a homogeneous clip space position
+    float4 clipSpacePosition = float4(uv, depth, 1.0);
+    // Transform clip space position back to view space
+    // float4 viewSpacePosition = mul(clipSpacePosition, _LensProjection);
+    // Perspective division
+    // viewSpacePosition /= viewSpacePosition.w;
+    // return viewSpacePosition.xyz;
+    return clipSpacePosition.xyz;
+}
+
+// Linearizes a Z buffer value
+float CalcLinearZ(float depth, float zNear, float zFar) {
+
+
+    // bias it from [0, 1] to [-1, 1]
+    float lineara = zNear / (zFar - depth * (zFar - zNear)) * zFar;
+
+    return lineara;
+}
+
+// this is supposed to get the world position from the depth buffer
+float3 WorldPosFromDepth(float depth, float2 TexCoord) {
+    float z = depth -1000000;
+
+    float4 clipSpacePosition = float4(TexCoord * 2.0 - 1.0, z, 1.0);
+
+    // return clipSpacePosition;
+    float4 viewSpacePosition = mul(_INVERSE_P, clipSpacePosition);
+    viewSpacePosition.z = viewSpacePosition.z;
+    // Perspective division
+    viewSpacePosition /= viewSpacePosition.w;
+    // return viewSpacePosition.xyz;
+    
+    float4 worldSpacePosition = mul(adfgdgf_CameraToWorldMatrix, viewSpacePosition);
+    
+    return worldSpacePosition.xyz;
+}
 
 float4 frag (Interpolators i) : SV_Target
 {
     UNITY_SETUP_INSTANCE_ID(i);
 
     float4 fragPositionVS = SAMPLE_TEXTURE2D(_PositionViewSpace, sampler_PositionViewSpace, i.uv);
+    float3 normalVSf = normalize(SAMPLE_TEXTURE2D(_NormalViewSpace, sampler_NormalViewSpace, i.uv).xyz);
+    float4 normalVSNOT = SAMPLE_TEXTURE2D(_NormalViewSpace, sampler_NormalViewSpace, i.uv);
+    // return normalVSNOT;
+    // return mul(adfgdgf_CameraToWorldMatrix, fragPositionVS);
+    // return float4(TransformViewToWorld(fragPositionVS), 1);
+// return fragPositionVS;
+    float depth = SAMPLE_TEXTURE2D(Test, samplerTest, i.uv).r;
+
+    depth = lerp(UNITY_NEAR_CLIP_VALUE, 1, depth);
+
+    // zBufferParam = { (f-n)/n, 1, (f-n)/n*f, 1/f }
+    float n = _nearFarPlanes.x;
+    float f = _nearFarPlanes.y;
+    
+    float4 zBufferParam = float4((f-n)/n, 1, (f-n)/n*f, 1/f);
+
+    float sceneZ = LinearEyeDepth(depth, zBufferParam);
+    sceneZ =CalcLinearZ(depth, n, f);
+
+    float4 clipSpacePosition = float4((i.uv * 2.0 - 1.0) * sceneZ/depth, sceneZ, 1.0 * sceneZ/depth);
+
+    float4 viewSpacePosition = mul(_INVERSE_P, clipSpacePosition);
+
+    viewSpacePosition /= viewSpacePosition.w;
+
+    float4 worldSpacePosition = mul(adfgdgf_CameraToWorldMatrix, viewSpacePosition);
+
+    // return worldSpacePosition;
+
+
+    return viewSpacePosition;
+
+
+    // return float4(clipSpacePosition.xyz,1);
+
+    float3 viewPlane = i.camRelativeWorldPos.xyz / dot(i.camRelativeWorldPos.xyz, adfgdgf_WorldToCameraMatrix._m20_m21_m22);
+
+    float3 worldPos = viewPlane * sceneZ + _WorldSpaceCameraPos;
+    worldPos = mul(adfgdgf_CameraToWorldMatrix, float4(worldPos, 1.0));
+
+    float4 col = 0;
+    col.rgb = saturate(2.0 - abs(frac(worldPos) * 2.0 - 1.0) * 100.0);
+
+    float3 wp2 = ComputeWorldSpacePosition(i.uv, depth, mul(Inverse(GetViewToHClipMatrix()), UNITY_MATRIX_I_V));
+
+    // return mul(UNITY_MATRIX_I_V, fragPositionVS);
+
+    // return float4(wp2, 1);
+    
+    // return col;
+    // return float4(worldPos, 1);
+
+    float3 ab = WorldPosFromDepth(depth, i.uv);
+
+    // return float4(ab, 1);
+
+
+    float3 testReconstruct = ReconstructViewSpacePosition(i.uv, depth);
+    // return float4(testReconstruct,1);
+    // return float4(depth.xxx, 1);
+
+    // float4 fragPositionVS = SAMPLE_TEXTURE2D(_PositionViewSpace, sampler_PositionViewSpace, i.uv);
+
+    fragPositionVS = viewSpacePosition;
 
     clip(fragPositionVS.a);
 
@@ -164,11 +280,11 @@ float4 frag (Interpolators i) : SV_Target
         offsetUV.xyz /= offsetUV.w;
         offsetUV.xy = offsetUV.xy * 0.5 + 0.5;
 
-        float4 offsetPositionVS = SAMPLE_TEXTURE2D(_PositionViewSpace, sampler_PositionViewSpace, offsetUV.xy);
+        float offsetPositionDEPTH = SAMPLE_TEXTURE2D(Test, samplerTest, offsetUV.xy).r;
 
 
-        float intensity = smoothstep(HALF_ZERO, HALF_ONE, _SampleRadius / abs(fragPositionVS.z - offsetPositionVS.z));
-        occlusion += when_ge(offsetPositionVS.z, samplePositionVS.z + _Bias) * intensity;
+        float intensity = smoothstep(HALF_ZERO, HALF_ONE, _SampleRadius / abs(fragPositionVS.z - offsetPositionDEPTH));
+        occlusion += when_ge(offsetPositionDEPTH, samplePositionVS.z + _Bias) * intensity;
     }
 
     occlusion /= SAMPLES_COUNT;

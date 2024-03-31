@@ -26,6 +26,19 @@ namespace DopeRP.CPU
             RAPI.Buffer.SetGlobalMatrix(SProps.SSAO.LensProjection, projectionMatrix);
             RAPI.Buffer.SetGlobalVector(SProps.SSAO.NoiseScale, new Vector4(RAPI.CurCamera.pixelWidth/ssaoSettings.randomSize, RAPI.CurCamera.pixelHeight/ssaoSettings.randomSize, 0f, 0f));
             RAPI.SetKeywords(ssaoSettings.samplesCount);
+
+            var camPos = RAPI.CurCamera.transform.position;
+            RAPI.Buffer.SetGlobalVector(Shader.PropertyToID("_WorldSpaceCameraPos"), new Vector4(camPos.x, camPos.y, camPos.z, 0 ));
+            RAPI.Buffer.SetGlobalVector(Shader.PropertyToID("_nearFarPlanes"), new Vector4(RAPI.CurCamera.nearClipPlane, RAPI.CurCamera.farClipPlane, 0, 0 ));
+            RAPI.Buffer.SetGlobalMatrix(Shader.PropertyToID("adfgdgf_WorldToCameraMatrix"),  RAPI.CurCamera.worldToCameraMatrix);
+            RAPI.Buffer.SetGlobalMatrix(Shader.PropertyToID("adfgdgf_CameraToWorldMatrix"),  RAPI.CurCamera.cameraToWorldMatrix);
+            
+            Matrix4x4 invProjectionMatrix = RAPI.CurCamera.projectionMatrix.inverse;
+            RAPI.Buffer.SetGlobalMatrix(Shader.PropertyToID("_INVERSE_P"), invProjectionMatrix);
+            
+
+
+            
             
             RAPI.ExecuteBuffer();
             
