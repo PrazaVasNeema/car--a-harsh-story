@@ -289,6 +289,15 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""FRONT_LIGHTS"",
+                    ""type"": ""Button"",
+                    ""id"": ""57470fe9-65a1-447b-b1dd-bf4b55c9e95d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -368,6 +377,17 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
                     ""action"": ""CHANGE_MODE"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5813a64c-83ac-4562-b43e-760e502468d2"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""FRONT_LIGHTS"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -388,6 +408,7 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
         m_CAR_MOVE = m_CAR.FindAction("MOVE", throwIfNotFound: true);
         m_CAR_CHANGE_MODE = m_CAR.FindAction("CHANGE_MODE", throwIfNotFound: true);
         m_CAR_HANDBREAK = m_CAR.FindAction("HANDBREAK", throwIfNotFound: true);
+        m_CAR_FRONT_LIGHTS = m_CAR.FindAction("FRONT_LIGHTS", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -546,6 +567,7 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_CAR_MOVE;
     private readonly InputAction m_CAR_CHANGE_MODE;
     private readonly InputAction m_CAR_HANDBREAK;
+    private readonly InputAction m_CAR_FRONT_LIGHTS;
     public struct CARActions
     {
         private @NewControls m_Wrapper;
@@ -553,6 +575,7 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
         public InputAction @MOVE => m_Wrapper.m_CAR_MOVE;
         public InputAction @CHANGE_MODE => m_Wrapper.m_CAR_CHANGE_MODE;
         public InputAction @HANDBREAK => m_Wrapper.m_CAR_HANDBREAK;
+        public InputAction @FRONT_LIGHTS => m_Wrapper.m_CAR_FRONT_LIGHTS;
         public InputActionMap Get() { return m_Wrapper.m_CAR; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -571,6 +594,9 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
             @HANDBREAK.started += instance.OnHANDBREAK;
             @HANDBREAK.performed += instance.OnHANDBREAK;
             @HANDBREAK.canceled += instance.OnHANDBREAK;
+            @FRONT_LIGHTS.started += instance.OnFRONT_LIGHTS;
+            @FRONT_LIGHTS.performed += instance.OnFRONT_LIGHTS;
+            @FRONT_LIGHTS.canceled += instance.OnFRONT_LIGHTS;
         }
 
         private void UnregisterCallbacks(ICARActions instance)
@@ -584,6 +610,9 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
             @HANDBREAK.started -= instance.OnHANDBREAK;
             @HANDBREAK.performed -= instance.OnHANDBREAK;
             @HANDBREAK.canceled -= instance.OnHANDBREAK;
+            @FRONT_LIGHTS.started -= instance.OnFRONT_LIGHTS;
+            @FRONT_LIGHTS.performed -= instance.OnFRONT_LIGHTS;
+            @FRONT_LIGHTS.canceled -= instance.OnFRONT_LIGHTS;
         }
 
         public void RemoveCallbacks(ICARActions instance)
@@ -616,5 +645,6 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
         void OnMOVE(InputAction.CallbackContext context);
         void OnCHANGE_MODE(InputAction.CallbackContext context);
         void OnHANDBREAK(InputAction.CallbackContext context);
+        void OnFRONT_LIGHTS(InputAction.CallbackContext context);
     }
 }

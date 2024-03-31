@@ -9,6 +9,8 @@ public class CarController : PlayerActorControllerAbstract
 
     private GameInputManager.CarActorInputManager m_carActorInputManager;
 
+    [SerializeField] private GameObject m_frontLights;
+
     public override void Init(GameInputManager.ActorInputManagerAbstract actorInputManager)
     {
         base.Init(actorInputManager);
@@ -21,9 +23,8 @@ public class CarController : PlayerActorControllerAbstract
         base.Activate();
         m_carActorInputManager.OnHandbreakAction += M_carActorInputManager_OnHandbreakAction;
         m_carActorInputManager.OnHandbreakActionCanceled += M_carActorInputManager_OnHandbreakActionPerformed;
+        m_carActorInputManager.OnFrontLightsAction += M_carActorInputManager_OnFrontLightsAction;
     }
-
-
 
     public override void Deactivate()
     {
@@ -47,5 +48,13 @@ public class CarController : PlayerActorControllerAbstract
     private void M_carActorInputManager_OnHandbreakActionPerformed(object sender, System.EventArgs e)
     {
         m_handleCarBehaviourComponent.SetHandbrakeStatus(false);
+    }
+
+    private void M_carActorInputManager_OnFrontLightsAction(object sender, System.EventArgs e)
+    {
+        if (m_frontLights)
+        {
+            m_frontLights.SetActive(!m_frontLights.activeSelf);
+        }
     }
 }

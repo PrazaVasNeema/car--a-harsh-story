@@ -178,15 +178,19 @@ public class GameInputManager : MonoBehaviour
 
         public event EventHandler OnHandbreakAction;
         public event EventHandler OnHandbreakActionCanceled;
+        public event EventHandler OnFrontLightsAction;
 
         protected const string HANDBREAK = "HANDBREAK";
+        protected const string FRONT_LIGHTS = "FRONT_LIGHTS";
 
         protected InputAction m_handbreak;
+        protected InputAction m_frontLights;
 
 
         public CarActorInputManager(string mapName, InputActionAsset inputActionAsset) : base(mapName, inputActionAsset)
         {
             m_handbreak = m_inputActionMap.FindAction(HANDBREAK);
+            m_frontLights = m_inputActionMap.FindAction(FRONT_LIGHTS);
             Enable();
 
         }
@@ -196,7 +200,10 @@ public class GameInputManager : MonoBehaviour
             base.Enable();
             m_handbreak.started += M_handbreak_started;
             m_handbreak.canceled += M_handbreak_canceled;
+            m_frontLights.started += M_frontLights_started;
         }
+
+
 
         public override void Disable()
         {
@@ -207,14 +214,17 @@ public class GameInputManager : MonoBehaviour
 
         private void M_handbreak_started(InputAction.CallbackContext obj)
         {
-            Debug.Log("Started");
             OnHandbreakAction?.Invoke(this, EventArgs.Empty);
         }
 
         private void M_handbreak_canceled(InputAction.CallbackContext obj)
         {
-            Debug.Log("Canceled");
             OnHandbreakActionCanceled?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void M_frontLights_started(InputAction.CallbackContext obj)
+        {
+            OnFrontLightsAction?.Invoke(this, EventArgs.Empty);
         }
     }
 }
