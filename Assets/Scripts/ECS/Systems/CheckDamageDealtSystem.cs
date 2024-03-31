@@ -27,6 +27,7 @@ public sealed class CheckDamageDealtSystem : UpdateSystem {
             float damageAmount = change.collision.impulse.magnitude;
                 damageAmount = change.collision.GetContact(0).impulse.magnitude;
                 Debug.Log($"TEST: 2");
+                Debug.Log($"Damage amount: {damageAmount}");
 
                 //Debug.Log($"EntityName: {change.targetEntity.GetComponent<TransformRef>().transform.name}");
                 if (damageAmount >= m_settingsData.spawnDecalsHPThreshold && change.targetEntity.Has<IsDamageDecalReceiver>())

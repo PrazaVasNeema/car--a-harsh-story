@@ -34,7 +34,10 @@ public sealed class BreakMeshSystem : UpdateSystem {
                     a.whole.SetActive(false);
                     GameData.instance.AddBrokenGlass(a.broken);
                     a.broken.SetActive(true);
-                    a.toBeLeft.SetActive(true);
+                    if (a.toBeLeft)
+                    {
+                        a.toBeLeft.SetActive(true);
+                    }
 
                     entity.Dispose();
                 }
