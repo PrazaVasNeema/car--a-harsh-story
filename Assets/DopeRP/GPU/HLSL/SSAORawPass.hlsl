@@ -268,7 +268,7 @@ float4 frag (Interpolators i) : SV_Target
     float2 noiseUV = float2(float(100)/float(_NoiseScale.x),
                     float(100)/float(_NoiseScale.y))
                     * i.uv * 1;
-    float3 randomVec = float3(normalize(SAMPLE_TEXTURE2D(_NoiseTexture, sampler_NoiseTexture, i.uv * 64)).xy,0);
+    float3 randomVec = float3(normalize(SAMPLE_TEXTURE2D(_NoiseTexture, sampler_NoiseTexture, i.uv * _NoiseScale) * 2 - 1).xy,0);
     
     // return float4(normalVS, 1);
     
@@ -297,7 +297,7 @@ float4 frag (Interpolators i) : SV_Target
         float offsetPositionDEPTH = SAMPLE_TEXTURE2D(Test, samplerTest, offsetUV.xy).r;
         float3 sampleNormalVS = normalize(SAMPLE_TEXTURE2D(_NormalViewSpace, sampler_NormalViewSpace, offsetUV.xy).xyz);
 
-        if(dot(sampleNormalVS, normalVS) > 0.95)
+        if(dot(sampleNormalVS, normalVS) > 0.99)
             continue;
         
         offsetPositionDEPTH = lerp(UNITY_NEAR_CLIP_VALUE, 1, offsetPositionDEPTH);

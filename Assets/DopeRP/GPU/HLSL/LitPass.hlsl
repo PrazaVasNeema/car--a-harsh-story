@@ -146,8 +146,8 @@ float4 frag(Interpolators i) : SV_TARGET
 
 	#endif
 
-	float3 ssao2 = SAMPLE_TEXTURE2D(_SSAOBlurAtlas, sampler_SSAOBlurAtlas, screenSpaceCoordinates).rgb;
-	return float4(ssao2,1);
+	// float3 ssao2 = SAMPLE_TEXTURE2D(_SSAOBlurAtlas, sampler_SSAOBlurAtlas, screenSpaceCoordinates).rgb;
+	// return float4(ssao2,1);
 
 	// baseColor *= 1;
 
