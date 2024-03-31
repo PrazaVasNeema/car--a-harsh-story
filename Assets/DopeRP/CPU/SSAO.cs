@@ -10,6 +10,8 @@ namespace DopeRP.CPU
         // public static int SSAOAtlas = Shader.PropertyToID("_SSAOAtlas");
         // public static int SSAOAtlasBlurred = Shader.PropertyToID("_SSAOAtlasBlurred");
 
+        private static Vector4[] samples = new Vector4[64];
+        
         public void Render(SSAOSettings ssaoSettings)
         {
             
@@ -35,6 +37,11 @@ namespace DopeRP.CPU
             
             Matrix4x4 invProjectionMatrix = RAPI.CurCamera.projectionMatrix.inverse;
             RAPI.Buffer.SetGlobalMatrix(Shader.PropertyToID("_INVERSE_P"), invProjectionMatrix);
+            
+            Generate();
+            
+            RAPI.Buffer.SetGlobalVectorArray(Shader.PropertyToID("SAMPLES"), samples);
+
             
 
 
@@ -64,6 +71,32 @@ namespace DopeRP.CPU
             RAPI.ExecuteBuffer();
             
         }
+
+        private void Generate()
+        {
+
+
+            for (int i = 0; i < 64; ++i)
+            {
+                Vector3 sample = new Vector3(
+                    Random.Range(-1.0f, 1.0f), 
+                    Random.Range(-1.0f, 1.0f), 
+                    Random.Range(0.0f, 1.0f)
+                );
+
+                sample = sample.normalized;
+                sample *= Random.Range(0.0f, 1.0f);
+
+                float scale = (float)i / 64.0f;
+                scale = Mathf.Lerp(0.1f, 1.0f, scale * scale);
+                sample *= scale;
+
+                samples[i] = sample;
+            }
+        }
        
     }
+    
+    
+    
 }

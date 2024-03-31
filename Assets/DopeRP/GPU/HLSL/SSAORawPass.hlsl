@@ -101,6 +101,8 @@ float4x4 adfgdgf_CameraToWorldMatrix;
 
 float4x4 _INVERSE_P;
 
+float4 SAMPLES[64];
+
 CBUFFER_END
 
 
@@ -224,7 +226,7 @@ float4 frag (Interpolators i) : SV_Target
     // return worldSpacePosition;
 
 
-    return viewSpacePosition;
+    // return viewSpacePosition;
 
 
     // return float4(clipSpacePosition.xyz,1);
@@ -256,13 +258,19 @@ float4 frag (Interpolators i) : SV_Target
     // return float4(depth.xxx, 1);
 
     // float4 fragPositionVS = SAMPLE_TEXTURE2D(_PositionViewSpace, sampler_PositionViewSpace, i.uv);
-
+// return fragPositionVS;
     fragPositionVS = viewSpacePosition;
-
-    clip(fragPositionVS.a);
+// return fragPositionVS;  
+    // clip(fragPositionVS.a);
 
     float3 normalVS = normalize(SAMPLE_TEXTURE2D(_NormalViewSpace, sampler_NormalViewSpace, i.uv).xyz);
-    float3 randomVec = float3(normalize(SAMPLE_TEXTURE2D(_NoiseTexture, sampler_NoiseTexture, i.uv * _NoiseScale) * 2.0f - 1.0f).xy,0);
+
+    float2 noiseUV = float2(float(100)/float(_NoiseScale.x),
+                    float(100)/float(_NoiseScale.y))
+                    * i.uv * 1;
+    float3 randomVec = float3(normalize(SAMPLE_TEXTURE2D(_NoiseTexture, sampler_NoiseTexture, i.uv * 64)).xy,0);
+    
+    // return float4(normalVS, 1);
     
     float3 tangent = normalize(randomVec - normalVS * dot(randomVec, normalVS));
     float3 binormal = cross(normalVS, tangent);
@@ -274,24 +282,74 @@ float4 frag (Interpolators i) : SV_Target
     for (int j = HALF_ZERO; j < SAMPLES_COUNT; j++)
     {
         float3 samplePositionVS = mul(tbn, samples[j]);
-        samplePositionVS = fragPositionVS + samplePositionVS * _SampleRadius;
+        samplePositionVS = fragPositionVS + samplePositionVS * _SampleRadius ;
+        // samplePositionVS = fragPositionVS +  mul(tbn, float3(0.05,0.05,0.1));
 
         float4 offsetUV = mul(_LensProjection, samplePositionVS);
+        // return float4(offsetUV);
+
         offsetUV.xyz /= offsetUV.w;
         offsetUV.xy = offsetUV.xy * 0.5 + 0.5;
 
+
+        float4 fragPositionVS2 = SAMPLE_TEXTURE2D(_PositionViewSpace, sampler_PositionViewSpace, offsetUV.xy);
+
         float offsetPositionDEPTH = SAMPLE_TEXTURE2D(Test, samplerTest, offsetUV.xy).r;
+        float3 sampleNormalVS = normalize(SAMPLE_TEXTURE2D(_NormalViewSpace, sampler_NormalViewSpace, offsetUV.xy).xyz);
+
+        if(dot(sampleNormalVS, normalVS) > 0.95)
+            continue;
+        
+        offsetPositionDEPTH = lerp(UNITY_NEAR_CLIP_VALUE, 1, offsetPositionDEPTH);
+        sceneZ =CalcLinearZ(offsetPositionDEPTH, n, f);
+
+        
 
 
-        float intensity = smoothstep(HALF_ZERO, HALF_ONE, _SampleRadius / abs(fragPositionVS.z - offsetPositionDEPTH));
-        occlusion += when_ge(offsetPositionDEPTH, samplePositionVS.z + _Bias) * intensity;
+        clipSpacePosition = float4((offsetUV.xy * 2.0 - 1.0) * sceneZ/offsetPositionDEPTH, sceneZ, 1.0 * sceneZ/offsetPositionDEPTH);
+
+        float4 viewSpacePosition2 = mul(_INVERSE_P, clipSpacePosition);
+
+        viewSpacePosition2 /= viewSpacePosition2.w;
+        // return fragPositionVS;
+        // return float4(samplePositionVS.xy,viewSpacePosition2.z ,1);
+        // return float4(samplePositionVS.xyz,1);
+        // return float4(fragPositionVS2.xyz,1);
+        // return float4( samplePositionVS.x - viewSpacePosition2.x, viewSpacePosition2.y   > samplePositionVS.y ,samplePositionVS.z ,1);
+
+        // return float4(viewSpacePosition2.xyz, 1);
+        // return viewSpacePosition2;
+
+        float intensity = smoothstep(HALF_ZERO, HALF_ONE, _SampleRadius / abs(samplePositionVS.z - viewSpacePosition2.z));
+        occlusion += when_ge(viewSpacePosition2.z, samplePositionVS.z + _Bias) * intensity;
+
+        // occlusion += when_ge(offsetPositionDEPTH , offsetUV.z + _Bias);
+        // return float4(occlusion.xxx,1);
     }
 
+
+
+
+    float y;
+    float x;
+    float sum;
+    float2 offset;
+    for (y = -0.5 * 3; y <= 0.5 * 3; y +=1)
+        for (x = -0.5 * 3; x <= 0.5 * 3; x +=1)
+        {
+            offset = float2(1400 * x, 700 * y);
+            float3 normalVS2 = normalize(SAMPLE_TEXTURE2D(_NormalViewSpace, sampler_NormalViewSpace, i.uv + offset).xyz);
+            if (abs(normalVS.z - normalVS2.z) < 0.01)
+                sum++;
+        }
+
+sum *= 0.0625;
+    
     occlusion /= SAMPLES_COUNT;
     occlusion  = pow(occlusion, _Magnitude);
     occlusion  = _Contrast * (occlusion - 0.5) + 0.5;
                 
-    float4 fragColor = HALF_ONE - occlusion;  
+    float4 fragColor = HALF_ONE - max(occlusion, 0);  
     
     return fragColor;
      

@@ -67,6 +67,8 @@ fragOutput frag(Interpolators i)
     o.normalViewSpace = i.position;
 
     o.normalViewSpace = i.positionCS;
+
+    o.normalViewSpace = float4(i.normalVS, 1);
     
     // o.normalViewSpace = i.positionCS/i.positionCS.w;
 

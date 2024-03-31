@@ -65,22 +65,22 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Bias: 0
+    - _Bias: 0.0001
     - _BumpScale: 1
-    - _Contrast: 1.1
+    - _Contrast: 1.13
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _Magnitude: 1.231
+    - _Magnitude: 1
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _RandomSize: 12
-    - _SampleRadius: 0.6
+    - _RandomSize: 1
+    - _SampleRadius: 0.54
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
