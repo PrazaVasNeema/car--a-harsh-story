@@ -58,14 +58,12 @@ struct Interpolators {
 
 struct fragOutput
 {
-    float4 positionViewSpace : SV_Target0;
-    float4 normalViewSpace : SV_Target1;
-    float4 tangentViewSpace : SV_Target2;
+    float4 tangentWorldSpace : SV_Target0;
 
-    float4 albedo : SV_Target3;
-    float4 normalWS : SV_Target4;
-    float4 specular : SV_Target5;
-    float4 BRDF : SV_Target6;
+    float4 albedo : SV_Target1;
+    float4 normalWS : SV_Target2;
+    float4 specular : SV_Target3;
+    float4 BRDF : SV_Target4;
 };
 
 Interpolators vert(MeshData i)
@@ -102,16 +100,18 @@ fragOutput frag(Interpolators i)
     UNITY_SETUP_INSTANCE_ID(i);
 
     fragOutput o;
+
+    o.tangentWorldSpace = i.tangentWS;
     
-    o.normalViewSpace = mul(Inverse(GetViewToHClipMatrix()), i.position/i.position.w);
+    // o.normalViewSpace = mul(Inverse(GetViewToHClipMatrix()), i.position/i.position.w);
 
     // o.normalViewSpace = float4(i.position.xy-100,0,1);
 
-    o.normalViewSpace = i.position;
+    // o.normalViewSpace = i.position;
 
-    o.normalViewSpace = i.positionCS;
+    // o.normalViewSpace = i.positionCS;
 
-    o.normalViewSpace = float4(i.normalVS, 1);
+    // o.normalViewSpace = float4(i.normalVS, 1);
     
     // o.normalViewSpace = i.positionCS/i.positionCS.w;
 
@@ -122,7 +122,7 @@ fragOutput frag(Interpolators i)
 
     
 
-    o.positionViewSpace = float4(i.positionVS.xyz, 1);
+    // o.positionViewSpace = float4(i.positionVS.xyz, 1);
 
     // o.positionViewSpace = float4(mul(GetViewToWorldMatrix(), float4(i.positionVS, 1)).xyz, 1);
 
@@ -136,7 +136,6 @@ fragOutput frag(Interpolators i)
     // o.positionViewSpace = float4(TransformViewToWorld(i.positionVS), 1);
 
 
-    o.tangentViewSpace = float4(i.positionWS, 1);
 
 
     float4 baseColor = SAMPLE_TEXTURE2D(_AlbedoMap, sampler_AlbedoMap, i.uv);
@@ -156,6 +155,8 @@ fragOutput frag(Interpolators i)
 
     float3 viewDir = normalize(_WorldSpaceCameraPos - i.positionWS);
     float3 specular = SampleEnvironment(viewDir, i.normalWS);
+
+
 
     o.specular = float4(specular, 1);
     

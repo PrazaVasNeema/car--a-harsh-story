@@ -11,20 +11,22 @@ namespace DopeRP.CPU
         public void Render()
         {
             
-            
+            RAPI.Buffer.ClearRenderTarget(true, true, Color.clear);
+
             RAPI.ExecuteBuffer();
             
-            
+
             Vector2 cameraWidthHeight = new Vector2(RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight);
-            RAPI.Buffer.GetTemporaryRT(SProps.Decals.DecalsAlbedoAtlas, (int)cameraWidthHeight.x, (int)cameraWidthHeight.y, 0, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
-            RAPI.Buffer.GetTemporaryRT(SProps.Decals.DecalsNormalAtlas, (int)cameraWidthHeight.x, (int)cameraWidthHeight.y, 0, FilterMode.Bilinear, RenderTextureFormat.ARGBFloat);
+            RAPI.Buffer.GetTemporaryRT(SProps.Decals.DecalsDamageAlbedoAtlas, (int)cameraWidthHeight.x, (int)cameraWidthHeight.y, 0, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
+            RAPI.Buffer.GetTemporaryRT(SProps.Decals.DecalsDamageNormalAtlas, (int)cameraWidthHeight.x, (int)cameraWidthHeight.y, 0, FilterMode.Point, RenderTextureFormat.ARGBHalf);
             RenderTargetIdentifier[] colorTargets = {
-                new RenderTargetIdentifier(SProps.Decals.DecalsAlbedoAtlas),
-                new RenderTargetIdentifier(SProps.Decals.DecalsNormalAtlas)
+                new RenderTargetIdentifier(SProps.GBuffer.G_AlbedoAtlas),
+                new RenderTargetIdentifier(SProps.GBuffer.G_NormalWorldSpaceAtlas),
+                new RenderTargetIdentifier(SProps.Decals.DecalsDamageAlbedoAtlas),
+                new RenderTargetIdentifier(SProps.Decals.DecalsDamageNormalAtlas)
             };
             
             RAPI.Buffer.SetRenderTarget(colorTargets, BuiltinRenderTextureType.CameraTarget);
-            RAPI.Buffer.ClearRenderTarget(true, true, Color.clear);
             RAPI.Buffer.SetGlobalVector(SProps.Decals.ScreenSize, new Vector4((int)cameraWidthHeight.x, (int)cameraWidthHeight.y,
                 (float)1.0/cameraWidthHeight.x, (float)1.0/cameraWidthHeight.y));
             
@@ -48,8 +50,8 @@ namespace DopeRP.CPU
             RAPI.ExecuteBuffer();
             
            
-            RAPI.Buffer.SetGlobalTexture("_DecalsAtlas", SProps.Decals.DecalsAlbedoAtlas);
-            RAPI.Buffer.SetGlobalTexture("_DecalsAtlasNormals", SProps.Decals.DecalsNormalAtlas);
+            RAPI.Buffer.SetGlobalTexture("_DecalsAtlas", SProps.Decals.DecalsDamageAlbedoAtlas);
+            RAPI.Buffer.SetGlobalTexture("_DecalsAtlasNormals", SProps.Decals.DecalsDamageNormalAtlas);
 
             
             RAPI.ExecuteBuffer();

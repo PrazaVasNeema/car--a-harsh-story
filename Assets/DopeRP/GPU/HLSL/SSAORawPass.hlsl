@@ -109,11 +109,8 @@ CBUFFER_END
 TEXTURE2D(_NoiseTexture);
 SAMPLER(sampler_NoiseTexture);
 
-TEXTURE2D(_PositionViewSpace);
-SAMPLER(sampler_PositionViewSpace);
-
-TEXTURE2D(_NormalViewSpace);
-SAMPLER(sampler_NormalViewSpace);
+TEXTURE2D(_G_NormalWorldSpaceAtlas);
+SAMPLER(sampler_G_NormalWorldSpaceAtlas);
 
 TEXTURE2D(Test);
 SAMPLER(samplerTest);
@@ -188,9 +185,7 @@ float4 frag (Interpolators i) : SV_Target
 {
     UNITY_SETUP_INSTANCE_ID(i);
 
-    float4 fragPositionVS = SAMPLE_TEXTURE2D(_PositionViewSpace, sampler_PositionViewSpace, i.uv);
-    float3 normalVSf = normalize(SAMPLE_TEXTURE2D(_NormalViewSpace, sampler_NormalViewSpace, i.uv).xyz);
-    float4 normalVSNOT = SAMPLE_TEXTURE2D(_NormalViewSpace, sampler_NormalViewSpace, i.uv);
+
     // return normalVSNOT;
     // return mul(adfgdgf_CameraToWorldMatrix, fragPositionVS);
     // return float4(TransformViewToWorld(fragPositionVS), 1);
@@ -255,11 +250,13 @@ float4 frag (Interpolators i) : SV_Target
 
     // float4 fragPositionVS = SAMPLE_TEXTURE2D(_PositionViewSpace, sampler_PositionViewSpace, i.uv);
 // return fragPositionVS;
-    fragPositionVS = viewSpacePosition;
+    float4 fragPositionVS = viewSpacePosition;
 // return fragPositionVS;  
     // clip(fragPositionVS.a);
 
-    float3 normalVS = normalize(SAMPLE_TEXTURE2D(_NormalViewSpace, sampler_NormalViewSpace, i.uv).xyz);
+    float3 normalWS = normalize(SAMPLE_TEXTURE2D(_G_NormalWorldSpaceAtlas, sampler_G_NormalWorldSpaceAtlas, i.uv).xyz);
+
+    float3 normalVS = mul((real3x3)adfgdgf_WorldToCameraMatrix, normalWS);
 
     float2 noiseUV = float2(float(100)/float(_NoiseScale.x),
                     float(100)/float(_NoiseScale.y))
@@ -288,12 +285,12 @@ float4 frag (Interpolators i) : SV_Target
         offsetUV.xy = offsetUV.xy * 0.5 + 0.5;
 
 
-        float4 fragPositionVS2 = SAMPLE_TEXTURE2D(_PositionViewSpace, sampler_PositionViewSpace, offsetUV.xy);
+
 
         float offsetPositionDEPTH = SAMPLE_TEXTURE2D(Test, samplerTest, offsetUV.xy).r;
-        float3 sampleNormalVS = normalize(SAMPLE_TEXTURE2D(_NormalViewSpace, sampler_NormalViewSpace, offsetUV.xy).xyz);
+        float3 sampleNormalWS = normalize(SAMPLE_TEXTURE2D(_G_NormalWorldSpaceAtlas, sampler_G_NormalWorldSpaceAtlas, offsetUV.xy).xyz);
 
-        if(dot(sampleNormalVS, normalVS) > 0.99)
+        if(dot(sampleNormalWS, normalWS) > 0.99)
             continue;
         
         offsetPositionDEPTH = lerp(UNITY_NEAR_CLIP_VALUE, 1, offsetPositionDEPTH);
@@ -326,20 +323,7 @@ float4 frag (Interpolators i) : SV_Target
 
 
 
-    float y;
-    float x;
-    float sum;
-    float2 offset;
-    for (y = -0.5 * 3; y <= 0.5 * 3; y +=1)
-        for (x = -0.5 * 3; x <= 0.5 * 3; x +=1)
-        {
-            offset = float2(1400 * x, 700 * y);
-            float3 normalVS2 = normalize(SAMPLE_TEXTURE2D(_NormalViewSpace, sampler_NormalViewSpace, i.uv + offset).xyz);
-            if (abs(normalVS.z - normalVS2.z) < 0.01)
-                sum++;
-        }
-
-sum *= 0.0625;
+  
     
     occlusion /= SAMPLES_COUNT;
     occlusion  = pow(occlusion, _Magnitude);

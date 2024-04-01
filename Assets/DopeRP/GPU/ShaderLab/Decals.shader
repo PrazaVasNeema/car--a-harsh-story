@@ -2,6 +2,7 @@ Shader "DopeRP/Shaders/Decals"
 {
 	Properties
 	{
+		[Toggle(_IS_DAMAGE_TYPE)] _IsDamageDecalType ("Is Damage Decal Type (not Artistic)", Float) = 0
 		
 		[Toggle(_CONTRIBUTE_ALBEDO)] _ContributeAlbedo ("Contribute Albedo", Float) = 0
 		_BaseMap("Albedo Texture", 2D) = "(0,0,0,0)" {}
@@ -40,6 +41,7 @@ Shader "DopeRP/Shaders/Decals"
 			#pragma shader_feature _CLIPPING
 			#pragma shader_feature _CONTRIBUTE_ALBEDO
 			#pragma shader_feature _CONTRIBUTE_NORMAL
+			#pragma shader_feature _IS_DAMAGE_TYPE
 
 
 			#pragma vertex vert
@@ -53,18 +55,23 @@ Shader "DopeRP/Shaders/Decals"
 			TEXTURE2D(_NormalMap);
 			SAMPLER(sampler_NormalMap);
 			
-			TEXTURE2D(_PositionViewSpace);
-			SAMPLER(sampler_PositionViewSpace);
 
-			TEXTURE2D(_NormalViewSpace);
-			SAMPLER(sampler_NormalViewSpace);
+			TEXTURE2D(_G_NormalWorldSpaceAtlas);
+			SAMPLER(sampler_G_NormalWorldSpaceAtlas);
 
-			TEXTURE2D(_TangentViewSpace);
-			SAMPLER(sampler_TangentViewSpace);
+			TEXTURE2D(_GAux_TangentWorldSpaceAtlas);
+			SAMPLER(sampler_GAux_TangentWorldSpaceAtlas);
+
+			TEXTURE2D(Test);
+			SAMPLER(samplerTest);
+			
 			
 			CBUFFER_START(Decals)
 			
 				float4 _ScreenSize;
+			
+				float2 _nearFarPlanes;
+				float4x4 _INVERSE_P;
 			
 			CBUFFER_END
 
@@ -117,8 +124,11 @@ Shader "DopeRP/Shaders/Decals"
 
 			struct fragOutput
 			{
-			    float4 decalsAlbedoAtlas : SV_Target0;
-			    float4 decalsNormalAtlas : SV_Target1;
+			    float4 decalsArtisticAlbedoAtlas : SV_Target0;
+			    float4 decalsArtisticNormalAtlas : SV_Target1;
+				
+				float4 decalsDamageAlbedoAtlas : SV_Target2;
+			    float4 decalsDamageNormalAtlas : SV_Target3;
 			};
 
 			float3 GetNormalTS (float2 baseUV) {
@@ -134,9 +144,18 @@ Shader "DopeRP/Shaders/Decals"
 				
 				UNITY_SETUP_INSTANCE_ID(i);
 				fragOutput o;
+
+				float2 uv = i.positionSV.xy * _ScreenSize.zw;
 				
-				float4 sampleDepth = SAMPLE_TEXTURE2D(_PositionViewSpace, sampler_PositionViewSpace, i.positionSV.xy * _ScreenSize.zw);
-				float4 worldPos = float4(TransformViewToWorld(sampleDepth.xyz),1);
+				float depth = SAMPLE_TEXTURE2D(Test, samplerTest, uv).r;
+				depth = lerp(UNITY_NEAR_CLIP_VALUE, 1, depth);
+				float sceneZ =CalcLinearZ(depth, _nearFarPlanes.x, _nearFarPlanes.y);
+				float4 clipSpacePosition = float4((uv * 2.0 - 1.0) * sceneZ/depth, sceneZ, 1.0 * sceneZ/depth);
+				float4 viewSpacePosition = mul(_INVERSE_P, clipSpacePosition);
+			
+				viewSpacePosition /= viewSpacePosition.w;
+				
+				float4 worldPos = float4(TransformViewToWorld(viewSpacePosition.xyz),1);
 				float4 objectPos = float4(TransformWorldToObject(worldPos), 1);
 
 				
@@ -147,37 +166,43 @@ Shader "DopeRP/Shaders/Decals"
 
 				#if defined(_CONTRIBUTE_NORMAL)
 				
-					float3 normal = normalize(SAMPLE_TEXTURE2D(_NormalViewSpace, sampler_NormalViewSpace, i.positionSV.xy * _ScreenSize.zw).xyz);
-					normal = float4(mul(UNITY_MATRIX_I_V, normal));
-					float4 tangent = normalize(SAMPLE_TEXTURE2D(_TangentViewSpace, sampler_TangentViewSpace, i.positionSV.xy * _ScreenSize.zw));
+					float3 normalWS = normalize(SAMPLE_TEXTURE2D(_G_NormalWorldSpaceAtlas, sampler_G_NormalWorldSpaceAtlas, uv).xyz);
+					float4 tangentWS = normalize(SAMPLE_TEXTURE2D(_GAux_TangentWorldSpaceAtlas, sampler_GAux_TangentWorldSpaceAtlas, uv));
 
-					float4 normalOutput = float4(NormalTangentToWorld(GetNormalTS(texCoords), normal, tangent),1);
 				
 					// float isFlat = or(when_eq((int)normalOutput.x*10, 5), when_eq((int)normalOutput.x*10, 128)) * when_eq(normalOutput.y, 128) * when_eq(normalOutput.z, 255);
 
 					float3 targetValue = float3(0.5, 0.5, 1);
 					float epsilon = .05; // Tolerance for the comparison
 					
-					bool isEqual = all(abs(GetNormalTS(texCoords) - targetValue) < epsilon);
-					isEqual = all(abs(GetNormalTS(texCoords) - DecodeNormal(targetValue.xyzz, 1)) < epsilon);
+					bool isEqual = all(abs(GetNormalTS(texCoords) - DecodeNormal(targetValue.xyzz, 1)) < epsilon);
 
 					
 				
-					o.decalsNormalAtlas = float4(NormalTangentToWorld(GetNormalTS(texCoords), normal, tangent),1) * (1-isEqual);
+					#if !defined(_IS_DAMAGE_TYPE)
 
-					o.decalsNormalAtlas = float4(GetNormalTS(texCoords),1);
-					o.decalsNormalAtlas = SAMPLE_TEXTURE2D(_NormalMap, sampler_NormalMap, texCoords);
+									o.decalsArtisticNormalAtlas = float4(NormalTangentToWorld(GetNormalTS(texCoords), normalWS, tangentWS),1) * (1-isEqual);
 
-									o.decalsNormalAtlas = float4(NormalTangentToWorld(GetNormalTS(texCoords), normal, tangent),1) * (1-isEqual);
+				#else
 
+				o.decalsArtisticNormalAtlas = float4(NormalTangentToWorld(GetNormalTS(texCoords), normalWS, tangentWS),1) * (1-isEqual);
+				o.decalsDamageNormalAtlas = 0;
+
+
+				#endif
+
+				o.decalsArtisticNormalAtlas = 0;
+				o.decalsDamageNormalAtlas = float4(NormalTangentToWorld(GetNormalTS(texCoords), normalWS, tangentWS),1) * (1-isEqual);
 
 				// o.decalsNormalAtlas = 0;
 
 				#else
 
-					o.decalsNormalAtlas = 0;
-				
+					o.decalsArtisticNormalAtlas = 0;
+					o.decalsDamageNormalAtlas = 0;
+
 				#endif
+				
 			
 				
 				#if defined(_CONTRIBUTE_ALBEDO)
@@ -185,17 +210,32 @@ Shader "DopeRP/Shaders/Decals"
 					float4 baseColor = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, texCoords);
 	
 					#if defined(_CLIPPING)
-						o.decalsAlbedoAtlas = 0;
-						// #if !defined(_CONTRIBUTE_NORMAL)
-							clip(baseColor.a - UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _Cutoff));
-						// #endif
+				if (baseColor.a - UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _Cutoff) < 0)
+					{
+					o.decalsArtisticAlbedoAtlas = 0;
+					o.decalsDamageAlbedoAtlas = 0;
+					return o;
+					}
+						// // #if !defined(_CONTRIBUTE_NORMAL)
+						// 	clip(baseColor.a - UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _Cutoff));
+						// // #endif
 					#endif
 	
 					baseColor *= UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_DECALS, _BaseColor);
-					o.decalsAlbedoAtlas = baseColor;
+				#if !defined(_IS_DAMAGE_TYPE)
+				
+					o.decalsArtisticAlbedoAtlas = baseColor;
+					o.decalsDamageAlbedoAtlas = 0;
+				
+				#else
+
+					o.decalsArtisticAlbedoAtlas = 0;
+					o.decalsDamageAlbedoAtlas = baseColor;
 
 				#endif
 
+				#endif
+				o.decalsDamageNormalAtlas = 1;
 				return o;
 				
 			}

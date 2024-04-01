@@ -57,13 +57,11 @@ namespace DopeRP.CPU
 			DrawGizmos();
 			
 			RAPI.CleanupTempRT(SProps.Shadows.DirShadowAtlasId);
-			RAPI.CleanupTempRT(SProps.GBuffer.PositionViewSpaceAtlas);
-			RAPI.CleanupTempRT(SProps.GBuffer.NormalViewSpaceAtlas);
-			RAPI.CleanupTempRT(SProps.GBuffer.TangentViewSpaceAtlas);
+			RAPI.CleanupTempRT(SProps.GBuffer.GAux_TangentWorldSpaceAtlas);
 			RAPI.CleanupTempRT(SProps.SSAO.SSAORawAtlas);
 			RAPI.CleanupTempRT(SProps.SSAO.SSAOBlurAtlas);
-			RAPI.CleanupTempRT(SProps.Decals.DecalsAlbedoAtlas);
-			RAPI.CleanupTempRT(SProps.Decals.DecalsNormalAtlas);
+			RAPI.CleanupTempRT(SProps.Decals.DecalsDamageAlbedoAtlas);
+			RAPI.CleanupTempRT(SProps.Decals.DecalsDamageNormalAtlas);
 			// RAPI.Context.DrawSkybox(RAPI.CurCamera);
 			RAPI.CleanupTempRT(Shader.PropertyToID("Test"));
 			

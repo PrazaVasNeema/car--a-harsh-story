@@ -82,9 +82,7 @@ namespace DopeRP.CPU
             
             public static string GBufferPassName = "GBufferPass";
             
-            public static int PositionViewSpaceAtlas = Shader.PropertyToID("_PositionViewSpace");
-            public static int NormalViewSpaceAtlas = Shader.PropertyToID("_NormalViewSpace");
-            public static int TangentViewSpaceAtlas = Shader.PropertyToID("_TangentViewSpace");
+            public static int GAux_TangentWorldSpaceAtlas = Shader.PropertyToID("_GAux_TangentWorldSpace");
             
             public static int G_AlbedoAtlas = Shader.PropertyToID("_G_AlbedoAtlas");
             public static int G_NormalWorldSpaceAtlas = Shader.PropertyToID("_G_NormalWorldSpaceAtlas");
@@ -101,8 +99,12 @@ namespace DopeRP.CPU
             
             public static ShaderTagId DecalsPassId = new ShaderTagId("DecalsPass");
 
-            public static int DecalsAlbedoAtlas = Shader.PropertyToID("_DecalsAlbedoAtlas");
-            public static int DecalsNormalAtlas = Shader.PropertyToID("_DecalsNormalAtlas");
+            public static int DecalsDamageAlbedoAtlas = Shader.PropertyToID("_DecalsDamageAlbedoAtlas");
+            public static int DecalsDamageNormalAtlas = Shader.PropertyToID("_DecalsDamageNormalAtlas");
+            
+            // Forward rendering
+            public static int DecalsArtisticAlbedoAtlas = Shader.PropertyToID("_DecalsArtisticAlbedoAtlas");
+            public static int DecalsArtisticNormalAtlas = Shader.PropertyToID("_DDecalsArtisticNormalAtlas");
             
             public static int ScreenSize = Shader.PropertyToID("_ScreenSize");
             

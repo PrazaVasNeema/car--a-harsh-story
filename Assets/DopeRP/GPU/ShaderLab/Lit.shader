@@ -88,8 +88,10 @@ Shader "DopeRP/Shaders/Lit"
 			Tags {
 				"LightMode" = "GBufferPass"
 			}
-
+			
 			HLSLPROGRAM
+
+			
 			#pragma target 3.5
 			#pragma multi_compile_instancing
 			// #pragma enable_d3d11_debug_symbols
