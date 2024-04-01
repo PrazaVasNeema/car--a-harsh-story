@@ -31,7 +31,8 @@ Shader "DopeRP/Shaders/Lit"
 		
 		
 				[Enum(UnityEngine.Rendering.CompareFunction)] _StencilCompare ("Stencil Comparison", Float) = 8
-
+//[Enum(UnityEngine.Rendering.StencilOp)] _StencilFail ("Stencil Fail", Float) = 0
+//[Enum(UnityEngine.Rendering.StencilOp)] _StencilZFail ("Stencil ZFail", Float) = 0
 
 		
 
@@ -105,6 +106,7 @@ Shader "DopeRP/Shaders/Lit"
 				Comp [_StencilCompare]
 				Pass [_StencilOp]
 				Fail [_StencilOp]
+				
 			}
 			
 			HLSLPROGRAM
