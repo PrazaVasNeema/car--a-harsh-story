@@ -21,7 +21,7 @@ namespace DopeRP.CPU
             
             RAPI.Buffer.GetTemporaryRT(SProps.SSAO.SSAORawAtlas, RAPI.CurCamera.pixelWidth/2, RAPI.CurCamera.pixelHeight/2, 0, FilterMode.Bilinear, RenderTextureFormat.ARGBFloat);
             RAPI.Buffer.SetRenderTarget(SProps.SSAO.SSAORawAtlas, RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store);
-            RAPI.Buffer.ClearRenderTarget(false, true, Color.clear);
+            RAPI.Buffer.ClearRenderTarget(true, true, Color.clear);
             
             RAPI.Buffer.SetGlobalVector(SProps.SSAO.ScreenSize, new Vector4(RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight, 0f, 0f));
             Matrix4x4 projectionMatrix = RAPI.CurCamera.projectionMatrix;
@@ -67,7 +67,7 @@ namespace DopeRP.CPU
 
             RAPI.Buffer.GetTemporaryRT(SProps.SSAO.SSAOBlurAtlas, RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight, 0, FilterMode.Bilinear, RenderTextureFormat.ARGBFloat);
             RAPI.Buffer.SetRenderTarget(SProps.SSAO.SSAOBlurAtlas, RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store);
-            RAPI.Buffer.ClearRenderTarget(false, true, Color.clear);
+            RAPI.Buffer.ClearRenderTarget(true, true, Color.clear);
             
             RAPI.ExecuteBuffer();
             

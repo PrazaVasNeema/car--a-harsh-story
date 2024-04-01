@@ -33,7 +33,7 @@ MonoBehaviour:
   ssaoSettings:
     samplesCount: 2
     noiseTexture: {fileID: 2800000, guid: 4d2d26443ff3f2c4980e45942ce45e79, type: 3}
-    randomSize: 65
+    randomSize: 80
     sampleRadius: 0.67
     bias: 0.001
     magnitude: 0.95

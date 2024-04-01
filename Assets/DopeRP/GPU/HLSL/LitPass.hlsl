@@ -194,14 +194,16 @@ float4 frag(Interpolators i) : SV_TARGET
 	// surfaceData.normal = normalize(i.normalWS);
 
 	#if defined(DECALS_ON)
-	
-	float4 decals = SAMPLE_TEXTURE2D(_DecalsAlbedoAtlas, sampler_DecalsAlbedoAtlas, screenSpaceCoordinates);
-	if (decals.a > 0)
-		baseColor = decals;
-	float4 decalsNormals = SAMPLE_TEXTURE2D(_DecalsNormalAtlas, sampler_DecalsNormalAtlas, screenSpaceCoordinates);
-	if (decalsNormals.a >0)
+	if (baseColor.a==1)
 	{
-		surfaceData.normal = decalsNormals;
+		float4 decals = SAMPLE_TEXTURE2D(_DecalsAlbedoAtlas, sampler_DecalsAlbedoAtlas, screenSpaceCoordinates);
+		if (decals.a > 0)
+			baseColor = decals;
+		float4 decalsNormals = SAMPLE_TEXTURE2D(_DecalsNormalAtlas, sampler_DecalsNormalAtlas, screenSpaceCoordinates);
+		if (decalsNormals.a >0)
+		{
+			surfaceData.normal = decalsNormals;
+		}
 	}
 
 	#endif

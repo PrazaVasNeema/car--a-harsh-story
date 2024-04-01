@@ -99,12 +99,9 @@ namespace DopeRP.CPU
             
             public static ShaderTagId DecalsPassId = new ShaderTagId("DecalsPass");
 
-            public static int DecalsDamageAlbedoAtlas = Shader.PropertyToID("_DecalsDamageAlbedoAtlas");
-            public static int DecalsDamageNormalAtlas = Shader.PropertyToID("_DecalsDamageNormalAtlas");
-            
             // Forward rendering
-            public static int DecalsArtisticAlbedoAtlas = Shader.PropertyToID("_DecalsArtisticAlbedoAtlas");
-            public static int DecalsArtisticNormalAtlas = Shader.PropertyToID("_DDecalsArtisticNormalAtlas");
+            public static int DecalsAlbedoAtlas = Shader.PropertyToID("_DecalsAlbedoAtlas");
+            public static int DecalsNormalAtlas = Shader.PropertyToID("_DecalsNormalAtlas");
             
             public static int ScreenSize = Shader.PropertyToID("_ScreenSize");
             

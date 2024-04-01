@@ -26,7 +26,7 @@ namespace DopeRP.CPU
 			
 			RAPI.Context.SetupCameraProperties(RAPI.CurCamera);
 
-			if ( customRenderPipelineAsset.SSAO || customRenderPipelineAsset.decalsOn)
+			// if ( customRenderPipelineAsset.SSAO || customRenderPipelineAsset.decalsOn)
 				m_gBuffers.Render();
 			if (customRenderPipelineAsset.SSAO)
 			{
@@ -60,8 +60,6 @@ namespace DopeRP.CPU
 			RAPI.CleanupTempRT(SProps.GBuffer.GAux_TangentWorldSpaceAtlas);
 			RAPI.CleanupTempRT(SProps.SSAO.SSAORawAtlas);
 			RAPI.CleanupTempRT(SProps.SSAO.SSAOBlurAtlas);
-			RAPI.CleanupTempRT(SProps.Decals.DecalsDamageAlbedoAtlas);
-			RAPI.CleanupTempRT(SProps.Decals.DecalsDamageNormalAtlas);
 			// RAPI.Context.DrawSkybox(RAPI.CurCamera);
 			RAPI.CleanupTempRT(Shader.PropertyToID("Test"));
 			
@@ -121,8 +119,11 @@ namespace DopeRP.CPU
 			//
 			RAPI.Context.DrawRenderers(RAPI.CullingResults, ref drawingSettings, ref filteringSettings);
 			
-			RAPI.Buffer.Blit(null, BuiltinRenderTextureType.CurrentActive, litDeferredMaterial, litDeferredMaterial.FindPass(SProps.CameraRenderer.LitDeferredPassName));
+			// RAPI.Buffer.Blit(null, BuiltinRenderTextureType.CurrentActive, litDeferredMaterial, litDeferredMaterial.FindPass(SProps.CameraRenderer.LitDeferredPassName));
 
+			RAPI.Buffer.SetViewProjectionMatrices(Matrix4x4.identity, Matrix4x4.identity);
+			RAPI.Buffer.DrawMesh(RAPI.fullscreenMesh, Matrix4x4.identity, litDeferredMaterial, 0, litDeferredMaterial.FindPass(SProps.SSAO.SSAOBlurPassName));
+			RAPI.Buffer.SetViewProjectionMatrices(RAPI.CurCamera.worldToCameraMatrix, RAPI.CurCamera.projectionMatrix);
 			
 			RAPI.Context.DrawSkybox(RAPI.CurCamera);
 			RAPI.ExecuteBuffer();
