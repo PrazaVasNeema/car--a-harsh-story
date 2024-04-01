@@ -3,7 +3,7 @@ Shader "DopeRP/Shaders/LitDeferred"
 	Properties
 	{
 
-		
+		[Enum(Off, 0, On, 1)] _ZWrite ("Z Write", Float) = 1
 
 	}
 
@@ -17,7 +17,7 @@ Shader "DopeRP/Shaders/LitDeferred"
 			}
 
 //			Blend [_SrcBlend] [_DstBlend]
-//			ZWrite [_ZWrite]
+			ZWrite [_ZWrite]
 			
 			
 

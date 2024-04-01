@@ -94,36 +94,48 @@ namespace DopeRP.CPU
             
 			Matrix4x4 invProjectionMatrix = RAPI.CurCamera.projectionMatrix.inverse;
 			RAPI.Buffer.SetGlobalMatrix(Shader.PropertyToID("_INVERSE_P"), invProjectionMatrix);
+
+			var sortingSettings = new SortingSettings(RAPI.CurCamera)
+			{
+				criteria = SortingCriteria.CommonOpaque
+			};
+			
+			var drawingSettings = new DrawingSettings(SProps.CameraRenderer.UnlitShaderTagId, sortingSettings)
+			{
+				enableDynamicBatching = useDynamicBatching,
+				enableInstancing = useGPUInstancing,
+				perObjectData =
+					PerObjectData.ReflectionProbes |
+					PerObjectData.Lightmaps | PerObjectData.ShadowMask |
+					PerObjectData.LightProbe | PerObjectData.OcclusionProbe |
+					PerObjectData.LightProbeProxyVolume |
+					PerObjectData.OcclusionProbeProxyVolume
+			};
+			
+			var filteringSettings = new FilteringSettings(RenderQueueRange.opaque);
 			
 			// var sortingSettings = new SortingSettings(RAPI.CurCamera)
 			// {
 			// 	criteria = SortingCriteria.CommonOpaque
 			// };
-			// var drawingSettings = new DrawingSettings(SProps.CameraRenderer.UnlitShaderTagId, sortingSettings)
-			// {
-			// 	enableDynamicBatching = useDynamicBatching,
-			// 	enableInstancing = useGPUInstancing,
-			// 	perObjectData =
-			// 	PerObjectData.ReflectionProbes |
-			// 	PerObjectData.Lightmaps | PerObjectData.ShadowMask |
-			// 	PerObjectData.LightProbe | PerObjectData.OcclusionProbe |
-			// 	PerObjectData.LightProbeProxyVolume |
-			// 	PerObjectData.OcclusionProbeProxyVolume
-			// };
-			// drawingSettings.SetShaderPassName(1, SProps.CameraRenderer.LitShaderTagId);
+
 			// var filteringSettings = new FilteringSettings(RenderQueueRange.opaque);
 			//
-			// RAPI.Context.DrawRenderers(RAPI.CullingResults, ref drawingSettings, ref filteringSettings);
+			RAPI.Context.DrawRenderers(RAPI.CullingResults, ref drawingSettings, ref filteringSettings);
 			
 			RAPI.Buffer.Blit(null, BuiltinRenderTextureType.CurrentActive, litDeferredMaterial, litDeferredMaterial.FindPass(SProps.CameraRenderer.LitDeferredPassName));
 
+			
 			RAPI.Context.DrawSkybox(RAPI.CurCamera);
+			RAPI.ExecuteBuffer();
 
 			//Draw transparent geometry
-			// sortingSettings.criteria = SortingCriteria.CommonTransparent;
-			// drawingSettings.sortingSettings = sortingSettings;
-			// filteringSettings.renderQueueRange = RenderQueueRange.transparent;
-			// RAPI.Context.DrawRenderers(RAPI.CullingResults, ref drawingSettings, ref filteringSettings);
+			drawingSettings.SetShaderPassName(1, SProps.CameraRenderer.LitShaderTagId);
+
+			sortingSettings.criteria = SortingCriteria.CommonTransparent;
+			drawingSettings.sortingSettings = sortingSettings;
+			filteringSettings.renderQueueRange = RenderQueueRange.transparent;
+			RAPI.Context.DrawRenderers(RAPI.CullingResults, ref drawingSettings, ref filteringSettings);
 			
 		}
 
