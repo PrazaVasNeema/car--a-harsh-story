@@ -2,6 +2,26 @@
 #define GBUFFER_PASS_INCLUDED
 
 #include "Assets/DopeRP/GPU/HLSL/Common/Common.hlsl"
+#include "Assets/DopeRP/GPU/HLSL/GI.hlsl"
+
+UNITY_INSTANCING_BUFFER_START(LitBasePerMaterial)
+
+    UNITY_DEFINE_INSTANCED_PROP(float4, _BaseColor)
+    UNITY_DEFINE_INSTANCED_PROP(float4, _AlbedoMap_ST)
+
+    UNITY_DEFINE_INSTANCED_PROP(float, _NormalScale)
+
+    UNITY_DEFINE_INSTANCED_PROP(float, _Metallic)
+    UNITY_DEFINE_INSTANCED_PROP(float, _Roughness)
+    UNITY_DEFINE_INSTANCED_PROP(float, _Reflectance)	
+
+UNITY_INSTANCING_BUFFER_END(LitBasePerMaterial)
+
+TEXTURE2D(_AlbedoMap);
+SAMPLER(sampler_AlbedoMap);
+
+TEXTURE2D(_NormalMap);
+SAMPLER(sampler_NormalMap);
 
 CBUFFER_START(GBuffer)
 
@@ -15,6 +35,9 @@ struct MeshData {
     float3 normal   : NORMAL;
     float4 tangentOS : TANGENT;
 
+    float2 uv : TEXCOORD0;
+
+    GI_ATTRIBUTE_DATA
     UNITY_VERTEX_INPUT_INSTANCE_ID
 };
 
@@ -27,6 +50,9 @@ struct Interpolators {
     float3 normalWS : TEXCOORD3;
     float4 positionCS: TEXCOORD4;
 
+    float2 uv         : TEXCOORD5;
+
+    GI_VARYINGS_DATA
     UNITY_VERTEX_INPUT_INSTANCE_ID
 };
 
@@ -35,6 +61,11 @@ struct fragOutput
     float4 positionViewSpace : SV_Target0;
     float4 normalViewSpace : SV_Target1;
     float4 tangentViewSpace : SV_Target2;
+
+    float4 albedo : SV_Target3;
+    float4 normalWS : SV_Target4;
+    float4 specular : SV_Target5;
+    float4 BRDF : SV_Target6;
 };
 
 Interpolators vert(MeshData i)
@@ -42,6 +73,7 @@ Interpolators vert(MeshData i)
     UNITY_SETUP_INSTANCE_ID(i);
     Interpolators o;
     UNITY_TRANSFER_INSTANCE_ID(i, o);
+    TRANSFER_GI_DATA(input, output);
    
     o.position = TransformObjectToHClip(i.position);
     o.positionVS = TransformWorldToView(TransformObjectToWorld(i.position));
@@ -51,7 +83,18 @@ Interpolators vert(MeshData i)
     o.normalWS = TransformObjectToWorldNormal(i.normal);
 
     o.positionCS = TransformObjectToHClip(i.position);
+
+    float4 baseMap_ST =  UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _AlbedoMap_ST);
+    o.uv = i.uv * baseMap_ST.xy + baseMap_ST.zw;
     return o;
+}
+
+float3 GetNormalTS (float2 baseUV) {
+    float4 map = SAMPLE_TEXTURE2D(_NormalMap, sampler_NormalMap, baseUV);
+    float scale = UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _NormalScale);
+    float3 normal = DecodeNormal(map, scale);
+	
+    return normal;
 }
 
 fragOutput frag(Interpolators i) 
@@ -94,6 +137,27 @@ fragOutput frag(Interpolators i)
 
 
     o.tangentViewSpace = float4(i.positionWS, 1);
+
+
+    float4 baseColor = SAMPLE_TEXTURE2D(_AlbedoMap, sampler_AlbedoMap, i.uv);
+    baseColor *= UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _BaseColor);
+    
+    o.albedo = baseColor;
+
+    float3 normal = NormalTangentToWorld(GetNormalTS(i.uv), normalize(i.normalWS), normalize(i.tangentWS));
+    
+    o.normalWS = float4(normal, 1);
+
+    float metallic = UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _Metallic);
+    float roughness = perceptualRoughnessToRoughness(UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _Roughness));
+    float reflectance = UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _Reflectance);
+
+    o.BRDF = float4(metallic, roughness, reflectance, 1);
+
+    float3 viewDir = normalize(_WorldSpaceCameraPos - i.positionWS);
+    float3 specular = SampleEnvironment(viewDir, i.normalWS);
+
+    o.specular = float4(specular, 1);
     
     return o;
     

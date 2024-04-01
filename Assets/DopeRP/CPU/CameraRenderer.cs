@@ -52,7 +52,7 @@ namespace DopeRP.CPU
 			m_lighting.Setup(customRenderPipelineAsset.shadowSettings);
 			Setup();
 			
-			DrawVisibleGeometry(useDynamicBatching, useGPUInstancing);
+			DrawVisibleGeometry(useDynamicBatching, useGPUInstancing, customRenderPipelineAsset.LitDeferredMaterial);
 			DrawUnsupportedShaders();
 			DrawGizmos();
 			
@@ -66,7 +66,11 @@ namespace DopeRP.CPU
 			RAPI.CleanupTempRT(SProps.Decals.DecalsNormalAtlas);
 			// RAPI.Context.DrawSkybox(RAPI.CurCamera);
 			RAPI.CleanupTempRT(Shader.PropertyToID("Test"));
-
+			
+			RAPI.CleanupTempRT((SProps.GBuffer.G_AlbedoAtlas));
+			RAPI.CleanupTempRT((SProps.GBuffer.G_NormalWorldSpaceAtlas));
+			RAPI.CleanupTempRT((SProps.GBuffer.G_SpecularAtlas));
+			RAPI.CleanupTempRT((SProps.GBuffer.G_BRDFAtlas));
 			Submit();
 		}
 
@@ -79,39 +83,47 @@ namespace DopeRP.CPU
 			RAPI.ExecuteBuffer();
 		}
 
-		void DrawVisibleGeometry (bool useDynamicBatching, bool useGPUInstancing)
+		void DrawVisibleGeometry (bool useDynamicBatching, bool useGPUInstancing, Material litDeferredMaterial)
 		{
 			RAPI.Buffer.SetGlobalVector(SProps.CameraRenderer.ScreenSize, new Vector4(RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight,
 				(float)1/RAPI.CurCamera.pixelWidth , (float)1/RAPI.CurCamera.pixelHeight));
 
+			RAPI.Buffer.SetGlobalVector(Shader.PropertyToID("_nearFarPlanes"), new Vector4(RAPI.CurCamera.nearClipPlane, RAPI.CurCamera.farClipPlane, 0, 0 ));
+			RAPI.Buffer.SetGlobalMatrix(Shader.PropertyToID("adfgdgf_WorldToCameraMatrix"),  RAPI.CurCamera.worldToCameraMatrix);
+			RAPI.Buffer.SetGlobalMatrix(Shader.PropertyToID("adfgdgf_CameraToWorldMatrix"),  RAPI.CurCamera.cameraToWorldMatrix);
+            
+			Matrix4x4 invProjectionMatrix = RAPI.CurCamera.projectionMatrix.inverse;
+			RAPI.Buffer.SetGlobalMatrix(Shader.PropertyToID("_INVERSE_P"), invProjectionMatrix);
 			
-			var sortingSettings = new SortingSettings(RAPI.CurCamera)
-			{
-				criteria = SortingCriteria.CommonOpaque
-			};
-			var drawingSettings = new DrawingSettings(SProps.CameraRenderer.UnlitShaderTagId, sortingSettings)
-			{
-				enableDynamicBatching = useDynamicBatching,
-				enableInstancing = useGPUInstancing,
-				perObjectData =
-				PerObjectData.ReflectionProbes |
-				PerObjectData.Lightmaps | PerObjectData.ShadowMask |
-				PerObjectData.LightProbe | PerObjectData.OcclusionProbe |
-				PerObjectData.LightProbeProxyVolume |
-				PerObjectData.OcclusionProbeProxyVolume
-			};
-			drawingSettings.SetShaderPassName(1, SProps.CameraRenderer.LitShaderTagId);
-			var filteringSettings = new FilteringSettings(RenderQueueRange.opaque);
-
-			RAPI.Context.DrawRenderers(RAPI.CullingResults, ref drawingSettings, ref filteringSettings);
+			// var sortingSettings = new SortingSettings(RAPI.CurCamera)
+			// {
+			// 	criteria = SortingCriteria.CommonOpaque
+			// };
+			// var drawingSettings = new DrawingSettings(SProps.CameraRenderer.UnlitShaderTagId, sortingSettings)
+			// {
+			// 	enableDynamicBatching = useDynamicBatching,
+			// 	enableInstancing = useGPUInstancing,
+			// 	perObjectData =
+			// 	PerObjectData.ReflectionProbes |
+			// 	PerObjectData.Lightmaps | PerObjectData.ShadowMask |
+			// 	PerObjectData.LightProbe | PerObjectData.OcclusionProbe |
+			// 	PerObjectData.LightProbeProxyVolume |
+			// 	PerObjectData.OcclusionProbeProxyVolume
+			// };
+			// drawingSettings.SetShaderPassName(1, SProps.CameraRenderer.LitShaderTagId);
+			// var filteringSettings = new FilteringSettings(RenderQueueRange.opaque);
+			//
+			// RAPI.Context.DrawRenderers(RAPI.CullingResults, ref drawingSettings, ref filteringSettings);
+			
+			RAPI.Buffer.Blit(null, BuiltinRenderTextureType.CurrentActive, litDeferredMaterial, litDeferredMaterial.FindPass(SProps.CameraRenderer.LitDeferredPassName));
 
 			RAPI.Context.DrawSkybox(RAPI.CurCamera);
 
 			//Draw transparent geometry
-			sortingSettings.criteria = SortingCriteria.CommonTransparent;
-			drawingSettings.sortingSettings = sortingSettings;
-			filteringSettings.renderQueueRange = RenderQueueRange.transparent;
-			RAPI.Context.DrawRenderers(RAPI.CullingResults, ref drawingSettings, ref filteringSettings);
+			// sortingSettings.criteria = SortingCriteria.CommonTransparent;
+			// drawingSettings.sortingSettings = sortingSettings;
+			// filteringSettings.renderQueueRange = RenderQueueRange.transparent;
+			// RAPI.Context.DrawRenderers(RAPI.CullingResults, ref drawingSettings, ref filteringSettings);
 			
 		}
 

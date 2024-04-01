@@ -10,6 +10,8 @@ namespace DopeRP.CPU
 		public static CustomRenderPipelineAsset instance;
 		[SerializeField]
 		bool useDynamicBatching = true, useGPUInstancing = true, useSRPBatcher = true;
+		[Header("(Just so unity don't create a new material each render call)")]
+		public Material LitDeferredMaterial;
 		[SerializeField] 
 		private bool m_shadows;
 		public bool shadows => m_shadows;

@@ -164,14 +164,7 @@ float3 ReconstructViewSpacePosition(float2 uv, float depth)
 }
 
 // Linearizes a Z buffer value
-float CalcLinearZ(float depth, float zNear, float zFar) {
 
-
-    // bias it from [0, 1] to [-1, 1]
-    float lineara = zNear / (zFar - depth * (zFar - zNear)) * zFar;
-
-    return lineara;
-}
 
 // this is supposed to get the world position from the depth buffer
 float3 WorldPosFromDepth(float depth, float2 TexCoord) {
@@ -204,6 +197,7 @@ float4 frag (Interpolators i) : SV_Target
 // return fragPositionVS;
     float depth = SAMPLE_TEXTURE2D(Test, samplerTest, i.uv).r;
 
+    
     depth = lerp(UNITY_NEAR_CLIP_VALUE, 1, depth);
 
     // zBufferParam = { (f-n)/n, 1, (f-n)/n*f, 1/f }
@@ -221,6 +215,8 @@ float4 frag (Interpolators i) : SV_Target
 
     viewSpacePosition /= viewSpacePosition.w;
 
+    // float4 viewSpacePosition = ViewSpaceFromDepth(depth, i.uv, n, f, _INVERSE_P);
+    
     float4 worldSpacePosition = mul(adfgdgf_CameraToWorldMatrix, viewSpacePosition);
 
     // return worldSpacePosition;

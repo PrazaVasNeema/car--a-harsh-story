@@ -37,4 +37,32 @@ float3 DecodeNormal (float4 sample, float scale) {
 	#endif
 }
 
+float CalcLinearZ(float depth, float zNear, float zFar) {
+
+
+	// bias it from [0, 1] to [-1, 1]
+	float linearZ = zNear / (zFar - depth * (zFar - zNear)) * zFar;
+
+	return linearZ;
+}
+
+float4 ViewSpaceFromDepth(float depth, float2 uv, float nearPlane, float farPlane, float4x4 invProjMatrix)
+{
+	float linearZ =CalcLinearZ(depth, nearPlane, farPlane);
+
+	float4 clipSpacePosition = float4((uv * 2.0 - 1.0) * linearZ/depth, linearZ, 1.0 * linearZ/depth);
+
+	float4 viewSpacePosition = mul(invProjMatrix, clipSpacePosition);
+
+	return viewSpacePosition / viewSpacePosition.w;
+}
+
+
+
+float3 NormalTangentToWorld (float3 normalTS, float3 normalWS, float4 tangentWS) {
+	float3x3 tangentToWorld = CreateTangentToWorld(normalWS, tangentWS.xyz, tangentWS.w);
+	
+	return TransformTangentToWorld(normalTS, tangentToWorld);
+}
+
 #endif

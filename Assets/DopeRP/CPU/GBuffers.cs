@@ -20,12 +20,21 @@ namespace DopeRP.CPU
             RAPI.Buffer.GetTemporaryRT(SProps.GBuffer.NormalViewSpaceAtlas, (int)cameraWidthHeight.x, (int)cameraWidthHeight.y, 0, FilterMode.Point, RenderTextureFormat.ARGBFloat);
             RAPI.Buffer.GetTemporaryRT(SProps.GBuffer.TangentViewSpaceAtlas, (int)cameraWidthHeight.x, (int)cameraWidthHeight.y, 0, FilterMode.Bilinear, RenderTextureFormat.ARGBFloat);
             RAPI.Buffer.GetTemporaryRT(Shader.PropertyToID("Test"), (int)cameraWidthHeight.x, (int)cameraWidthHeight.y, 32, FilterMode.Bilinear, RenderTextureFormat.Depth);
-
+            
+            RAPI.Buffer.GetTemporaryRT(SProps.GBuffer.G_AlbedoAtlas, (int)cameraWidthHeight.x, (int)cameraWidthHeight.y, 0, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
+            RAPI.Buffer.GetTemporaryRT(SProps.GBuffer.G_NormalWorldSpaceAtlas, (int)cameraWidthHeight.x, (int)cameraWidthHeight.y, 0, FilterMode.Point, RenderTextureFormat.ARGBHalf);
+            RAPI.Buffer.GetTemporaryRT(SProps.GBuffer.G_SpecularAtlas, (int)cameraWidthHeight.x, (int)cameraWidthHeight.y, 0, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
+            RAPI.Buffer.GetTemporaryRT(SProps.GBuffer.G_BRDFAtlas, (int)cameraWidthHeight.x, (int)cameraWidthHeight.y, 0, FilterMode.Point, RenderTextureFormat.ARGB32);
+            
             RenderTargetIdentifier[] colorTargets = {
                 new RenderTargetIdentifier(SProps.GBuffer.PositionViewSpaceAtlas),
                 new RenderTargetIdentifier(SProps.GBuffer.NormalViewSpaceAtlas),
-                new RenderTargetIdentifier(SProps.GBuffer.TangentViewSpaceAtlas)
-
+                new RenderTargetIdentifier(SProps.GBuffer.TangentViewSpaceAtlas),
+                
+                new RenderTargetIdentifier(SProps.GBuffer.G_AlbedoAtlas),
+                new RenderTargetIdentifier(SProps.GBuffer.G_NormalWorldSpaceAtlas),
+                new RenderTargetIdentifier(SProps.GBuffer.G_SpecularAtlas),
+                new RenderTargetIdentifier(SProps.GBuffer.G_BRDFAtlas)
             };
             RAPI.Buffer.SetRenderTarget(colorTargets, Shader.PropertyToID("Test"));
             RAPI.Buffer.ClearRenderTarget(true, true, Color.clear);
@@ -45,6 +54,12 @@ namespace DopeRP.CPU
             {
                 enableDynamicBatching = false,
                 enableInstancing = true,
+                perObjectData =
+                PerObjectData.ReflectionProbes |
+                PerObjectData.Lightmaps | PerObjectData.ShadowMask |
+                PerObjectData.LightProbe | PerObjectData.OcclusionProbe |
+                PerObjectData.LightProbeProxyVolume |
+                PerObjectData.OcclusionProbeProxyVolume
             };
             var filteringSettings = new FilteringSettings(RenderQueueRange.opaque);
 
@@ -57,6 +72,12 @@ namespace DopeRP.CPU
             RAPI.Buffer.SetGlobalTexture("_NormalViewSpace", SProps.GBuffer.NormalViewSpaceAtlas);
             RAPI.Buffer.SetGlobalTexture("_TangentViewSpace", SProps.GBuffer.TangentViewSpaceAtlas);
             RAPI.Buffer.SetGlobalTexture("Test", Shader.PropertyToID("Test"));
+            
+            RAPI.Buffer.SetGlobalTexture("_G_AlbedoAtlas", SProps.GBuffer.G_AlbedoAtlas);
+            RAPI.Buffer.SetGlobalTexture("_G_NormalWorldSpaceAtlas", SProps.GBuffer.G_NormalWorldSpaceAtlas);
+            RAPI.Buffer.SetGlobalTexture("_G_SpecularAtlas", SProps.GBuffer.G_SpecularAtlas);
+            RAPI.Buffer.SetGlobalTexture("_G_BRDFAtlas", SProps.GBuffer.G_BRDFAtlas);
+
             
             
             RAPI.ExecuteBuffer();

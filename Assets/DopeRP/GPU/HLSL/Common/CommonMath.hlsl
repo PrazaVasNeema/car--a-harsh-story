@@ -1,7 +1,7 @@
 ﻿#ifndef COMMON_MATH_INCLUDED
 #define COMMON_MATH_INCLUDED
 
-#define PI 3.141592
+// #define PI 3.141592
 
 static const half  HALF_POINT_ONE   = half(0.1);
 static const half  HALF_MINUS_ONE   = half(-1.0);

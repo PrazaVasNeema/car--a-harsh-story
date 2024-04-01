@@ -12,6 +12,9 @@ namespace DopeRP.CPU
             public static ShaderTagId UnlitShaderTagId = new ShaderTagId("SRPDefaultUnlit");
             public static ShaderTagId LitShaderTagId = new ShaderTagId("Lit");
             
+            public static string LitDeferredPassName = "LitDeferred";
+
+            
             public static int ScreenSize = Shader.PropertyToID("_ScreenSize");
             
         }
@@ -82,6 +85,11 @@ namespace DopeRP.CPU
             public static int PositionViewSpaceAtlas = Shader.PropertyToID("_PositionViewSpace");
             public static int NormalViewSpaceAtlas = Shader.PropertyToID("_NormalViewSpace");
             public static int TangentViewSpaceAtlas = Shader.PropertyToID("_TangentViewSpace");
+            
+            public static int G_AlbedoAtlas = Shader.PropertyToID("_G_AlbedoAtlas");
+            public static int G_NormalWorldSpaceAtlas = Shader.PropertyToID("_G_NormalWorldSpaceAtlas");
+            public static int G_SpecularAtlas = Shader.PropertyToID("_G_SpecularAtlas");
+            public static int G_BRDFAtlas = Shader.PropertyToID("_G_BRDFAtlas");
 
             public static int CameraNearPlane = Shader.PropertyToID("_CameraNearPlane");
             public static int CameraFarPlane = Shader.PropertyToID("_CameraFarPlane");

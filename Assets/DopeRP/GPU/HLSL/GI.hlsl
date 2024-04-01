@@ -35,6 +35,12 @@ float3 SampleEnvironment (SurfaceData surfaceData) {
     return DecodeHDREnvironment(environment, unity_SpecCube0_HDR);;
 }
 
+float3 SampleEnvironment (float3 viewDir, float3 surfaceNormal) {
+    float3 uvw = reflect(-viewDir, surfaceNormal);
+    float4 environment = SAMPLE_TEXTURECUBE_LOD(unity_SpecCube0, samplerunity_SpecCube0, uvw, 0.0);
+    return DecodeHDREnvironment(environment, unity_SpecCube0_HDR);;
+}
+
 GI GetGI (float2 lightMapUV, SurfaceData surfaceData) {
     GI gi;
     

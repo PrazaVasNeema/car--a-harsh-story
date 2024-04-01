@@ -15,6 +15,7 @@ MonoBehaviour:
   useDynamicBatching: 0
   useGPUInstancing: 1
   useSRPBatcher: 0
+  LitDeferredMaterial: {fileID: 2100000, guid: b2f4f84bc8a8e234aad2a24c812aa627, type: 2}
   m_shadows: 1
   m_shadowsSettings:
     shadowsOn: 1

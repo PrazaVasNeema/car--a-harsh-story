@@ -8,18 +8,7 @@
 #include "Assets/DopeRP/GPU/HLSL/Lighting.hlsl"
 
 
-UNITY_INSTANCING_BUFFER_START(LitBasePerMaterial)
 
-	UNITY_DEFINE_INSTANCED_PROP(float4, _BaseColor)
-	UNITY_DEFINE_INSTANCED_PROP(float4, _EmissionColor)
-	UNITY_DEFINE_INSTANCED_PROP(float4, _AlbedoMap_ST)
-	UNITY_DEFINE_INSTANCED_PROP(float, _NormalScale)
-
-	UNITY_DEFINE_INSTANCED_PROP(float, _Metallic)
-	UNITY_DEFINE_INSTANCED_PROP(float, _Roughness)
-	UNITY_DEFINE_INSTANCED_PROP(float, _Reflectance)	
-
-UNITY_INSTANCING_BUFFER_END(LitBasePerMaterial)
 
 CBUFFER_START(LitMain)
 
@@ -91,7 +80,6 @@ struct MeshData {
 	float2 uv         : TEXCOORD0;
 	float4 tangentOS : TANGENT;
 	
-	GI_ATTRIBUTE_DATA
 	UNITY_VERTEX_INPUT_INSTANCE_ID
 };
 
@@ -102,7 +90,6 @@ struct Interpolators {
 	float2 uv         : TEXCOORD0;
 	float4 tangentWS : VAR_TANGENT;
 	
-	GI_VARYINGS_DATA
 	UNITY_VERTEX_INPUT_INSTANCE_ID
 };
 
@@ -111,41 +98,32 @@ Interpolators vert(MeshData i)
 	UNITY_SETUP_INSTANCE_ID(i);
 	Interpolators o;
 	UNITY_TRANSFER_INSTANCE_ID(i, o);
-	TRANSFER_GI_DATA(input, output);
 	
 	o.positionWS = TransformObjectToWorld(i.positionOS.xyz);
 	o.positionCS = TransformWorldToHClip(o.positionWS);
 	o.normalWS = TransformObjectToWorldNormal(i.normalOS);
-	float4 baseMap_ST =  UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _AlbedoMap_ST);
-	o.uv = i.uv * baseMap_ST.xy + baseMap_ST.zw;
+	
+	o.uv = i.uv;
 	o.tangentWS = float4(TransformObjectToWorldDir(i.tangentOS.xyz), i.tangentOS.w);
 	
 	return o;
 }
 
-float3 GetEmission (float2 baseUV) {
-	float4 map = SAMPLE_TEXTURE2D(_EmissionMap, sampler_AlbedoMap, baseUV);
-	float4 color = UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _EmissionColor);
-	return map.rgb * color.rgb;
-}
 
-float3 GetNormalTS (float2 baseUV) {
-	float4 map = SAMPLE_TEXTURE2D(_NormalMap, sampler_AlbedoMap, baseUV);
-	float scale = UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _NormalScale);
-	float3 normal = DecodeNormal(map, scale);
-	
-	return normal;
-}
+
+
 
 float4 frag(Interpolators i) : SV_TARGET
 {
 	
 	UNITY_SETUP_INSTANCE_ID(i);
 	float4 baseColor = SAMPLE_TEXTURE2D(_G_AlbedoAtlas, sampler_G_AlbedoAtlas, i.uv);
+	
+	clip(baseColor.a-0.0001);
 
 	#if defined(SSAO_ON)
 	
-	float ssao = SAMPLE_TEXTURE2D(_SSAOBlurAtlas, sampler_SSAOBlurAtlas, screenSpaceCoordinates).r;
+	float ssao = SAMPLE_TEXTURE2D(_SSAOBlurAtlas, sampler_SSAOBlurAtlas, i.uv).r;
 	if (ssao > 0)
 		baseColor *= ssao;
 
@@ -155,7 +133,7 @@ float4 frag(Interpolators i) : SV_TARGET
 
 	
 	SurfaceData surfaceData;
-	surfaceData.normal = SAMPLE_TEXTURE2D(_G_NormalWorldSpaceAtlas, sampler_G_NormalWorldSpaceAtlas, i.uv);
+	surfaceData.normal = SAMPLE_TEXTURE2D(_G_NormalWorldSpaceAtlas, sampler_G_NormalWorldSpaceAtlas, i.uv).xyz;
 
 	float depth = SAMPLE_TEXTURE2D(Test, samplerTest, i.uv).r;
 
@@ -170,12 +148,12 @@ float4 frag(Interpolators i) : SV_TARGET
 
 	viewSpacePosition /= viewSpacePosition.w;
 	
-	surfaceData.positionWS = mul(adfgdgf_CameraToWorldMatrix, viewSpacePosition);
+	surfaceData.positionWS = mul(adfgdgf_CameraToWorldMatrix, viewSpacePosition).xyz;
 
 	surfaceData.viewDirection = normalize(_WorldSpaceCameraPos - surfaceData.positionWS);
 	surfaceData.depth = -TransformWorldToView(surfaceData.positionWS).z;
 
-	float3 brdfAtlas = SAMPLE_TEXTURE2D(_G_BRDFAtlas, sampler_G_BRDFAtlas, i.uv);
+	float3 brdfAtlas = SAMPLE_TEXTURE2D(_G_BRDFAtlas, sampler_G_BRDFAtlas, i.uv).xyz;
 	
 	surfaceData.metallic = brdfAtlas.x;
 	#ifdef _PREMULTIPLY_ALPHA
