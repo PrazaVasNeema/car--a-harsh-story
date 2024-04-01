@@ -20,6 +20,8 @@ Shader "DopeRP/Shaders/Decals"
 		
 		[Enum(Off, 0, On, 1)] _ZWrite ("Z Write", Float) = 1
 		
+		[InRange] _StencilID ("Stencil ID", Range(0, 255)) = 0
+		
 	}
 
 	SubShader
@@ -34,6 +36,11 @@ Shader "DopeRP/Shaders/Decals"
 			Blend [_SrcBlend] [_DstBlend]
 			ZWrite [_ZWrite]
 
+			Stencil {
+				Ref  [_StencilID]
+				Comp NotEqual
+			}
+			
 			HLSLPROGRAM
 			#pragma target 3.5
 			#pragma multi_compile_instancing

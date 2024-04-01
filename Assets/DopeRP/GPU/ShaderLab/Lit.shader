@@ -24,6 +24,16 @@ Shader "DopeRP/Shaders/Lit"
 		
 //		_DepthLevel ("Depth Level", Range(1, 3)) = 1
 		
+		[InRange] _StencilID ("Stencil ID", Range(0, 255)) = 0
+		
+		[Enum(UnityEngine.Rendering.StencilOp)] _StencilOp ("Stencil Operation", Float) = 0
+		
+		
+		
+				[Enum(UnityEngine.Rendering.CompareFunction)] _StencilCompare ("Stencil Comparison", Float) = 8
+
+
+		
 
 	}
 
@@ -89,9 +99,17 @@ Shader "DopeRP/Shaders/Lit"
 				"LightMode" = "GBufferPass"
 			}
 			
+			Stencil
+			{
+				ref [_StencilID]
+				Comp [_StencilCompare]
+				Pass [_StencilOp]
+				Fail [_StencilOp]
+			}
+			
 			HLSLPROGRAM
 
-			
+
 			#pragma target 3.5
 			#pragma multi_compile_instancing
 			// #pragma enable_d3d11_debug_symbols

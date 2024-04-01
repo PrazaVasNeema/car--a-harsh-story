@@ -21,7 +21,7 @@ namespace DopeRP.CPU
             
             RAPI.Buffer.GetTemporaryRT(SProps.SSAO.SSAORawAtlas, RAPI.CurCamera.pixelWidth/2, RAPI.CurCamera.pixelHeight/2, 0, FilterMode.Bilinear, RenderTextureFormat.ARGBFloat);
             RAPI.Buffer.SetRenderTarget(SProps.SSAO.SSAORawAtlas, RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store);
-            RAPI.Buffer.ClearRenderTarget(true, true, Color.clear);
+            RAPI.Buffer.ClearRenderTarget(false, true, Color.clear);
             
             RAPI.Buffer.SetGlobalVector(SProps.SSAO.ScreenSize, new Vector4(RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight, 0f, 0f));
             Matrix4x4 projectionMatrix = RAPI.CurCamera.projectionMatrix;
@@ -47,9 +47,19 @@ namespace DopeRP.CPU
 
             
             
-            RAPI.ExecuteBuffer();
+            RAPI.ExecuteBuffer(); 
+            Mesh fullscreenQuad = CreateFullscreenQuad();
+            // RAPI.Buffer.SetViewport(new Rect(0, 0, Screen.width, Screen.height));
             
-            RAPI.Buffer.Blit(null, BuiltinRenderTextureType.CurrentActive, ssaoSettings.SSAOMaterial, ssaoSettings.SSAOMaterial.FindPass(SProps.SSAO.SSAORawPassName));
+            // RAPI.Buffer.DrawMesh(RAPI.fullscreenTriangle, Matrix4x4.identity, ssaoSettings.SSAOMaterial, 0 , 0);
+            
+            RAPI.Buffer.SetViewProjectionMatrices(Matrix4x4.identity, Matrix4x4.identity);
+            RAPI.Buffer.DrawMesh(RAPI.fullscreenMesh, Matrix4x4.identity, ssaoSettings.SSAOMaterial, 0, 0);
+            RAPI.Buffer.SetViewProjectionMatrices(RAPI.CurCamera.worldToCameraMatrix, RAPI.CurCamera.projectionMatrix);
+            // RAPI.Buffer.DrawProcedural(Matrix4x4.identity, ssaoSettings.SSAOMaterial, 0, MeshTopology.Triangles, 3, 1,
+                // null);
+            
+            // RAPI.Buffer.Blit(null, BuiltinRenderTextureType.CurrentActive, ssaoSettings.SSAOMaterial, ssaoSettings.SSAOMaterial.FindPass(SProps.SSAO.SSAORawPassName));
 
             RAPI.ExecuteBuffer();
             
@@ -57,11 +67,16 @@ namespace DopeRP.CPU
 
             RAPI.Buffer.GetTemporaryRT(SProps.SSAO.SSAOBlurAtlas, RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight, 0, FilterMode.Bilinear, RenderTextureFormat.ARGBFloat);
             RAPI.Buffer.SetRenderTarget(SProps.SSAO.SSAOBlurAtlas, RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store);
-            RAPI.Buffer.ClearRenderTarget(true, true, Color.clear);
+            RAPI.Buffer.ClearRenderTarget(false, true, Color.clear);
             
             RAPI.ExecuteBuffer();
             
-            RAPI.Buffer.Blit(null, BuiltinRenderTextureType.CurrentActive, ssaoSettings.SSAOMaterial, ssaoSettings.SSAOMaterial.FindPass(SProps.SSAO.SSAOBlurPassName));
+            
+            RAPI.Buffer.SetViewProjectionMatrices(Matrix4x4.identity, Matrix4x4.identity);
+            RAPI.Buffer.DrawMesh(RAPI.fullscreenMesh, Matrix4x4.identity, ssaoSettings.SSAOMaterial, 0, ssaoSettings.SSAOMaterial.FindPass(SProps.SSAO.SSAOBlurPassName));
+            RAPI.Buffer.SetViewProjectionMatrices(RAPI.CurCamera.worldToCameraMatrix, RAPI.CurCamera.projectionMatrix);
+            
+            // RAPI.Buffer.Blit(null, BuiltinRenderTextureType.CurrentActive, ssaoSettings.SSAOMaterial, ssaoSettings.SSAOMaterial.FindPass(SProps.SSAO.SSAOBlurPassName));
 
             RAPI.ExecuteBuffer();
 
@@ -94,7 +109,25 @@ namespace DopeRP.CPU
                 samples[i] = sample;
             }
         }
-       
+        Mesh CreateFullscreenQuad()
+        {
+            Mesh quad = new Mesh();
+            quad.vertices = new Vector3[] {
+                new Vector3(-1, -1, 0),
+                new Vector3( 1, -1, 0),
+                new Vector3( 1,  1, 0),
+                new Vector3(-1,  1, 0)
+            };
+            quad.uv = new Vector2[] {
+                new Vector2(0, 0),
+                new Vector2(1, 0),
+                new Vector2(1, 1),
+                new Vector2(0, 1)
+            };
+            quad.triangles = new int[] { 0, 1, 2, 0, 2, 3 };
+            return quad;
+        }
+
     }
     
     

@@ -185,7 +185,6 @@ float4 frag (Interpolators i) : SV_Target
 {
     UNITY_SETUP_INSTANCE_ID(i);
 
-
     // return normalVSNOT;
     // return mul(adfgdgf_CameraToWorldMatrix, fragPositionVS);
     // return float4(TransformViewToWorld(fragPositionVS), 1);
@@ -213,6 +212,8 @@ float4 frag (Interpolators i) : SV_Target
     // float4 viewSpacePosition = ViewSpaceFromDepth(depth, i.uv, n, f, _INVERSE_P);
     
     float4 worldSpacePosition = mul(adfgdgf_CameraToWorldMatrix, viewSpacePosition);
+
+    // return float4(i.uv+0.5, 0 , 1);
 
     // return worldSpacePosition;
 

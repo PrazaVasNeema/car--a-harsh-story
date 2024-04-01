@@ -11,7 +11,7 @@ namespace DopeRP.CPU
         public void Render()
         {
             
-            RAPI.Buffer.ClearRenderTarget(true, true, Color.clear);
+            RAPI.Buffer.ClearRenderTarget(false, true, Color.clear);
 
             RAPI.ExecuteBuffer();
             
@@ -26,7 +26,7 @@ namespace DopeRP.CPU
                 new RenderTargetIdentifier(SProps.Decals.DecalsDamageNormalAtlas)
             };
             
-            RAPI.Buffer.SetRenderTarget(colorTargets, BuiltinRenderTextureType.CameraTarget);
+            RAPI.Buffer.SetRenderTarget(colorTargets, Shader.PropertyToID("Test"));
             RAPI.Buffer.SetGlobalVector(SProps.Decals.ScreenSize, new Vector4((int)cameraWidthHeight.x, (int)cameraWidthHeight.y,
                 (float)1.0/cameraWidthHeight.x, (float)1.0/cameraWidthHeight.y));
             
