@@ -1,9 +1,9 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace DopeRP.CPU.Editor
+namespace DopeRP.CPU
 {
-
+    #if UNITY_EDITOR
 
     [CanEditMultipleObjects]
     [CustomEditorForRenderPipeline(typeof(Light), typeof(CustomRenderPipelineAsset))]
@@ -22,6 +22,8 @@ namespace DopeRP.CPU.Editor
             }
         }
     }
+    
+    #endif
 
     
 }
