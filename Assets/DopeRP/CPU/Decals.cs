@@ -21,6 +21,7 @@ namespace DopeRP.CPU
             RenderTargetIdentifier[] colorTargets = {
                 new RenderTargetIdentifier(SProps.GBuffer.G_AlbedoAtlas),
                 new RenderTargetIdentifier(SProps.GBuffer.G_NormalWorldSpaceAtlas),
+                new RenderTargetIdentifier(SProps.GBuffer.G_BRDFAtlas)
             };
             
             RAPI.Buffer.SetRenderTarget(colorTargets, Shader.PropertyToID("Test"));

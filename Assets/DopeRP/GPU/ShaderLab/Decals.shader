@@ -2,7 +2,6 @@ Shader "DopeRP/Shaders/Decals"
 {
 	Properties
 	{
-		[Toggle(_IS_DAMAGE_TYPE)] _IsDamageDecalType ("Is Damage Decal Type (not Artistic)", Float) = 0
 		
 		[Toggle(_CONTRIBUTE_ALBEDO)] _ContributeAlbedo ("Contribute Albedo", Float) = 0
 		_BaseMap("Albedo Texture", 2D) = "(0,0,0,0)" {}
@@ -11,6 +10,11 @@ Shader "DopeRP/Shaders/Decals"
 		[Toggle(_CONTRIBUTE_NORMAL)] _ContributeNormals ("Contribute Normals", Float) = 0
 		[NoScaleOffset] _NormalMap("Normal Texture", 2D) = "bump" {}
 		_NormalScale("Normal Scale", Range(0, 1)) = 1
+		
+		[Toggle(_CONTRIBUTE_BRDF)] _ContributeBRDF ("Contribute BRDF", Float) = 0
+		_Metallic ("Metallic", Range(0, 1)) = 0
+		_Roughness ("Roughness", Range(0, 1)) = 0.5
+		_Reflectance ("Reflectance", Range(0, 1)) = 0.5
 
 		[Enum(UnityEngine.Rendering.BlendMode)] _SrcBlend ("Src Blend", Float) = 1
 		[Enum(UnityEngine.Rendering.BlendMode)] _DstBlend ("Dst Blend", Float) = 0
@@ -21,6 +25,9 @@ Shader "DopeRP/Shaders/Decals"
 		[Enum(Off, 0, On, 1)] _ZWrite ("Z Write", Float) = 1
 		
 		[InRange] _StencilID ("Stencil ID", Range(0, 255)) = 0
+		
+		[InRange] _StencilReadMask ("Stencil Readmask", Range(0, 255)) = 0
+
 		
 	}
 
@@ -35,10 +42,13 @@ Shader "DopeRP/Shaders/Decals"
 			
 			Blend [_SrcBlend] [_DstBlend]
 			ZWrite [_ZWrite]
+			Cull Front
+			ZTest Off
 
 			Stencil {
 				Ref  [_StencilID]
-				Comp NotEqual
+				Comp Equal
+				ReadMask [_StencilReadMask]
 			}
 			
 			HLSLPROGRAM
@@ -48,7 +58,7 @@ Shader "DopeRP/Shaders/Decals"
 			#pragma shader_feature _CLIPPING
 			#pragma shader_feature _CONTRIBUTE_ALBEDO
 			#pragma shader_feature _CONTRIBUTE_NORMAL
-			#pragma shader_feature _IS_DAMAGE_TYPE
+			#pragma shader_feature _CONTRIBUTE_BRDF
 
 
 			#pragma vertex vert
@@ -69,6 +79,9 @@ Shader "DopeRP/Shaders/Decals"
 			TEXTURE2D(_GAux_TangentWorldSpaceAtlas);
 			SAMPLER(sampler_GAux_TangentWorldSpaceAtlas);
 
+			TEXTURE2D(_G_BRDFAtlas);
+			SAMPLER(sampler_G_BRDFAtlas);
+
 			TEXTURE2D(Test);
 			SAMPLER(samplerTest);
 			
@@ -87,6 +100,10 @@ Shader "DopeRP/Shaders/Decals"
 				UNITY_DEFINE_INSTANCED_PROP(float4, _BaseColor)
 				UNITY_DEFINE_INSTANCED_PROP(float, _NormalScale)
 				UNITY_DEFINE_INSTANCED_PROP(float, _Cutoff)
+
+				UNITY_DEFINE_INSTANCED_PROP(float, _Metallic)
+    			UNITY_DEFINE_INSTANCED_PROP(float, _Roughness)
+    			UNITY_DEFINE_INSTANCED_PROP(float, _Reflectance)	
 
 			UNITY_INSTANCING_BUFFER_END(UnityPerMaterial_DECALS)
 
@@ -133,9 +150,7 @@ Shader "DopeRP/Shaders/Decals"
 			{
 			    float4 decalsArtisticAlbedoAtlas : SV_Target0;
 			    float4 decalsArtisticNormalAtlas : SV_Target1;
-				
-				float4 decalsDamageAlbedoAtlas : SV_Target2;
-			    float4 decalsDamageNormalAtlas : SV_Target3;
+				float4 decalsArtisticBRDFAtlas : SV_Target2;
 			};
 
 			float3 GetNormalTS (float2 baseUV) {
@@ -151,6 +166,7 @@ Shader "DopeRP/Shaders/Decals"
 				
 				UNITY_SETUP_INSTANCE_ID(i);
 				fragOutput o;
+				// return o;
 
 				float2 uv = i.positionSV.xy * _ScreenSize.zw;
 				
@@ -186,31 +202,21 @@ Shader "DopeRP/Shaders/Decals"
 
 					
 				
-					#if !defined(_IS_DAMAGE_TYPE)
 
 									o.decalsArtisticNormalAtlas = float4(NormalTangentToWorld(GetNormalTS(texCoords), normalWS, tangentWS),1) * (1-isEqual);
 
-				#else
-
-				o.decalsArtisticNormalAtlas = float4(NormalTangentToWorld(GetNormalTS(texCoords), normalWS, tangentWS),1) * (1-isEqual);
-				o.decalsDamageNormalAtlas = 0;
+				
 
 
-				#endif
-
-				o.decalsArtisticNormalAtlas = 0;
-				o.decalsDamageNormalAtlas = float4(NormalTangentToWorld(GetNormalTS(texCoords), normalWS, tangentWS),1) * (1-isEqual);
-
-				// o.decalsNormalAtlas = 0;
 
 				#else
 
-					o.decalsArtisticNormalAtlas = 0;
-					o.decalsDamageNormalAtlas = 0;
+					// o.decalsArtisticNormalAtlas = 0;
 
 				#endif
 				
-			
+
+
 				
 				#if defined(_CONTRIBUTE_ALBEDO)
 				
@@ -220,7 +226,6 @@ Shader "DopeRP/Shaders/Decals"
 				if (baseColor.a - UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _Cutoff) < 0)
 					{
 					o.decalsArtisticAlbedoAtlas = 0;
-					o.decalsDamageAlbedoAtlas = 0;
 					return o;
 					}
 						// // #if !defined(_CONTRIBUTE_NORMAL)
@@ -229,20 +234,24 @@ Shader "DopeRP/Shaders/Decals"
 					#endif
 	
 					baseColor *= UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_DECALS, _BaseColor);
-				#if !defined(_IS_DAMAGE_TYPE)
 				
 					o.decalsArtisticAlbedoAtlas = baseColor;
-					o.decalsDamageAlbedoAtlas = 0;
+
+
+				#endif
+
+				#if defined(_CONTRIBUTE_BRDF)
 				
-				#else
+				float metallic = UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _Metallic);
+				float roughness = perceptualRoughnessToRoughness(UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _Roughness));
+				float reflectance = UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _Reflectance);
 
-					o.decalsArtisticAlbedoAtlas = 0;
-					o.decalsDamageAlbedoAtlas = baseColor;
+				float4 brdf = float4(metallic, roughness, reflectance, 1);
+
+				o.decalsArtisticBRDFAtlas = brdf;
 
 				#endif
-
-				#endif
-				o.decalsDamageNormalAtlas = 1;
+				
 				return o;
 				
 			}
