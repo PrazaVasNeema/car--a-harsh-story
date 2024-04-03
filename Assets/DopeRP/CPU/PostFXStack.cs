@@ -8,6 +8,16 @@ public partial class PostFXStack {
 
     private int colorAdjustmentsId = Shader.PropertyToID("_ColorAdjustments");
     int colorFilterId = Shader.PropertyToID("_ColorFilter");
+    private int whiteBalanceId = Shader.PropertyToID("_WhiteBalance");
+    private int splitToningShadowsId = Shader.PropertyToID("_SplitToningShadows");
+    private int splitToningHighlightsId = Shader.PropertyToID("_SplitToningHighlights");
+    private int channelMixerRedId = Shader.PropertyToID("_ChannelMixerRed");
+    private int channelMixerGreenId = Shader.PropertyToID("_ChannelMixerGreen");
+    private int channelMixerBlueId = Shader.PropertyToID("_ChannelMixerBlue");
+    private int smhShadowsId = Shader.PropertyToID("_SMHShadows");
+     private   int smhMidtonesId = Shader.PropertyToID("_SMHMidtones");
+     private   int smhHighlightsId = Shader.PropertyToID("_SMHHighlights");
+     private   int        smhRangeId = Shader.PropertyToID("_SMHRange");
     
     enum Pass {
         Copy,
@@ -62,8 +72,44 @@ public partial class PostFXStack {
         buffer.SetGlobalColor(colorFilterId, colorAdjustments.colorFilter.linear);
     }
     
+    void ConfigureWhiteBalance () {
+        WhiteBalanceSettings whiteBalance = settings.WhiteBalance;
+        buffer.SetGlobalVector(whiteBalanceId, ColorUtils.ColorBalanceToLMSCoeffs(
+            whiteBalance.temperature, whiteBalance.tint
+        ));
+    }
+    
+    void ConfigureSplitToning () {
+        SplitToningSettings splitToning = settings.SplitToning;
+        Color splitColor = splitToning.shadows;
+        splitColor.a = splitToning.balance * 0.01f;
+        buffer.SetGlobalColor(splitToningShadowsId, splitColor);
+        buffer.SetGlobalColor(splitToningHighlightsId, splitToning.highlights);
+    }
+    
+    void ConfigureChannelMixer () {
+        ChannelMixerSettings channelMixer = settings.ChannelMixer;
+        buffer.SetGlobalVector(channelMixerRedId, channelMixer.red);
+        buffer.SetGlobalVector(channelMixerGreenId, channelMixer.green);
+        buffer.SetGlobalVector(channelMixerBlueId, channelMixer.blue);
+    }
+    
+    void ConfigureShadowsMidtonesHighlights () {
+        ShadowsMidtonesHighlightsSettings smh = settings.ShadowsMidtonesHighlights;
+        buffer.SetGlobalColor(smhShadowsId, smh.shadows.linear);
+        buffer.SetGlobalColor(smhMidtonesId, smh.midtones.linear);
+        buffer.SetGlobalColor(smhHighlightsId, smh.highlights.linear);
+        buffer.SetGlobalVector(smhRangeId, new Vector4(
+            smh.shadowsStart, smh.shadowsEnd, smh.highlightsStart, smh.highLightsEnd
+        ));
+    }
+    
     void DoColorGradingAndToneMapping(int sourceId) {
         ConfigureColorAdjustments();
+        ConfigureWhiteBalance();
+        ConfigureSplitToning();
+        ConfigureChannelMixer();
+        ConfigureShadowsMidtonesHighlights();
         
         ToneMappingSettings.Mode mode = settings.ToneMapping.mode;
         Pass pass = Pass.ColorGradingNone + (int)mode;
