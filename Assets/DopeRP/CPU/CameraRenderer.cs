@@ -22,7 +22,8 @@ namespace DopeRP.CPU
 
 
 		public void Render(Camera camera, bool useDynamicBatching, bool useGPUInstancing,
-			CustomRenderPipelineAsset customRenderPipelineAsset, PostFXSettings postFXSettings)
+			CustomRenderPipelineAsset customRenderPipelineAsset, PostFXSettings postFXSettings,
+			int colorLUTResolution)
 		{
 			RAPI.CurCamera = camera;
 			PrepareUIForSceneWindow();
@@ -61,7 +62,7 @@ namespace DopeRP.CPU
 
 
 			m_lighting.Setup(customRenderPipelineAsset.shadowSettings);
-			postFXStack.Setup(RAPI.Context, camera, postFXSettings);
+			postFXStack.Setup(RAPI.Context, camera, postFXSettings, colorLUTResolution);
 			Setup();
 			
 			DrawVisibleGeometry(useDynamicBatching, useGPUInstancing, customRenderPipelineAsset.LitDeferredMaterial);

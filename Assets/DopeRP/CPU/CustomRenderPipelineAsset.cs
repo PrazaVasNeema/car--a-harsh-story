@@ -32,9 +32,15 @@ namespace DopeRP.CPU
 		private SSAOSettings ssaoSettings;
 		public SSAOSettings SSAOSettings => ssaoSettings;
 		
+		public enum ColorLUTResolution { _16 = 16, _32 = 32, _64 = 64 }
+
+		[SerializeField]
+		ColorLUTResolution colorLUTResolution = ColorLUTResolution._32;
+		
 		protected override RenderPipeline CreatePipeline () {
 			instance = this;
-			return new CustomRenderPipeline(useDynamicBatching, useGPUInstancing, useSRPBatcher, this, postFXSettings);
+			return new CustomRenderPipeline(useDynamicBatching, useGPUInstancing, useSRPBatcher, this,
+				postFXSettings, (int)colorLUTResolution);
 			
 		}
 		

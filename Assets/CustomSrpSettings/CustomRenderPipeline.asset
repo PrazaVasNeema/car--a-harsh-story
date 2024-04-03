@@ -41,3 +41,4 @@ MonoBehaviour:
     magnitude: 0.95
     contrast: 1
     SSAOMaterial: {fileID: 2100000, guid: 60abf83f57f21544994c9a37aa5bb374, type: 2}
+  colorLUTResolution: 32
