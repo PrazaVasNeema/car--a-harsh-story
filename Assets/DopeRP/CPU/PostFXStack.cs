@@ -1,12 +1,17 @@
 using UnityEngine;
 using UnityEngine.Rendering;
+using static PostFXSettings;
 
 public partial class PostFXStack {
 
     const string bufferName = "Post FX";
+
+    private int colorAdjustmentsId = Shader.PropertyToID("_ColorAdjustments");
+    int colorFilterId = Shader.PropertyToID("_ColorFilter");
     
     enum Pass {
         Copy,
+        ColorGradingNone,
         ToneMappingACES,
         ToneMappingNeutral,
         ToneMappingReinhard
@@ -40,16 +45,28 @@ public partial class PostFXStack {
     
     public void Render (int sourceId) {
         // Draw(sourceId, BuiltinRenderTextureType.CameraTarget, Pass.Copy);
-        DoToneMapping(sourceId);
+        DoColorGradingAndToneMapping(sourceId);
         context.ExecuteCommandBuffer(buffer);
         buffer.Clear();
     }
     
-
+    void ConfigureColorAdjustments () {
+        ColorAdjustmentsSettings colorAdjustments = settings.ColorAdjustments;
+        
+        buffer.SetGlobalVector(colorAdjustmentsId, new Vector4(
+            Mathf.Pow(2f, colorAdjustments.postExposure),
+            colorAdjustments.contrast * 0.01f + 1f,
+            colorAdjustments.hueShift * (1f / 360f),
+            colorAdjustments.saturation * 0.01f + 1f
+        ));
+        buffer.SetGlobalColor(colorFilterId, colorAdjustments.colorFilter.linear);
+    }
     
-    void DoToneMapping(int sourceId) {
-        PostFXSettings.ToneMappingSettings.Mode mode = settings.ToneMapping.mode;
-        Pass pass = mode < 0 ? Pass.Copy : Pass.ToneMappingACES + (int)mode;
+    void DoColorGradingAndToneMapping(int sourceId) {
+        ConfigureColorAdjustments();
+        
+        ToneMappingSettings.Mode mode = settings.ToneMapping.mode;
+        Pass pass = Pass.ColorGradingNone + (int)mode;
         Draw(sourceId, BuiltinRenderTextureType.CameraTarget, pass);
     }
     
