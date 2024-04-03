@@ -18,6 +18,8 @@ namespace DopeRP.CPU
 		public bool shadows => m_shadows;
 		[SerializeField] private ShadowSettings m_shadowsSettings = default;
 		public ShadowSettings shadowSettings => m_shadowsSettings;
+		[SerializeField]
+		PostFXSettings postFXSettings = default;
 
 		[Header("-------------------------")]
 		[SerializeField] 
@@ -32,7 +34,7 @@ namespace DopeRP.CPU
 		
 		protected override RenderPipeline CreatePipeline () {
 			instance = this;
-			return new CustomRenderPipeline(useDynamicBatching, useGPUInstancing, useSRPBatcher, this);
+			return new CustomRenderPipeline(useDynamicBatching, useGPUInstancing, useSRPBatcher, this, postFXSettings);
 			
 		}
 		

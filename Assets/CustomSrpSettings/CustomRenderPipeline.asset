@@ -29,6 +29,7 @@ MonoBehaviour:
       cascadeRatio1: 0.073
       cascadeRatio2: 0.319
       cascadeRatio3: 0.5
+  postFXSettings: {fileID: 11400000, guid: fe911ba97b277904caed8459cc8f6a12, type: 2}
   m_SSAO: 1
   m_decalsOn: 1
   ssaoSettings:

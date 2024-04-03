@@ -15,10 +15,14 @@ namespace DopeRP.CPU
 		private readonly Decals m_decals = new Decals();
 
 		private readonly SSAO m_ssao = new SSAO();
+		
+		PostFXStack postFXStack = new PostFXStack();
+		
+		static int frameBufferId = Shader.PropertyToID("_CameraFrameBuffer");
 
 
 		public void Render(Camera camera, bool useDynamicBatching, bool useGPUInstancing,
-			CustomRenderPipelineAsset customRenderPipelineAsset)
+			CustomRenderPipelineAsset customRenderPipelineAsset, PostFXSettings postFXSettings)
 		{
 			RAPI.CurCamera = camera;
 			PrepareUIForSceneWindow();
@@ -57,11 +61,13 @@ namespace DopeRP.CPU
 
 
 			m_lighting.Setup(customRenderPipelineAsset.shadowSettings);
+			postFXStack.Setup(RAPI.Context, camera, postFXSettings);
 			Setup();
 			
 			DrawVisibleGeometry(useDynamicBatching, useGPUInstancing, customRenderPipelineAsset.LitDeferredMaterial);
 			DrawUnsupportedShaders();
-			DrawGizmos();
+			// DrawGizmos();
+			
 			
 			RAPI.CleanupTempRT(SProps.Shadows.DirShadowAtlasId);
 			RAPI.CleanupTempRT(SProps.GBuffer.GAux_TangentWorldSpaceAtlas);
@@ -78,6 +84,15 @@ namespace DopeRP.CPU
 			
 			
 			RAPI.CleanupTempRT((Shader.PropertyToID("1")));
+			DrawGizmosBeforeFX();
+			if (postFXStack.IsActive) {
+				postFXStack.Render(frameBufferId);
+			}
+
+			DrawGizmosAfterFX();
+			if (postFXStack.IsActive) {
+				RAPI.Buffer.ReleaseTemporaryRT(frameBufferId);
+			}
 
 			Submit();
 		}
@@ -85,6 +100,21 @@ namespace DopeRP.CPU
 		void Setup () {
 			RAPI.Context.SetupCameraProperties(RAPI.CurCamera);
 			var flags = RAPI.CurCamera.clearFlags;
+			
+			if (postFXStack.IsActive) {
+				if (flags > CameraClearFlags.Color) {
+					flags = CameraClearFlags.Color;
+				}
+				RAPI.Buffer.GetTemporaryRT(
+					frameBufferId, RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight,
+					32, FilterMode.Bilinear, RenderTextureFormat.Default
+				);
+				RAPI.Buffer.SetRenderTarget(
+					frameBufferId,
+					RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store
+				);
+			}
+			
 			RAPI.Buffer.ClearRenderTarget(flags <= CameraClearFlags.Depth, flags == CameraClearFlags.Color,
 				flags == CameraClearFlags.Color ? RAPI.CurCamera.backgroundColor.linear : Color.clear);
 			

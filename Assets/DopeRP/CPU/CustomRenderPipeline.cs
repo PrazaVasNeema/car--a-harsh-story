@@ -10,9 +10,10 @@ namespace DopeRP.CPU
 		bool useDynamicBatching, useGPUInstancing;
 
 		private CustomRenderPipelineAsset m_customRenderPipelineAsset;
+		private PostFXSettings postFXSettings;
 
 		public CustomRenderPipeline (bool useDynamicBatching, bool useGPUInstancing, bool useSRPBatcher,
-			CustomRenderPipelineAsset customRenderPipelineAsset) {
+			CustomRenderPipelineAsset customRenderPipelineAsset, PostFXSettings postFXSettings) {
 			// GraphicsSettings.useScriptableRenderPipelineBatching = true;
 			// GraphicsSettings.lightsUseLinearIntensity = true;
 			m_customRenderPipelineAsset = customRenderPipelineAsset;
@@ -20,13 +21,15 @@ namespace DopeRP.CPU
 			this.useGPUInstancing = useGPUInstancing;
 			GraphicsSettings.useScriptableRenderPipelineBatching = useSRPBatcher;
 			GraphicsSettings.lightsUseLinearIntensity = true;
+			
+			this.postFXSettings = postFXSettings;
 		}
 
 		protected override void Render(ScriptableRenderContext context, Camera[] cameras)
 		{
 			RAPI.Context = context;
 			for (int i = 0; i < cameras.Length; i++) {
-				renderer.Render(cameras[i], useDynamicBatching, useGPUInstancing, m_customRenderPipelineAsset);
+				renderer.Render(cameras[i], useDynamicBatching, useGPUInstancing, m_customRenderPipelineAsset, postFXSettings);
 			}
 		}
 	}

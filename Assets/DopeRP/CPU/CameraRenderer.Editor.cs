@@ -6,7 +6,8 @@ namespace DopeRP.CPU
 {
 	public partial class CameraRenderer {
 
-		partial void DrawGizmos ();
+		partial void DrawGizmosBeforeFX ();
+		partial void DrawGizmosAfterFX ();
 		partial void DrawUnsupportedShaders();
 
 		partial void PrepareUIForSceneWindow ();
@@ -33,8 +34,12 @@ namespace DopeRP.CPU
 			{
 				new RenderTargetIdentifier(Shader.PropertyToID("1")),
 			};
-			RAPI.Buffer.SetRenderTarget(BuiltinRenderTextureType.CameraTarget, new RenderTargetIdentifier(Shader.PropertyToID("Test")));
-			
+			if( postFXStack.IsActive)
+				RAPI.Buffer.SetRenderTarget(Shader.PropertyToID("_CameraFrameBuffer"), new RenderTargetIdentifier(Shader.PropertyToID("Test")));
+			else
+			{
+				RAPI.Buffer.SetRenderTarget(BuiltinRenderTextureType.CameraTarget, new RenderTargetIdentifier(Shader.PropertyToID("Test")));
+			}
 			RAPI.ExecuteBuffer();
 			
 			var drawingSettings = new DrawingSettings(
@@ -52,9 +57,14 @@ namespace DopeRP.CPU
 			);
 		}
 
-		partial void DrawGizmos () {
+		partial void DrawGizmosBeforeFX  () {
 			if (Handles.ShouldRenderGizmos()) {
 				RAPI.Context.DrawGizmos(RAPI.CurCamera, GizmoSubset.PreImageEffects);
+			}
+		}
+		
+		partial void DrawGizmosAfterFX () {
+			if (Handles.ShouldRenderGizmos()) {
 				RAPI.Context.DrawGizmos(RAPI.CurCamera, GizmoSubset.PostImageEffects);
 			}
 		}
