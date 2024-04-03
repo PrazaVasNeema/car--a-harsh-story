@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f48922ce3d8b884d9efe64a03e385ad, type: 3}
   m_Name: New Post FX Settings
   m_EditorClassIdentifier: 
+  m_FXAA_ON: 1
+  m_vignette_on: 1
   shader: {fileID: 4800000, guid: ffd7c9a6584c128448219777112f21b3, type: 3}
   colorAdjustments:
     postExposure: 0

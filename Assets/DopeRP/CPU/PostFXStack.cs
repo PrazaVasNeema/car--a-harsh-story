@@ -32,6 +32,7 @@ public partial class PostFXStack {
         ColorGradingNeutral,
         ColorGradingReinhard,
         Final,
+        FXAA,
         Vignette
     }
     
@@ -140,11 +141,16 @@ public partial class PostFXStack {
         buffer.SetGlobalVector(colorGradingLUTParametersId,
             new Vector4(1f / lutWidth, 1f / lutHeight, lutHeight - 1f)
         );
-        Draw(sourceId, BuiltinRenderTextureType.CameraTarget, Pass.Final);
+        Draw(sourceId, (settings.m_FXAA_ON || settings.m_vignette_on) ? sourceId : BuiltinRenderTextureType.CameraTarget, Pass.Final);
+        
+        
+        if (settings.m_FXAA_ON)
+            Draw(sourceId, sourceId, Pass.FXAA);
         
         buffer.SetGlobalFloat(Shader.PropertyToID("power"), 5);
-        
-        Draw(sourceId, BuiltinRenderTextureType.CameraTarget, Pass.Vignette);
+
+        if (settings.m_vignette_on)
+            Draw(sourceId, BuiltinRenderTextureType.CameraTarget, Pass.Vignette);
         buffer.ReleaseTemporaryRT(colorGradingLUTId);
     }
     

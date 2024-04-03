@@ -4,6 +4,10 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "DopeRP/Post FX Settings")]
 public class PostFXSettings : ScriptableObject
 {
+    public bool m_FXAA_ON;
+    public bool m_vignette_on;
+
+    
     [SerializeField]
     Shader shader = default;
 

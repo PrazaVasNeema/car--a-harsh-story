@@ -23,8 +23,8 @@ MonoBehaviour:
     maxDistance: 300
     distanceFade: 0.1
     directional:
-      atlasSize: 2048
-      filter: 2
+      atlasSize: 4096
+      filter: 3
       cascades: 1
       cascadeRatio1: 0.073
       cascadeRatio2: 0.319
@@ -41,4 +41,4 @@ MonoBehaviour:
     magnitude: 0.95
     contrast: 1
     SSAOMaterial: {fileID: 2100000, guid: 60abf83f57f21544994c9a37aa5bb374, type: 2}
-  colorLUTResolution: 32
+  colorLUTResolution: 64

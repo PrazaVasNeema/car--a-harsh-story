@@ -8,6 +8,7 @@ Shader "Hidden/Custom RP/Post FX Stack" {
 		HLSLINCLUDE
 		#include "Assets/DopeRP/GPU/HLSL/Common/Common.hlsl"
 		#include "Assets/DopeRP/GPU/HLSL/PostFXStackPasses.hlsl"
+		#include "Assets/DopeRP/GPU/HLSL/FXAA.hlsl"
 		ENDHLSL
 
 		Pass {
@@ -67,6 +68,16 @@ Shader "Hidden/Custom RP/Post FX Stack" {
 				#pragma target 3.5
 				#pragma vertex DefaultPassVertex
 				#pragma fragment FinalPassFragment
+			ENDHLSL
+		}
+
+		Pass {
+			Name "FXAA"
+			
+			HLSLPROGRAM
+				#pragma target 3.5
+				#pragma vertex DefaultPassVertex
+				#pragma fragment FXAAPassFragment
 			ENDHLSL
 		}
 
