@@ -28,6 +28,8 @@ namespace DopeRP.CPU
 			
 			RAPI.Context.SetupCameraProperties(RAPI.CurCamera);
 
+			RAPI.CurCamera.depthTextureMode = DepthTextureMode.None;
+
 			// if ( customRenderPipelineAsset.SSAO || customRenderPipelineAsset.decalsOn)
 			m_stencilPrepass.Render();
 				m_gBuffers.Render();

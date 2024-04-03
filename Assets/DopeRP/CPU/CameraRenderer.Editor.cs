@@ -29,6 +29,14 @@ namespace DopeRP.CPU
 					new Material(Shader.Find("Hidden/InternalErrorShader"));
 			}
 
+			RenderTargetIdentifier[] colorTargets =
+			{
+				new RenderTargetIdentifier(Shader.PropertyToID("1")),
+			};
+			RAPI.Buffer.SetRenderTarget(BuiltinRenderTextureType.CameraTarget, new RenderTargetIdentifier(Shader.PropertyToID("Test")));
+			
+			RAPI.ExecuteBuffer();
+			
 			var drawingSettings = new DrawingSettings(
 				legacyShaderTagIds[0], new SortingSettings(RAPI.CurCamera)
 			)
