@@ -14,6 +14,9 @@ Shader "DopeRP/Shaders/Lit"
 		
 		[NoScaleOffset] _EmissionMap("Emission", 2D) = "white" {}
 		[HDR] _EmissionColor("Emission", Color) = (0.0, 0.0, 0.0, 0.0)
+		
+		_Cutoff ("Alpha Cutoff", Range(0.0, 1.0)) = 0.5
+		[Toggle(_CLIPPING)] _Clipping ("Alpha Clipping", Float) = 0
 
 		[Enum(UnityEngine.Rendering.BlendMode)] _SrcBlend ("Src Blend", Float) = 1
 		[Enum(UnityEngine.Rendering.BlendMode)] _DstBlend ("Dst Blend", Float) = 0
@@ -30,7 +33,11 @@ Shader "DopeRP/Shaders/Lit"
 		
 		
 		
-				[Enum(UnityEngine.Rendering.CompareFunction)] _StencilCompare ("Stencil Comparison", Float) = 8
+		[Enum(UnityEngine.Rendering.CompareFunction)] _StencilCompare ("Stencil Comparison", Float) = 8
+		
+		[Enum(UnityEngine.Rendering.CullMode)] _CullingMode2 ("Culling Mode", Float) = 2
+		
+		[Toggle(_STENCIL_MASK)] _IstencilMask ("is Stencil Mask", Float) = 0
 //[Enum(UnityEngine.Rendering.StencilOp)] _StencilFail ("Stencil Fail", Float) = 0
 //[Enum(UnityEngine.Rendering.StencilOp)] _StencilZFail ("Stencil ZFail", Float) = 0
 
@@ -48,6 +55,8 @@ Shader "DopeRP/Shaders/Lit"
 
 			Blend [_SrcBlend] [_DstBlend]
 			ZWrite [_ZWrite]
+			
+			
 			
 			
 
@@ -69,6 +78,8 @@ Shader "DopeRP/Shaders/Lit"
 			#pragma multi_compile _ DECALS_ON
 			
 			#pragma shader_feature _PREMULTIPLY_ALPHA
+						#pragma shader_feature _CLIPPING
+
 			// #pragma shader_feature _RECEIVE_SHADOWS
 			#pragma vertex vert
 			#pragma fragment frag
@@ -109,11 +120,16 @@ Shader "DopeRP/Shaders/Lit"
 				
 			}
 			
+						Cull [_CullingMode2]
+
+			
 			HLSLPROGRAM
 
 
 			#pragma target 3.5
 			#pragma multi_compile_instancing
+			#pragma shader_feature _CLIPPING
+			#pragma shader_feature _STENCIL_MASK
 			// #pragma enable_d3d11_debug_symbols
 			#pragma vertex vert
 			#pragma fragment frag

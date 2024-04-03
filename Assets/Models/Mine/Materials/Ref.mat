@@ -97,8 +97,8 @@ Material:
     - _SrcBlend: 1
     - _StencilComp: 8
     - _StencilCompare: 8
-    - _StencilID: 3
-    - _StencilOp: 2
+    - _StencilID: 0
+    - _StencilOp: 0
     - _UVSec: 0
     - _WorkingVar: 1
     - _ZWrite: 1

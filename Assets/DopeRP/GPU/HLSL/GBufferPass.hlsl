@@ -13,7 +13,9 @@ UNITY_INSTANCING_BUFFER_START(LitBasePerMaterial)
 
     UNITY_DEFINE_INSTANCED_PROP(float, _Metallic)
     UNITY_DEFINE_INSTANCED_PROP(float, _Roughness)
-    UNITY_DEFINE_INSTANCED_PROP(float, _Reflectance)	
+    UNITY_DEFINE_INSTANCED_PROP(float, _Reflectance)
+
+    UNITY_DEFINE_INSTANCED_PROP(float, _Cutoff)
 
 UNITY_INSTANCING_BUFFER_END(LitBasePerMaterial)
 
@@ -99,8 +101,22 @@ fragOutput frag(Interpolators i)
 {
     UNITY_SETUP_INSTANCE_ID(i);
 
+    
     fragOutput o;
 
+    #if defined(_STENCIL_MASK)
+    o.albedo = 0;
+    #endif
+    
+
+    float4 baseColor = SAMPLE_TEXTURE2D(_AlbedoMap, sampler_AlbedoMap, i.uv);
+    
+    #if defined(_CLIPPING)
+
+    clip(baseColor.a - UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _Cutoff));
+
+    #endif
+    
     o.tangentWorldSpace = i.tangentWS;
     
     // o.normalViewSpace = mul(Inverse(GetViewToHClipMatrix()), i.position/i.position.w);
@@ -138,7 +154,7 @@ fragOutput frag(Interpolators i)
 
 
 
-    float4 baseColor = SAMPLE_TEXTURE2D(_AlbedoMap, sampler_AlbedoMap, i.uv);
+    // float4 baseColor = SAMPLE_TEXTURE2D(_AlbedoMap, sampler_AlbedoMap, i.uv);
     baseColor *= UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _BaseColor);
     
     o.albedo = baseColor;

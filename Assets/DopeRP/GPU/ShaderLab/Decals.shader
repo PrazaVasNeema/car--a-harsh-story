@@ -6,6 +6,9 @@ Shader "DopeRP/Shaders/Decals"
 		[Toggle(_CONTRIBUTE_ALBEDO)] _ContributeAlbedo ("Contribute Albedo", Float) = 0
 		_BaseMap("Albedo Texture", 2D) = "(0,0,0,0)" {}
 		_BaseColor("Color", Color) = (1.0, 1.0, 1.0, 1.0)
+		
+		[Toggle(_OPACITY_ATLAS)] _OpacityAtlas ("Opacity as texture", Float) = 0
+		_OpacityMap("Albedo Texture", 2D) = "(0,0,0,0)" {}
 
 		[Toggle(_CONTRIBUTE_NORMAL)] _ContributeNormals ("Contribute Normals", Float) = 0
 		[NoScaleOffset] _NormalMap("Normal Texture", 2D) = "bump" {}
@@ -57,6 +60,7 @@ Shader "DopeRP/Shaders/Decals"
 			// #pragma enable_d3d11_debug_symbols
 			#pragma shader_feature _CLIPPING
 			#pragma shader_feature _CONTRIBUTE_ALBEDO
+						#pragma shader_feature _OPACITY_ATLAS
 			#pragma shader_feature _CONTRIBUTE_NORMAL
 			#pragma shader_feature _CONTRIBUTE_BRDF
 
@@ -68,6 +72,9 @@ Shader "DopeRP/Shaders/Decals"
 
 			TEXTURE2D(_BaseMap);
 			SAMPLER(sampler_BaseMap);
+
+			TEXTURE2D(_OpacityMap);
+			SAMPLER(sampler_OpacityMap);
 
 			TEXTURE2D(_NormalMap);
 			SAMPLER(sampler_NormalMap);
@@ -203,7 +210,9 @@ Shader "DopeRP/Shaders/Decals"
 					
 				
 
-									o.decalsArtisticNormalAtlas = float4(NormalTangentToWorld(GetNormalTS(texCoords), normalWS, tangentWS),1) * (1-isEqual);
+									// o.decalsArtisticNormalAtlas = float4(NormalTangentToWorld(GetNormalTS(texCoords), normalWS, tangentWS),1) ;
+									// o.decalsArtisticNormalAtlas = float4(0.1, 0.1,0.1,1) ;
+									o.decalsArtisticNormalAtlas = float4(NormalTangentToWorld(GetNormalTS(texCoords), normalWS, tangentWS),0) ;
 
 				
 
@@ -223,6 +232,11 @@ Shader "DopeRP/Shaders/Decals"
 					float4 baseColor = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, texCoords);
 	
 					#if defined(_CLIPPING)
+
+				#if defined(_OPACITY_ATLAS)
+					baseColor.a = SAMPLE_TEXTURE2D(_OpacityMap, sampler_OpacityMap, texCoords).r;
+				#endif
+				
 				if (baseColor.a - UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _Cutoff) < 0)
 					{
 					o.decalsArtisticAlbedoAtlas = 0;

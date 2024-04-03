@@ -57,7 +57,7 @@ namespace DopeRP.CPU
                 PerObjectData.LightProbeProxyVolume |
                 PerObjectData.OcclusionProbeProxyVolume
             };
-            drawingSettings.SetShaderPassName(1, new ShaderTagId("gfg"));
+            // drawingSettings.SetShaderPassName(1, new ShaderTagId("gfg"));
             var filteringSettings = new FilteringSettings(RenderQueueRange.opaque);
 
             RAPI.Context.DrawRenderers(RAPI.CullingResults, ref drawingSettings, ref filteringSettings);

@@ -8,9 +8,11 @@ Shader "DopeRP/Shaders/StencilMask"
 	SubShader
 	{
 		
-		Tags { "RenderType"="Opaque" "LightMode"="gfg"}
 		
 		Pass {
+			
+					Tags { "RenderType"="Opaque" "LightMode"="GBufferPass"}
+
 			Blend Zero One
 			ZWrite off
 			
