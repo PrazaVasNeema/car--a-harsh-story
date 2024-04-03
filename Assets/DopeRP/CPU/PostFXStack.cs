@@ -31,7 +31,8 @@ public partial class PostFXStack {
         ColorGradingACES,
         ColorGradingNeutral,
         ColorGradingReinhard,
-        Final
+        Final,
+        Vignette
     }
     
     int 		fxSourceId = Shader.PropertyToID("_PostFXSource"),
@@ -140,6 +141,10 @@ public partial class PostFXStack {
             new Vector4(1f / lutWidth, 1f / lutHeight, lutHeight - 1f)
         );
         Draw(sourceId, BuiltinRenderTextureType.CameraTarget, Pass.Final);
+        
+        buffer.SetGlobalFloat(Shader.PropertyToID("power"), 5);
+        
+        Draw(sourceId, BuiltinRenderTextureType.CameraTarget, Pass.Vignette);
         buffer.ReleaseTemporaryRT(colorGradingLUTId);
     }
     
