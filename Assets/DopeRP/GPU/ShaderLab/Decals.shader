@@ -162,7 +162,7 @@ Shader "DopeRP/Shaders/Decals"
 
 			float3 GetNormalTS (float2 baseUV) {
 				float4 map = SAMPLE_TEXTURE2D(_NormalMap, sampler_NormalMap, baseUV);
-				float scale = UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _NormalScale);
+				float scale = UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_DECALS, _NormalScale);
 				float3 normal = DecodeNormal(map, scale);
 				return normal;
 			}
@@ -247,13 +247,13 @@ Shader "DopeRP/Shaders/Decals"
 
 				
 				
-				if (baseColor.a - UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _Cutoff) < 0)
+				if (baseColor.a - UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_DECALS, _Cutoff) < 0)
 					{
 					o.decalsArtisticAlbedoAtlas = 0;
 					return o;
 					}
 						// // #if !defined(_CONTRIBUTE_NORMAL)
-						// 	clip(baseColor.a - UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _Cutoff));
+						// 	clip(baseColor.a - UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_DECALS, _Cutoff));
 						// // #endif
 					#endif
 	
@@ -266,9 +266,9 @@ Shader "DopeRP/Shaders/Decals"
 
 				#if defined(_CONTRIBUTE_BRDF)
 				
-				float metallic = UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _Metallic);
-				float roughness = perceptualRoughnessToRoughness(UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _Roughness));
-				float reflectance = UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _Reflectance);
+				float metallic = UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_DECALS, _Metallic);
+				float roughness = perceptualRoughnessToRoughness(UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_DECALS, _Roughness));
+				float reflectance = UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_DECALS, _Reflectance);
 
 				float4 brdf = float4(metallic, roughness, reflectance, 1);
 

@@ -62,9 +62,9 @@ namespace DopeRP.CPU
             var filteringSettings = new FilteringSettings(RenderQueueRange.opaque);
 
             RAPI.Context.DrawRenderers(RAPI.CullingResults, ref drawingSettings, ref filteringSettings);
-            
+
             RAPI.ExecuteBuffer();
-            
+
 
             RAPI.Buffer.SetGlobalTexture("_GAux_TangentWorldSpaceAtlas", SProps.GBuffer.GAux_TangentWorldSpaceAtlas);
             // RAPI.Buffer.SetGlobalTexture("Test", Shader.PropertyToID("Test"));
@@ -76,9 +76,10 @@ namespace DopeRP.CPU
             RAPI.Buffer.SetGlobalTexture("_G_BRDFAtlas", SProps.GBuffer.G_BRDFAtlas);
 
             
-            
             RAPI.ExecuteBuffer();
             
+
+
         }
         
     }

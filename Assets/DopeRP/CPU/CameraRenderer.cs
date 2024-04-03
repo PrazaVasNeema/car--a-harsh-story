@@ -33,6 +33,16 @@ namespace DopeRP.CPU
 			// if ( customRenderPipelineAsset.SSAO || customRenderPipelineAsset.decalsOn)
 			m_stencilPrepass.Render();
 				m_gBuffers.Render();
+				RAPI.DrawEmpty(customRenderPipelineAsset.EmptyMaterial);
+				if (customRenderPipelineAsset.decalsOn)
+				{
+					RAPI.SetKeyword("DECALS_ON", true);
+					m_decals.Render();
+				}
+				else
+				{
+					RAPI.SetKeyword("DECALS_ON", false);
+				}
 			if (customRenderPipelineAsset.SSAO)
 			{
 				m_ssao.Render(customRenderPipelineAsset.SSAOSettings);
@@ -43,15 +53,7 @@ namespace DopeRP.CPU
 				RAPI.SetKeyword("SSAO_ON", false);
 			}
 
-			if (customRenderPipelineAsset.decalsOn)
-			{
-				RAPI.SetKeyword("DECALS_ON", true);
-				m_decals.Render();
-			}
-			else
-			{
-				RAPI.SetKeyword("DECALS_ON", false);
-			}
+
 
 
 			m_lighting.Setup(customRenderPipelineAsset.shadowSettings);

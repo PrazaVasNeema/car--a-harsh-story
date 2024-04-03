@@ -9,7 +9,7 @@ namespace DopeRP.CPU
     {
         private const string BUFFER_NAME = "DefaultBufferName";
         static Mesh s_FullscreenTriangle;
-        public static CommandBuffer Buffer { get; private set; } = new CommandBuffer {
+        public static CommandBuffer Buffer { get;  set; } = new CommandBuffer {
             name = BUFFER_NAME
         };
         public static ScriptableRenderContext Context { get; set; }
@@ -139,6 +139,20 @@ namespace DopeRP.CPU
                 s_FullscreenMesh.UploadMeshData(true);
                 return s_FullscreenMesh;
             }
+            
+            
         }
+        public static void DrawEmpty(Material emptyMat)
+        {
+            RAPI.Buffer.SetRenderTarget(BuiltinRenderTextureType.None, BuiltinRenderTextureType.None);
+            RAPI.ExecuteBuffer();
+            RAPI.Buffer.SetViewProjectionMatrices(Matrix4x4.identity, Matrix4x4.identity);
+            RAPI.Buffer.DrawMesh(RAPI.fullscreenMesh, Matrix4x4.identity, emptyMat, 0, 0);
+            RAPI.Buffer.SetViewProjectionMatrices(RAPI.CurCamera.worldToCameraMatrix, RAPI.CurCamera.projectionMatrix);
+            
+            RAPI.ExecuteBuffer();
+
+        }
+
     }
 }

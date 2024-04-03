@@ -6,7 +6,8 @@ namespace DopeRP.CPU
 	[CreateAssetMenu(menuName = "Rendering/Custom Render Pipeline")]
 	public class CustomRenderPipelineAsset : RenderPipelineAsset
 	{
-		
+		[Header("(Just so unity don't create a new material each render call)")]
+		public Material EmptyMaterial;
 		public static CustomRenderPipelineAsset instance;
 		[SerializeField]
 		bool useDynamicBatching = true, useGPUInstancing = true, useSRPBatcher = true;

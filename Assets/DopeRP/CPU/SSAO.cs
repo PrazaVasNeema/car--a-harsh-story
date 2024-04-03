@@ -15,6 +15,8 @@ namespace DopeRP.CPU
         public void Render(SSAOSettings ssaoSettings)
         {
             
+            RAPI.Buffer.name = "ssao";
+            RAPI.Buffer.BeginSample("ssao");
             RAPI.ExecuteBuffer();
             
             
@@ -38,7 +40,7 @@ namespace DopeRP.CPU
             Matrix4x4 invProjectionMatrix = RAPI.CurCamera.projectionMatrix.inverse;
             RAPI.Buffer.SetGlobalMatrix(Shader.PropertyToID("_INVERSE_P"), invProjectionMatrix);
             
-            Generate();
+            // Generate();
             
             RAPI.Buffer.SetGlobalVectorArray(Shader.PropertyToID("SAMPLES"), samples);
 
@@ -82,7 +84,7 @@ namespace DopeRP.CPU
 
             RAPI.Buffer.SetGlobalTexture("_SSAOBlurAtlas", SProps.SSAO.SSAOBlurAtlas);
             
-            
+            RAPI.Buffer.EndSample("ssao");
             RAPI.ExecuteBuffer();
             
         }
