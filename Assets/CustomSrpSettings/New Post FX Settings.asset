@@ -13,3 +13,5 @@ MonoBehaviour:
   m_Name: New Post FX Settings
   m_EditorClassIdentifier: 
   shader: {fileID: 4800000, guid: ffd7c9a6584c128448219777112f21b3, type: 3}
+  toneMapping:
+    mode: -1

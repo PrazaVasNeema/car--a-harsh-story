@@ -6,10 +6,14 @@ public partial class PostFXStack {
     const string bufferName = "Post FX";
     
     enum Pass {
-        Copy
+        Copy,
+        ToneMappingACES,
+        ToneMappingNeutral,
+        ToneMappingReinhard
     }
     
-    int fxSourceId = Shader.PropertyToID("_PostFXSource");
+    int 		fxSourceId = Shader.PropertyToID("_PostFXSource"),
+        fxSource2Id = Shader.PropertyToID("_PostFXSource2");
     
     public bool IsActive => settings != null;
 
@@ -35,9 +39,18 @@ public partial class PostFXStack {
     }
     
     public void Render (int sourceId) {
-        Draw(sourceId, BuiltinRenderTextureType.CameraTarget, Pass.Copy);
+        // Draw(sourceId, BuiltinRenderTextureType.CameraTarget, Pass.Copy);
+        DoToneMapping(sourceId);
         context.ExecuteCommandBuffer(buffer);
         buffer.Clear();
+    }
+    
+
+    
+    void DoToneMapping(int sourceId) {
+        PostFXSettings.ToneMappingSettings.Mode mode = settings.ToneMapping.mode;
+        Pass pass = mode < 0 ? Pass.Copy : Pass.ToneMappingACES + (int)mode;
+        Draw(sourceId, BuiltinRenderTextureType.CameraTarget, pass);
     }
     
     void Draw (
