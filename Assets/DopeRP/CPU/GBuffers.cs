@@ -17,7 +17,7 @@ namespace DopeRP.CPU
 
             Vector2 cameraWidthHeight = new Vector2(RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight);
             RAPI.Buffer.GetTemporaryRT(SProps.GBuffer.GAux_TangentWorldSpaceAtlas, (int)cameraWidthHeight.x, (int)cameraWidthHeight.y, 0, FilterMode.Point, RenderTextureFormat.ARGBHalf);
-            RAPI.Buffer.GetTemporaryRT(Shader.PropertyToID("Test"), (int)cameraWidthHeight.x, (int)cameraWidthHeight.y, 32, FilterMode.Bilinear, RenderTextureFormat.Depth);
+            // RAPI.Buffer.GetTemporaryRT(Shader.PropertyToID("Test"), (int)cameraWidthHeight.x, (int)cameraWidthHeight.y, 32, FilterMode.Bilinear, RenderTextureFormat.Depth);
             
             RAPI.Buffer.GetTemporaryRT(SProps.GBuffer.G_AlbedoAtlas, (int)cameraWidthHeight.x, (int)cameraWidthHeight.y, 0, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
             RAPI.Buffer.GetTemporaryRT(SProps.GBuffer.G_NormalWorldSpaceAtlas, (int)cameraWidthHeight.x, (int)cameraWidthHeight.y, 0, FilterMode.Point, RenderTextureFormat.ARGBHalf);
@@ -33,7 +33,7 @@ namespace DopeRP.CPU
                 new RenderTargetIdentifier(SProps.GBuffer.G_BRDFAtlas)
             };
             RAPI.Buffer.SetRenderTarget(colorTargets, Shader.PropertyToID("Test"));
-            RAPI.Buffer.ClearRenderTarget(true, true, Color.clear);
+            RAPI.Buffer.ClearRenderTarget(false, true, Color.clear);
             
             RAPI.Buffer.SetGlobalFloat(SProps.GBuffer.CameraNearPlane, RAPI.CurCamera.nearClipPlane);
             RAPI.Buffer.SetGlobalFloat(SProps.GBuffer.CameraFarPlane, RAPI.CurCamera.farClipPlane);
@@ -57,7 +57,6 @@ namespace DopeRP.CPU
                 PerObjectData.LightProbeProxyVolume |
                 PerObjectData.OcclusionProbeProxyVolume
             };
-            // drawingSettings.SetShaderPassName(1, new ShaderTagId("gfg"));
             var filteringSettings = new FilteringSettings(RenderQueueRange.opaque);
 
             RAPI.Context.DrawRenderers(RAPI.CullingResults, ref drawingSettings, ref filteringSettings);
@@ -66,7 +65,7 @@ namespace DopeRP.CPU
             
 
             RAPI.Buffer.SetGlobalTexture("_GAux_TangentWorldSpaceAtlas", SProps.GBuffer.GAux_TangentWorldSpaceAtlas);
-            RAPI.Buffer.SetGlobalTexture("Test", Shader.PropertyToID("Test"));
+            // RAPI.Buffer.SetGlobalTexture("Test", Shader.PropertyToID("Test"));
             
             RAPI.Buffer.SetGlobalTexture("_G_AlbedoAtlas", SProps.GBuffer.G_AlbedoAtlas);
             RAPI.Buffer.SetGlobalTexture("_G_NormalWorldSpaceAtlas", SProps.GBuffer.G_NormalWorldSpaceAtlas);

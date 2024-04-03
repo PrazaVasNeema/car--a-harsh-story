@@ -7,6 +7,8 @@ namespace DopeRP.CPU
 		
 		private const string BUFFER_NAME = "RenderCamera";
 
+		private readonly StencilPrepass m_stencilPrepass = new StencilPrepass();
+		
 		private readonly Lighting m_lighting = new Lighting();
 		private readonly RenderBuffers m_renderBuffers = new RenderBuffers();
 		private readonly GBuffers m_gBuffers = new GBuffers();
@@ -27,6 +29,7 @@ namespace DopeRP.CPU
 			RAPI.Context.SetupCameraProperties(RAPI.CurCamera);
 
 			// if ( customRenderPipelineAsset.SSAO || customRenderPipelineAsset.decalsOn)
+			m_stencilPrepass.Render();
 				m_gBuffers.Render();
 			if (customRenderPipelineAsset.SSAO)
 			{
@@ -67,6 +70,10 @@ namespace DopeRP.CPU
 			RAPI.CleanupTempRT((SProps.GBuffer.G_NormalWorldSpaceAtlas));
 			RAPI.CleanupTempRT((SProps.GBuffer.G_SpecularAtlas));
 			RAPI.CleanupTempRT((SProps.GBuffer.G_BRDFAtlas));
+			
+			
+			RAPI.CleanupTempRT((Shader.PropertyToID("1")));
+
 			Submit();
 		}
 

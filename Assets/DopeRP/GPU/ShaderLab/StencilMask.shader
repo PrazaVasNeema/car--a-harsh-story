@@ -11,10 +11,11 @@ Shader "DopeRP/Shaders/StencilMask"
 		
 		Pass {
 			
-					Tags { "RenderType"="Opaque" "LightMode"="GBufferPass"}
+					Tags { "RenderType"="Opaque" "LightMode"="gfg"}
 
 			Blend Zero One
 			ZWrite off
+			Cull Back
 			
 			Stencil
 			{
