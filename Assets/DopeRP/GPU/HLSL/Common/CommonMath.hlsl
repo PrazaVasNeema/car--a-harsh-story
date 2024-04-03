@@ -83,5 +83,16 @@ float4 not(float4 a) {
 	return 1.0 - a;
 }
 
+// float4 FindTangentFromNormalWS(float3 nowmalWS, float incodedTangent)
+// {
+// 	float3 rot = float3(1/PI, incodedTangent * PI, 0);
+// 	float rotY;
+// 	float rotX;
+// 	float rotZ;
+// 	float4x4 a = ((cos(rotY) * cos(rotZ), sin(rotX) * sin(rotY) * cos)
+//
+// 	float3x3 RotX = 
+// }
+
 
 #endif

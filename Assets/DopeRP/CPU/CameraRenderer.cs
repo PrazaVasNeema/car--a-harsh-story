@@ -70,6 +70,7 @@ namespace DopeRP.CPU
 			
 			RAPI.CleanupTempRT((SProps.GBuffer.G_AlbedoAtlas));
 			RAPI.CleanupTempRT((SProps.GBuffer.G_NormalWorldSpaceAtlas));
+			RAPI.CleanupTempRT((SProps.GBuffer.GAux_ClearNormalWorldSpaceAtlas));
 			RAPI.CleanupTempRT((SProps.GBuffer.G_SpecularAtlas));
 			RAPI.CleanupTempRT((SProps.GBuffer.G_BRDFAtlas));
 			

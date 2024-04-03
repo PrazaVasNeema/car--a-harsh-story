@@ -83,6 +83,7 @@ namespace DopeRP.CPU
             public static string GBufferPassName = "GBufferPass";
             
             public static int GAux_TangentWorldSpaceAtlas = Shader.PropertyToID("_GAux_TangentWorldSpace");
+            public static int GAux_ClearNormalWorldSpaceAtlas = Shader.PropertyToID("_GAux_ClearNormalWorldSpaceAtlas");
             
             public static int G_AlbedoAtlas = Shader.PropertyToID("_G_AlbedoAtlas");
             public static int G_NormalWorldSpaceAtlas = Shader.PropertyToID("_G_NormalWorldSpaceAtlas");

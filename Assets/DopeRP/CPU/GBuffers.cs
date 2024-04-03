@@ -21,6 +21,7 @@ namespace DopeRP.CPU
             
             RAPI.Buffer.GetTemporaryRT(SProps.GBuffer.G_AlbedoAtlas, (int)cameraWidthHeight.x, (int)cameraWidthHeight.y, 0, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
             RAPI.Buffer.GetTemporaryRT(SProps.GBuffer.G_NormalWorldSpaceAtlas, (int)cameraWidthHeight.x, (int)cameraWidthHeight.y, 0, FilterMode.Point, RenderTextureFormat.ARGBHalf);
+            RAPI.Buffer.GetTemporaryRT(SProps.GBuffer.GAux_ClearNormalWorldSpaceAtlas, (int)cameraWidthHeight.x, (int)cameraWidthHeight.y, 0, FilterMode.Point, RenderTextureFormat.ARGBHalf);
             RAPI.Buffer.GetTemporaryRT(SProps.GBuffer.G_SpecularAtlas, (int)cameraWidthHeight.x, (int)cameraWidthHeight.y, 0, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
             RAPI.Buffer.GetTemporaryRT(SProps.GBuffer.G_BRDFAtlas, (int)cameraWidthHeight.x, (int)cameraWidthHeight.y, 0, FilterMode.Point, RenderTextureFormat.ARGB32);
             
@@ -29,6 +30,7 @@ namespace DopeRP.CPU
                 
                 new RenderTargetIdentifier(SProps.GBuffer.G_AlbedoAtlas),
                 new RenderTargetIdentifier(SProps.GBuffer.G_NormalWorldSpaceAtlas),
+                new RenderTargetIdentifier(SProps.GBuffer.GAux_ClearNormalWorldSpaceAtlas),
                 new RenderTargetIdentifier(SProps.GBuffer.G_SpecularAtlas),
                 new RenderTargetIdentifier(SProps.GBuffer.G_BRDFAtlas)
             };
@@ -69,6 +71,7 @@ namespace DopeRP.CPU
             
             RAPI.Buffer.SetGlobalTexture("_G_AlbedoAtlas", SProps.GBuffer.G_AlbedoAtlas);
             RAPI.Buffer.SetGlobalTexture("_G_NormalWorldSpaceAtlas", SProps.GBuffer.G_NormalWorldSpaceAtlas);
+            RAPI.Buffer.SetGlobalTexture("_GAux_ClearNormalWorldSpaceAtlas", SProps.GBuffer.GAux_ClearNormalWorldSpaceAtlas);
             RAPI.Buffer.SetGlobalTexture("_G_SpecularAtlas", SProps.GBuffer.G_SpecularAtlas);
             RAPI.Buffer.SetGlobalTexture("_G_BRDFAtlas", SProps.GBuffer.G_BRDFAtlas);
 

@@ -80,8 +80,8 @@ Shader "DopeRP/Shaders/Decals"
 			SAMPLER(sampler_NormalMap);
 			
 
-			TEXTURE2D(_G_NormalWorldSpaceAtlas);
-			SAMPLER(sampler_G_NormalWorldSpaceAtlas);
+			TEXTURE2D(_GAux_ClearNormalWorldSpaceAtlas);
+			SAMPLER(sampler_GAux_ClearNormalWorldSpaceAtlas);
 
 			TEXTURE2D(_GAux_TangentWorldSpaceAtlas);
 			SAMPLER(sampler_GAux_TangentWorldSpaceAtlas);
@@ -199,12 +199,17 @@ Shader "DopeRP/Shaders/Decals"
 					clip(SAMPLE_TEXTURE2D(_OpacityMap, sampler_OpacityMap, texCoords).r - 0.1);
 				#endif
 
+				
 				#if defined(_CONTRIBUTE_NORMAL)
 				
-					float3 normalWS = normalize(SAMPLE_TEXTURE2D(_G_NormalWorldSpaceAtlas, sampler_G_NormalWorldSpaceAtlas, uv).xyz);
+					float3 normalWS = normalize(SAMPLE_TEXTURE2D(_GAux_ClearNormalWorldSpaceAtlas, sampler_GAux_ClearNormalWorldSpaceAtlas, uv).xyz);
 					float4 tangentWS = normalize(SAMPLE_TEXTURE2D(_GAux_TangentWorldSpaceAtlas, sampler_GAux_TangentWorldSpaceAtlas, uv));
 
-				
+				// 	float3 worldup = float3(0,1,0);
+				// 	float3 orthogonalVector = cross(normalWS.xyz, worldup);
+				// float angle = acos(normalWS.a);
+				//
+				// 	float3 rotatedVector = orthogonalVector * cos(angle) + cross(normalWS.xyz, orthogonalVector) * sin(angle) + normalWS.xyz * dot(normalWS.xyz, orthogonalVector) * (1 - cos(angle));
 
 					// float3 targetValue = float3(0.5, 0.5, 1);
 					// float epsilon = .05; // Tolerance for the comparison
@@ -215,10 +220,14 @@ Shader "DopeRP/Shaders/Decals"
 				
 
 
-									o.decalsArtisticNormalAtlas = float4(NormalTangentToWorld(GetNormalTS(texCoords), normalWS, tangentWS),0) ;
+									o.decalsArtisticNormalAtlas = float4(NormalTangentToWorld(GetNormalTS(texCoords), normalWS, tangentWS),1) ;
 
+				// o.decalsArtisticNormalAtlas = float4(rotatedVector, 1);
 				
+			// o.decalsArtisticAlbedoAtlas = float4(rotatedVector, 1);
 
+				// o.decalsArtisticAlbedoAtlas = tangentWS;
+				// return o;
 
 
 				#else

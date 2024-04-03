@@ -64,8 +64,9 @@ struct fragOutput
 
     float4 albedo : SV_Target1;
     float4 normalWS : SV_Target2;
-    float4 specular : SV_Target3;
-    float4 BRDF : SV_Target4;
+    float4 clearNormalWS : SV_Target3;
+    float4 specular : SV_Target4;
+    float4 BRDF : SV_Target5;
 };
 
 Interpolators vert(MeshData i)
@@ -159,9 +160,18 @@ fragOutput frag(Interpolators i)
     
     o.albedo = baseColor;
 
-    float3 normal = NormalTangentToWorld(GetNormalTS(i.uv), normalize(i.normalWS), normalize(i.tangentWS));
     
+    
+    float3 normal = NormalTangentToWorld(GetNormalTS(i.uv), normalize(i.normalWS), normalize(i.tangentWS));
     o.normalWS = float4(normal, 1);
+
+    // float3 worldup = float3(0,1,0);
+    // float3 orthogonalVector = cross(i.normalWS, worldup);
+    // float deltaDot = dot(orthogonalVector, i.tangentWS);
+    // float angle = -acos(deltaDot);
+    // float3 rotatedVector = orthogonalVector * cos(angle) + cross(i.normalWS, orthogonalVector) * sin(angle) + i.normalWS * dot(i.normalWS, orthogonalVector) * (1 - cos(angle));
+    o.clearNormalWS = float4(i.normalWS, 1);
+    // o.clearNormalWS = float4(rotatedVector,1);
 
     float metallic = UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _Metallic);
     float roughness = perceptualRoughnessToRoughness(UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _Roughness));
