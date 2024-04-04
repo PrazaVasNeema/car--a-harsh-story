@@ -273,7 +273,7 @@ float4 frag (Interpolators i) : SV_Target
     
     float4 worldSpacePosition = mul(adfgdgf_CameraToWorldMatrix, viewSpacePosition);
 
-    
+    // return worldSpacePosition;
     // return clipSpacePosition;
 
     // return float4(i.uv+0.5, 0 , 1);

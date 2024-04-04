@@ -114,31 +114,31 @@ float3 GetLighting(SurfaceData surfaceData)
 
 	Light light;
 	
-	#ifdef _DIR_LIGHT_ON
+	// #ifdef _DIR_LIGHT_ON
 
 	light.direction = -_DirLightDirection;
 	light.color = _DirLightColor;
 
-	#if defined (SHADOWS_ON)
+	// #if defined (SHADOWS_ON)
 	
 		ShadowData shadowData = GetShadowData(surfaceData);
 		DirectionalShadowData dirShadowData = GetDirectionalShadowData(shadowData);
 		light.attenuation = max(GetDirectionalShadowAttenuation(dirShadowData, shadowData, surfaceData), 0.2);
 
-	#else
-	
-		light.attenuation = 1;
-
-	#endif
+	// #else
+	//
+	// 	light.attenuation = 1;
+	//
+	// #endif
 
 	color += GetLighting(surfaceData, light);
 	// color = light.attenuation;
 	// color = shadowData.color;
 	// color = shadowData.strength;
-
+// return color;
 	// return color;
 	// color = 1;
-	#endif	
+	// #endif	
 
 
 	#if defined(_OTHER_LIGHT_COUNT_20) || defined(_OTHER_LIGHT_COUNT_15) || defined(_OTHER_LIGHT_COUNT_10) || defined(_OTHER_LIGHT_COUNT_5)

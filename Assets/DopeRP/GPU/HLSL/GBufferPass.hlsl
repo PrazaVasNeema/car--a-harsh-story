@@ -251,9 +251,9 @@ float depth = i.positionCS.z/i.positionCS.w;
     float3 specular = SampleEnvironment(viewDir, i.normalWS);
 
 
-
     o.specular = float4(specular, 1);
-    
+    o.specular = mul(UNITY_MATRIX_V, i.positionWS);
+
     return o;
     
 }

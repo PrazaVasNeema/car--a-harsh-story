@@ -128,13 +128,24 @@ namespace DopeRP.CPU
 		{
 			RAPI.Buffer.SetGlobalVector(SProps.CameraRenderer.ScreenSize, new Vector4(RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight,
 				(float)1/RAPI.CurCamera.pixelWidth , (float)1/RAPI.CurCamera.pixelHeight));
-
+			var a = GL.GetGPUProjectionMatrix(RAPI.CurCamera.cameraToWorldMatrix, false);
 			RAPI.Buffer.SetGlobalVector(Shader.PropertyToID("_nearFarPlanes"), new Vector4(RAPI.CurCamera.nearClipPlane, RAPI.CurCamera.farClipPlane, 0, 0 ));
-			RAPI.Buffer.SetGlobalMatrix(Shader.PropertyToID("adfgdgf_WorldToCameraMatrix"),  RAPI.CurCamera.worldToCameraMatrix);
-			RAPI.Buffer.SetGlobalMatrix(Shader.PropertyToID("adfgdgf_CameraToWorldMatrix"),  RAPI.CurCamera.cameraToWorldMatrix);
+
+			var m = RAPI.CurCamera.worldToCameraMatrix;
+			if (SystemInfo.usesReversedZBuffer) {
+				m.m20 = -m.m20;
+				m.m21 = -m.m21;
+				m.m22 = -m.m22;
+				m.m23 = -m.m23;
+			}
+			// RAPI.Buffer.SetGlobalMatrix(Shader.PropertyToID("adfgdgf_WorldToCameraMatrix"),  RAPI.CurCamera.worldToCameraMatrix);
+
+			// RAPI.Buffer.SetGlobalMatrix(Shader.PropertyToID("adfgdgf_CameraToWorldMatrix"),  RAPI.CurCamera.cameraToWorldMatrix);
             
 			Matrix4x4 invProjectionMatrix = RAPI.CurCamera.projectionMatrix.inverse;
 			RAPI.Buffer.SetGlobalMatrix(Shader.PropertyToID("_INVERSE_P"), invProjectionMatrix);
+			
+			RAPI.ExecuteBuffer();
 
 			var sortingSettings = new SortingSettings(RAPI.CurCamera)
 			{
@@ -167,9 +178,10 @@ namespace DopeRP.CPU
 			// RAPI.Buffer.Blit(null, BuiltinRenderTextureType.CurrentActive, litDeferredMaterial, litDeferredMaterial.FindPass(SProps.CameraRenderer.LitDeferredPassName));
 
 			RAPI.Buffer.SetViewProjectionMatrices(Matrix4x4.identity, Matrix4x4.identity);
-			RAPI.Buffer.DrawMesh(RAPI.fullscreenMesh, Matrix4x4.identity, litDeferredMaterial, 0, litDeferredMaterial.FindPass(SProps.SSAO.SSAOBlurPassName));
+			RAPI.Buffer.DrawMesh(RAPI.fullscreenMesh, Matrix4x4.identity, litDeferredMaterial, 0, litDeferredMaterial.FindPass(SProps.CameraRenderer.LitDeferredPassName));
 			RAPI.Buffer.SetViewProjectionMatrices(RAPI.CurCamera.worldToCameraMatrix, RAPI.CurCamera.projectionMatrix);
-			
+			// RAPI.ExecuteBuffer();
+
 			RAPI.Context.DrawSkybox(RAPI.CurCamera);
 			RAPI.ExecuteBuffer();
 

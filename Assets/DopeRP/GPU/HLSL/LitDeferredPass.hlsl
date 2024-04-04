@@ -18,6 +18,10 @@ float2 _nearFarPlanes;
 float4x4 _INVERSE_P;
 float4x4 adfgdgf_CameraToWorldMatrix;
 
+float4x4 adfgdgf_WorldToCameraMatrix;
+
+float4x4 _LensProjection;
+
 CBUFFER_END
 
 TEXTURE2D(_AlbedoMap);
@@ -120,6 +124,7 @@ float4 frag(Interpolators i) : SV_TARGET
 	float4 baseColor = SAMPLE_TEXTURE2D(_G_AlbedoAtlas, sampler_G_AlbedoAtlas, i.uv);
 	
 	clip(baseColor.a-0.0001);
+	SurfaceData surfaceData;
 
 	#if defined(SSAO_ON)
 	
@@ -131,30 +136,50 @@ float4 frag(Interpolators i) : SV_TARGET
 	//
 	// return ssao;
 
+	// surfaceData.positionWS = ssao.xyz;
+
 	#endif
 
 	
 
 
 	
-	SurfaceData surfaceData;
 	surfaceData.normal = SAMPLE_TEXTURE2D(_G_NormalWorldSpaceAtlas, sampler_G_NormalWorldSpaceAtlas, i.uv).xyz;
 
 	float depth = SAMPLE_TEXTURE2D(Test, samplerTest, i.uv).r;
 
-    
+	float4 clipSpacePosition;
+	float4 viewSpacePosition;
+
+	#if !UNITY_REVERSED_Z
+
 	depth = lerp(UNITY_NEAR_CLIP_VALUE, 1, depth);
-	
+
 	float sceneZ =CalcLinearZ(depth, _nearFarPlanes.x, _nearFarPlanes.y);
 
-	float4 clipSpacePosition = float4((i.uv * 2.0 - 1.0) * sceneZ/depth, sceneZ, 1.0 * sceneZ/depth);
+	clipSpacePosition = float4((i.uv * 2.0 - 1.0) * sceneZ/depth, sceneZ, 1.0 * sceneZ/depth);
 
-	float4 viewSpacePosition = mul(_INVERSE_P, clipSpacePosition);
+	viewSpacePosition = mul(_INVERSE_P, clipSpacePosition);
 
+	viewSpacePosition /= viewSpacePosition.w;
+
+	
+
+	#else
+
+
+	
+	#endif
+	
+	
+	clipSpacePosition = float4(i.uv * 2 - 1, depth, 1);
+	// return float4(clipSpacePosition.xy, 0, 1);
+	viewSpacePosition = mul(Inverse(_LensProjection), clipSpacePosition);
 	viewSpacePosition /= viewSpacePosition.w;
 	
 	surfaceData.positionWS = mul(adfgdgf_CameraToWorldMatrix, viewSpacePosition).xyz;
-
+	// return float4(surfaceData.positionWS,1);
+// return float4(depth.xxxx * 20);
 	surfaceData.viewDirection = normalize(_WorldSpaceCameraPos - surfaceData.positionWS);
 	surfaceData.depth = -TransformWorldToView(surfaceData.positionWS).z;
 
@@ -213,9 +238,10 @@ float4 frag(Interpolators i) : SV_TARGET
 	// GI gi = GetGI(GI_FRAGMENT_DATA(input), surfaceData);
 	fragColor += IndirectBRDF(surfaceData, surfaceData.specular)* 0.1;
 
-	fragColor += GetLighting(surfaceData);
+	fragColor = GetLighting(surfaceData);
 	// fragColor += GetEmission(i.uv) ;
-	
+	return float4(fragColor, surfaceData.alpha);
+
 	return float4(max(fragColor, ambientSafetyNet), surfaceData.alpha);
 
 
