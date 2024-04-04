@@ -184,6 +184,9 @@ namespace DopeRP.CPU
 
 			RAPI.Context.DrawSkybox(RAPI.CurCamera);
 			RAPI.ExecuteBuffer();
+			
+			RAPI.Buffer.SetRenderTarget(Shader.PropertyToID("_CameraFrameBuffer"), new RenderTargetIdentifier(Shader.PropertyToID("Test")));
+			RAPI.ExecuteBuffer();
 
 			//Draw transparent geometry
 			drawingSettings.SetShaderPassName(1, SProps.CameraRenderer.LitShaderTagId);
