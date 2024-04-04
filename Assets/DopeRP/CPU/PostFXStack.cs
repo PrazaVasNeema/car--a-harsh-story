@@ -1,3 +1,4 @@
+using DopeRP.CPU;
 using UnityEngine;
 using UnityEngine.Rendering;
 using static PostFXSettings;
@@ -141,19 +142,40 @@ public partial class PostFXStack {
         buffer.SetGlobalVector(colorGradingLUTParametersId,
             new Vector4(1f / lutWidth, 1f / lutHeight, lutHeight - 1f)
         );
-        Draw(sourceId, (settings.m_FXAA_ON || settings.m_vignette_on) ? sourceId : BuiltinRenderTextureType.CameraTarget, Pass.Final);
         
+        RenderTextureFormat format = useHDR ?
+            RenderTextureFormat.DefaultHDR : RenderTextureFormat.Default;
+        buffer.GetTemporaryRT(
+            Shader.PropertyToID("_ColorGrading"), RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight, 0, FilterMode.Bilinear, format
+        );
+        Draw(sourceId, Shader.PropertyToID("_ColorGrading"), Pass.Final);
         
-        if (settings.m_FXAA_ON)
-            Draw(sourceId, sourceId, Pass.FXAA);
+        buffer.GetTemporaryRT(
+            Shader.PropertyToID("_FXAA"), RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight, 0, FilterMode.Bilinear, format
+        );
+        Draw(Shader.PropertyToID("_ColorGrading"), Shader.PropertyToID("_FXAA"), Pass.FXAA);
         
-        buffer.SetGlobalFloat(Shader.PropertyToID("power"), 5);
+        buffer.GetTemporaryRT(
+            Shader.PropertyToID("_Vingette"), RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight, 0, FilterMode.Bilinear, format
+        );
+        Draw(Shader.PropertyToID("_FXAA"), Shader.PropertyToID("_Vingette"), Pass.Vignette);
+        
+        //
+        // if (settings.m_FXAA_ON)
+            // Draw(sourceId, BuiltinRenderTextureType.CameraTarget, Pass.FXAA);
+        //
+        // buffer.SetGlobalFloat(Shader.PropertyToID("power"), 5);
+        //
+        // if (settings.m_vignette_on)
+        //     Draw(sourceId, sourceId, Pass.Vignette);
+        // buffer.ReleaseTemporaryRT(colorGradingLUTId);
+        //
+        Draw(Shader.PropertyToID("_Vingette"), BuiltinRenderTextureType.CameraTarget, Pass.Copy);
+        
+        RAPI.Buffer.ReleaseTemporaryRT(Shader.PropertyToID("_ColorGrading"));
+        RAPI.Buffer.ReleaseTemporaryRT(Shader.PropertyToID("_FXAA"));
+        RAPI.Buffer.ReleaseTemporaryRT(Shader.PropertyToID("_Vingette"));
 
-        if (settings.m_vignette_on)
-            Draw(sourceId, sourceId, Pass.Vignette);
-        buffer.ReleaseTemporaryRT(colorGradingLUTId);
-        
-        Draw(sourceId, BuiltinRenderTextureType.CameraTarget, Pass.Copy);
     }
     
     void Draw (
