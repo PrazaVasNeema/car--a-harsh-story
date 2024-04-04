@@ -199,41 +199,63 @@ float4 frag (Interpolators i) : SV_Target
     float depth = SAMPLE_TEXTURE2D(Test, samplerTest, i.uv).r;
     
     // depth = 1-depth;
+    float sceneZ = 1;
 
+    float n = _nearFarPlanes.x;
+    float f = _nearFarPlanes.y;
     // depth = 1-depth;
-    // depth = lerp(UNITY_NEAR_CLIP_VALUE, 1, depth);
+
+    float4 clipSpacePosition;
+    float4 viewSpacePosition;
+    #if !UNITY_REVERSED_Z
+        depth = lerp(UNITY_NEAR_CLIP_VALUE, 1, depth);
+    
+    sceneZ = CalcLinearZ(depth, n, f);
+
+    sceneZ =CalcLinearZ(depth, n, f);
+
+        
+
+
+    clipSpacePosition = float4((i.uv.xy * 2.0 - 1.0) * sceneZ/depth, sceneZ, 1.0 * sceneZ/depth);
+
+    viewSpacePosition = mul(_INVERSE_P, clipSpacePosition);
+
+    viewSpacePosition /= viewSpacePosition.w;
+
+    #else
+
+    clipSpacePosition = float4(i.uv * 2 - 1, depth, 1);
+    // return float4(clipSpacePosition.xy, 0, 1);
+    viewSpacePosition = mul(Inverse(_LensProjection), clipSpacePosition);
+    viewSpacePosition /= viewSpacePosition.w;
+    
+    #endif
 
     // return 1-depth;
 
     // zBufferParam = { (f-n)/n, 1, (f-n)/n*f, 1/f }
-    float n = _nearFarPlanes.x;
-    float f = _nearFarPlanes.y;
+
     
     float4 zBufferParam = float4((f-n)/n, 1, (f-n)/n*f, 1/f);
 
-    float sceneZ = 1;
     sceneZ =CalcLinearZ(depth, n, f);
 
     sceneZ = OrthographicDepthBufferToLinear(depth);
 // depth = 2.0 * depth - 1.0;
-    sceneZ = CalcLinearZ(depth, n, f);
 
     // return float4(depth.xxx,0);
     // return float4(i.uv * 2.0 - 1.0, 0,1);
 
     float2 clipUV = i.uv;
-    if (_ProjectionParams.x < 0.0) {
-        clipUV.y = 1.0 - clipUV.y;
-    }
+    // if (_ProjectionParams.x < 0.0) {
+    //     clipUV.y = 1.0 - clipUV.y;
+    // }
 
     // depth = depth *2 - 1;
     // return depth;
-    float4 clipSpacePosition = float4((clipUV * 2.0 - 1.0) * sceneZ/depth, sceneZ, 1.0 * sceneZ/depth);
-    clipSpacePosition = float4(i.uv * 2 - 1, depth, 1);
-    // return float4(clipSpacePosition.xy, 0, 1);
-    float4 viewSpacePosition = mul(Inverse(_LensProjection), clipSpacePosition);
-    viewSpacePosition /= viewSpacePosition.w;
-
+   
+    // return viewSpacePosition;
     // viewSpacePosition = ViewSpaceFromDepth(clipUV, depth, Inverse(_LensProjection));
 
     // return viewSpacePosition;
@@ -350,7 +372,38 @@ float4 frag (Interpolators i) : SV_Target
         // return float4(sceneZ.xxx,1);
         if(dot(sampleNormalWS, normalWS) > 0.99)
             continue;
+
+
+        float4 viewSpacePosition2;
+        #if !UNITY_REVERSED_Z
+            depth = lerp(UNITY_NEAR_CLIP_VALUE, 1, depth);
+
+            offsetPositionDEPTH = lerp(UNITY_NEAR_CLIP_VALUE, 1, offsetPositionDEPTH);
+            sceneZ =CalcLinearZ(offsetPositionDEPTH, n, f);
+    
+            
+    
+    
+            clipSpacePosition = float4((offsetUV.xy * 2.0 - 1.0) * sceneZ/offsetPositionDEPTH, sceneZ, 1.0 * sceneZ/offsetPositionDEPTH);
+    
+            viewSpacePosition2 = mul(_INVERSE_P, clipSpacePosition);
+    
+            viewSpacePosition2 /= viewSpacePosition2.w;
+
+        #else
+
+            clipSpacePosition = float4((offsetUV.xy * 2.0 - 1.0) * sceneZ/offsetPositionDEPTH, sceneZ, 1.0 * sceneZ/offsetPositionDEPTH);
+            clipSpacePosition = float4(i.uv * 2 - 1, offsetPositionDEPTH, 1);
+    
+            viewSpacePosition2 = mul(Inverse(_LensProjection), clipSpacePosition);
+    
+            // return float4(clipSpacePosition.zzz,1);
+    
+            // return float4(samplePositionVS,1);
+    
+            viewSpacePosition2 /= viewSpacePosition2.w;
         
+        #endif
         // offsetPositionDEPTH = lerp(UNITY_NEAR_CLIP_VALUE, 1, offsetPositionDEPTH);
         // sceneZ =CalcLinearZ2(offsetPositionDEPTH, n, f);
         // return float4(sceneZ.xxx,1);
@@ -367,16 +420,7 @@ float4 frag (Interpolators i) : SV_Target
         // return float4(i.uv, 0, 1);
         
 
-        clipSpacePosition = float4((offsetUV.xy * 2.0 - 1.0) * sceneZ/offsetPositionDEPTH, sceneZ, 1.0 * sceneZ/offsetPositionDEPTH);
-        clipSpacePosition = float4(i.uv * 2 - 1, offsetPositionDEPTH, 1);
 
-        float4 viewSpacePosition2 = mul(Inverse(_LensProjection), clipSpacePosition);
-
-        // return float4(clipSpacePosition.zzz,1);
-
-        // return float4(samplePositionVS,1);
-
-        viewSpacePosition2 /= viewSpacePosition2.w;
         // return viewSpacePosition2;
 
         // return viewSpacePosition2;

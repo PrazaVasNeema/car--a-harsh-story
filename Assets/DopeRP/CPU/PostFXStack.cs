@@ -150,8 +150,10 @@ public partial class PostFXStack {
         buffer.SetGlobalFloat(Shader.PropertyToID("power"), 5);
 
         if (settings.m_vignette_on)
-            Draw(sourceId, BuiltinRenderTextureType.CameraTarget, Pass.Vignette);
+            Draw(sourceId, sourceId, Pass.Vignette);
         buffer.ReleaseTemporaryRT(colorGradingLUTId);
+        
+        Draw(sourceId, BuiltinRenderTextureType.CameraTarget, Pass.Copy);
     }
     
     void Draw (

@@ -123,11 +123,11 @@ float4 frag(Interpolators i) : SV_TARGET
 
 	#if defined(SSAO_ON)
 	
-	float4 ssao = SAMPLE_TEXTURE2D(_SSAOBlurAtlas, sampler_SSAOBlurAtlas, i.uv);
-	// float ssao = SAMPLE_TEXTURE2D(_SSAOBlurAtlas, sampler_SSAOBlurAtlas, i.uv).r;
+	// float4 ssao = SAMPLE_TEXTURE2D(_SSAOBlurAtlas, sampler_SSAOBlurAtlas, i.uv);
+	float ssao = SAMPLE_TEXTURE2D(_SSAOBlurAtlas, sampler_SSAOBlurAtlas, i.uv).r;
 
-	// if (ssao > 0)
-	// 	baseColor *= ssao;
+	if (ssao > 0)
+		baseColor *= ssao;
 	//
 	// return ssao;
 

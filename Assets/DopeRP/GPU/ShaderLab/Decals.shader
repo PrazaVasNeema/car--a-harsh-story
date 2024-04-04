@@ -186,18 +186,29 @@ Shader "DopeRP/Shaders/Decals"
 				// float depth = SAMPLE_TEXTURE2D(Test, samplerTest, uv).r;
 				float depth = SAMPLE_TEXTURE2D(Test, samplerTest, uv).r;
 				// depth = SAMPLE_TEXTURE2D(Test2, samplerTest2, uv).r;
-				
-				// depth = lerp(UNITY_NEAR_CLIP_VALUE, 1, depth);
+float4 clipSpacePosition;
+float4 viewSpacePosition;
+				#if !UNITY_REVERSED_Z
+					depth = lerp(UNITY_NEAR_CLIP_VALUE, 1, depth);
+
 				float sceneZ =CalcLinearZ(depth, _nearFarPlanes.x, _nearFarPlanes.y);
-				float4 clipSpacePosition = float4((uv * 2.0 - 1.0) * sceneZ/depth, sceneZ, 1.0 * sceneZ/depth);
-				float4 viewSpacePosition = mul(_INVERSE_P, clipSpacePosition);
-			
-				viewSpacePosition /= viewSpacePosition.w;
+				clipSpacePosition = float4((uv * 2.0 - 1.0) * sceneZ/depth, sceneZ, 1.0 * sceneZ/depth);
+				viewSpacePosition = mul(_INVERSE_P, clipSpacePosition);
+								viewSpacePosition /= viewSpacePosition.w;
+
+				#else
 
 				 clipSpacePosition = float4(uv * 2 - 1, depth, 1);
     // return float4(clipSpacePosition.xy, 0, 1);
     viewSpacePosition = mul(Inverse(_LensProjection), clipSpacePosition);
     viewSpacePosition /= viewSpacePosition.w;
+				
+				#endif
+
+			
+			
+
+				
 
 				o.decalsArtisticAlbedoAtlas = viewSpacePosition;
 				// o.decalsArtisticAlbedoAtlas = float4(depth.xxx,1);
