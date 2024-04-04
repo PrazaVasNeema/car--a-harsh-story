@@ -211,7 +211,7 @@ float4 frag (Interpolators i) : SV_Target
     
     float4 zBufferParam = float4((f-n)/n, 1, (f-n)/n*f, 1/f);
 
-    float sceneZ = LinearEyeDepth(depth, zBufferParam);
+    float sceneZ = 1;
     sceneZ =CalcLinearZ(depth, n, f);
 
     sceneZ = OrthographicDepthBufferToLinear(depth);
@@ -237,7 +237,7 @@ float4 frag (Interpolators i) : SV_Target
     // viewSpacePosition = ViewSpaceFromDepth(clipUV, depth, Inverse(_LensProjection));
 
     // return viewSpacePosition;
-
+    // return depth;
     // return viewSpacePosition;
     
     // return clipSpacePosition;

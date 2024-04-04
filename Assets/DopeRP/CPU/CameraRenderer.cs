@@ -83,6 +83,8 @@ namespace DopeRP.CPU
 			RAPI.CleanupTempRT((SProps.GBuffer.G_SpecularAtlas));
 			RAPI.CleanupTempRT((SProps.GBuffer.G_BRDFAtlas));
 			
+			RAPI.CleanupTempRT(Shader.PropertyToID("Test2"));
+			
 			
 			RAPI.CleanupTempRT((Shader.PropertyToID("1")));
 			DrawGizmosBeforeFX();

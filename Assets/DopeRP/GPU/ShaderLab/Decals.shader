@@ -89,8 +89,7 @@ Shader "DopeRP/Shaders/Decals"
 			TEXTURE2D(_G_BRDFAtlas);
 			SAMPLER(sampler_G_BRDFAtlas);
 
-			TEXTURE2D(Test);
-			SAMPLER(samplerTest);
+
 			
 			
 			CBUFFER_START(Decals)
@@ -169,7 +168,11 @@ Shader "DopeRP/Shaders/Decals"
 				return normal;
 			}
 
+// sampler2D Test;
 
+			TEXTURE2D(Test);
+			SAMPLER(samplerTest);
+			
 			fragOutput frag(Interpolators i)
 			{
 				
@@ -180,8 +183,11 @@ Shader "DopeRP/Shaders/Decals"
 
 				float2 uv = i.positionSV.xy * _ScreenSize.zw;
 				
+				// float depth = SAMPLE_TEXTURE2D(Test, samplerTest, uv).r;
 				float depth = SAMPLE_TEXTURE2D(Test, samplerTest, uv).r;
-				depth = lerp(UNITY_NEAR_CLIP_VALUE, 1, depth);
+				// depth = SAMPLE_TEXTURE2D(Test2, samplerTest2, uv).r;
+				
+				// depth = lerp(UNITY_NEAR_CLIP_VALUE, 1, depth);
 				float sceneZ =CalcLinearZ(depth, _nearFarPlanes.x, _nearFarPlanes.y);
 				float4 clipSpacePosition = float4((uv * 2.0 - 1.0) * sceneZ/depth, sceneZ, 1.0 * sceneZ/depth);
 				float4 viewSpacePosition = mul(_INVERSE_P, clipSpacePosition);
@@ -190,17 +196,19 @@ Shader "DopeRP/Shaders/Decals"
 
 				 clipSpacePosition = float4(uv * 2 - 1, depth, 1);
     // return float4(clipSpacePosition.xy, 0, 1);
-    viewSpacePosition = mul(Inverse(GetViewToHClipMatrix()), clipSpacePosition);
+    viewSpacePosition = mul(Inverse(_LensProjection), clipSpacePosition);
     viewSpacePosition /= viewSpacePosition.w;
 
-				// o.decalsArtisticAlbedoAtlas = viewSpacePosition;
-				// o.decalsArtisticAlbedoAtlas = depth+ 0.5;
+				o.decalsArtisticAlbedoAtlas = viewSpacePosition;
+				// o.decalsArtisticAlbedoAtlas = float4(depth.xxx,1);
+				// o.decalsArtisticAlbedoAtlas =float4(uv-1, 0,1);
+				// o.decalsArtisticAlbedoAtlas = float4(0,0,0,depth);
 
 				
 
 				// o.decalsArtisticAlbedoAtlas = SAMPLE_TEXTURE2D(_GAux_ClearNormalWorldSpaceAtlas, sampler_GAux_ClearNormalWorldSpaceAtlas, uv);
 				// return o;
-				
+					
 				float4 worldPos = float4(TransformViewToWorld(viewSpacePosition.xyz),1);
 				float4 objectPos = float4(TransformWorldToObject(worldPos), 1);
 
