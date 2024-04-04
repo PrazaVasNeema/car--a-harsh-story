@@ -170,9 +170,77 @@ fragOutput frag(Interpolators i)
     // float deltaDot = dot(orthogonalVector, i.tangentWS);
     // float angle = -acos(deltaDot);
     // float3 rotatedVector = orthogonalVector * cos(angle) + cross(i.normalWS, orthogonalVector) * sin(angle) + i.normalWS * dot(i.normalWS, orthogonalVector) * (1 - cos(angle));
+    o.clearNormalWS = mul(Inverse(GetViewToHClipMatrix()), i.positionCS/i.positionCS.w);
+
     o.clearNormalWS = float4(i.normalWS, 1);
+
+    o.normalWS = mul(Inverse(GetViewToHClipMatrix()), i.positionCS);
+
+    o.normalWS = float4(i.positionCS.zzz/i.positionCS.w,1);
+
+float depth = i.positionCS.z/i.positionCS.w;
+    
+    float sceneZ = CalcLinearZ(depth, _CameraNearPlane, _CameraFarPlane);
+
+    o.normalWS = float4(sceneZ.xxx/ i.positionCS.w, 1);
+
+    o.normalWS = float4((sceneZ * depth/sceneZ).xxx , 1);
+
+    float4 clipSpacePosition = float4((i.positionCS.xy/i.positionCS.w) * sceneZ/depth, sceneZ, 1.0 * sceneZ/depth);
+
+    clipSpacePosition = float4((i.positionCS.xy/i.positionCS.w) , depth, 1.0 );
+
+    float4 view = mul(clipSpacePosition, Inverse(GetViewToHClipMatrix()));
+
+    
+
+    o.normalWS = clipSpacePosition;
+
+    o.normalWS = float4((i.positionCS.xy/i.positionCS.w).xy, 0,1);
+
+    o.normalWS = i.positionCS;
+
+    // o.normalWS = float4(i.positionWS, 1);
+
+    o.normalWS = float4(normal, 1);
+
+    // o.normalWS = mul(Inverse(GetViewToHClipMatrix()), i.positionCS);
+
+    o.normalWS = float4(i.positionVS, 1);
+    o.normalWS = i.positionCS;
+    o.normalWS = mul(Inverse(GetViewToHClipMatrix()), clipSpacePosition);
+
+    
+    o.normalWS = float4(i.positionCS.xy, 0,1);
+    // o.normalWS = 1-depth;
+    view = mul(Inverse(GetViewToHClipMatrix()), clipSpacePosition);
+    o.normalWS =float4(i.positionVS, 1);;
+    
+    o.normalWS = float4(i.positionWS, 1);
+
+    o.normalWS = float4(i.positionCS.xy/ i.positionCS.w, 0,1);
+
+    float4 view2 = mul(Inverse(GetViewToHClipMatrix()), i.positionCS/i.positionCS.w);
+
+    o.normalWS = view2/view2.w;
+
+    float4 world2 = mul(Inverse(GetWorldToViewMatrix()), view2);
+
+    // o.normalWS = world2;
+    
+    // o.normalWS = float4(i.positionVS, 1);
     // o.clearNormalWS = float4(rotatedVector,1);
 
+    // o.normalWS = float4(i.positionCS.xy/i.positionCS.w, 0,1);
+
+    o.normalWS = (i.positionCS/i.positionCS.w).zzzz;
+
+    o.normalWS = float4(i.positionVS, 1);
+
+    o.normalWS = float4(normal, 1);
+
+    // o.normalWS = float4(i.positionCS/i.positionCS.w);
+    
     float metallic = UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _Metallic);
     float roughness = perceptualRoughnessToRoughness(UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _Roughness));
     float reflectance = UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _Reflectance);

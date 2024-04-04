@@ -21,12 +21,13 @@ namespace DopeRP.CPU
             
             
             
-            RAPI.Buffer.GetTemporaryRT(SProps.SSAO.SSAORawAtlas, RAPI.CurCamera.pixelWidth/2, RAPI.CurCamera.pixelHeight/2, 0, FilterMode.Bilinear, RenderTextureFormat.ARGBFloat);
+            RAPI.Buffer.GetTemporaryRT(SProps.SSAO.SSAORawAtlas, RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight, 0, FilterMode.Bilinear, RenderTextureFormat.ARGBFloat);
             RAPI.Buffer.SetRenderTarget(SProps.SSAO.SSAORawAtlas, RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store);
             RAPI.Buffer.ClearRenderTarget(true, true, Color.clear);
             
             RAPI.Buffer.SetGlobalVector(SProps.SSAO.ScreenSize, new Vector4(RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight, 0f, 0f));
             Matrix4x4 projectionMatrix = RAPI.CurCamera.projectionMatrix;
+            projectionMatrix = GL.GetGPUProjectionMatrix(projectionMatrix, false);
             RAPI.Buffer.SetGlobalMatrix(SProps.SSAO.LensProjection, projectionMatrix);
             RAPI.Buffer.SetGlobalVector(SProps.SSAO.NoiseScale, new Vector4(RAPI.CurCamera.pixelWidth/ssaoSettings.randomSize, RAPI.CurCamera.pixelHeight/ssaoSettings.randomSize, 0f, 0f));
             RAPI.SetKeywords(ssaoSettings.samplesCount);
@@ -39,6 +40,8 @@ namespace DopeRP.CPU
             
             Matrix4x4 invProjectionMatrix = RAPI.CurCamera.projectionMatrix.inverse;
             RAPI.Buffer.SetGlobalMatrix(Shader.PropertyToID("_INVERSE_P"), invProjectionMatrix);
+            
+            
             
             // Generate();
             

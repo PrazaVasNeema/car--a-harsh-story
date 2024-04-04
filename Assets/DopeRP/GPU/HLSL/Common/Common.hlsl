@@ -43,7 +43,28 @@ float CalcLinearZ(float depth, float zNear, float zFar) {
 	// bias it from [0, 1] to [-1, 1]
 	float linearZ = zNear / (zFar - depth * (zFar - zNear)) * zFar;
 
+	return linearZ *2-1;
+}
+
+float CalcLinearZ2(float depth, float zNear, float zFar) {
+	// Convert depth from [0, 1] to normalized device coordinate (NDC) space [-1, 1]
+	float zNdc = 2.0 * depth - 1.0; // Convert from [0, 1] to [-1, 1]
+    
+	// Convert from NDC space to view space
+	float linearZ = 2.0 * zNear * zFar / (zFar + zNear - zNdc * (zFar - zNear));
+    
 	return linearZ;
+}
+
+float4 ViewSpaceFromDepth(float2 uv, float depth, float4x4 inverseProjection)
+{
+	float4 clipSpacePosition = float4(uv * 2 - 1, depth, 1);
+
+	float4 viewSpacePosition = mul(Inverse(inverseProjection), clipSpacePosition);
+
+	viewSpacePosition /= viewSpacePosition.w;
+
+	return viewSpacePosition;
 }
 
 float4 ViewSpaceFromDepth(float depth, float2 uv, float nearPlane, float farPlane, float4x4 invProjMatrix)

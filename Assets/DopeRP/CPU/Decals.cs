@@ -38,6 +38,9 @@ namespace DopeRP.CPU
                 (float)1.0/cameraWidthHeight.x, (float)1.0/cameraWidthHeight.y));
             Matrix4x4 invProjectionMatrix = RAPI.CurCamera.projectionMatrix.inverse;
             RAPI.Buffer.SetGlobalMatrix(Shader.PropertyToID("_INVERSE_P"), invProjectionMatrix);
+            Matrix4x4 projectionMatrix = RAPI.CurCamera.projectionMatrix;
+            projectionMatrix = GL.GetGPUProjectionMatrix(projectionMatrix, false);
+            RAPI.Buffer.SetGlobalMatrix(SProps.SSAO.LensProjection, projectionMatrix);
             // RAPI.Buffer.ClearRenderTarget(true, true, Color.clear);
 
             RAPI.ExecuteBuffer();

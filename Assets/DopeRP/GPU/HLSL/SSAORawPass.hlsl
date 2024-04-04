@@ -181,6 +181,13 @@ float3 WorldPosFromDepth(float depth, float2 TexCoord) {
     return worldSpacePosition.xyz;
 }
 
+float OrthographicDepthBufferToLinear (float rawDepth) {
+    #if UNITY_REVERSED_Z
+    rawDepth = 1.0 - rawDepth;
+    #endif
+    return (_ProjectionParams.z - _ProjectionParams.y) * rawDepth + _ProjectionParams.y;
+}
+
 float4 frag (Interpolators i) : SV_Target
 {
     UNITY_SETUP_INSTANCE_ID(i);
@@ -190,9 +197,13 @@ float4 frag (Interpolators i) : SV_Target
     // return float4(TransformViewToWorld(fragPositionVS), 1);
 // return fragPositionVS;
     float depth = SAMPLE_TEXTURE2D(Test, samplerTest, i.uv).r;
-
     
-    depth = lerp(UNITY_NEAR_CLIP_VALUE, 1, depth);
+    // depth = 1-depth;
+
+    // depth = 1-depth;
+    // depth = lerp(UNITY_NEAR_CLIP_VALUE, 1, depth);
+
+    // return 1-depth;
 
     // zBufferParam = { (f-n)/n, 1, (f-n)/n*f, 1/f }
     float n = _nearFarPlanes.x;
@@ -203,22 +214,58 @@ float4 frag (Interpolators i) : SV_Target
     float sceneZ = LinearEyeDepth(depth, zBufferParam);
     sceneZ =CalcLinearZ(depth, n, f);
 
-    float4 clipSpacePosition = float4((i.uv * 2.0 - 1.0) * sceneZ/depth, sceneZ, 1.0 * sceneZ/depth);
+    sceneZ = OrthographicDepthBufferToLinear(depth);
+// depth = 2.0 * depth - 1.0;
+    sceneZ = CalcLinearZ(depth, n, f);
 
-    float4 viewSpacePosition = mul(_INVERSE_P, clipSpacePosition);
+    // return float4(depth.xxx,0);
+    // return float4(i.uv * 2.0 - 1.0, 0,1);
 
+    float2 clipUV = i.uv;
+    if (_ProjectionParams.x < 0.0) {
+        clipUV.y = 1.0 - clipUV.y;
+    }
+
+    // depth = depth *2 - 1;
+    // return depth;
+    float4 clipSpacePosition = float4((clipUV * 2.0 - 1.0) * sceneZ/depth, sceneZ, 1.0 * sceneZ/depth);
+    clipSpacePosition = float4(i.uv * 2 - 1, depth, 1);
+    // return float4(clipSpacePosition.xy, 0, 1);
+    float4 viewSpacePosition = mul(Inverse(_LensProjection), clipSpacePosition);
     viewSpacePosition /= viewSpacePosition.w;
+
+    // viewSpacePosition = ViewSpaceFromDepth(clipUV, depth, Inverse(_LensProjection));
+
+    // return viewSpacePosition;
+
+    // return viewSpacePosition;
+    
+    // return clipSpacePosition;
+
+    
+    // return viewSpacePosition;
+
+    // viewSpacePosition /= viewSpacePosition.w;
 
     // float4 viewSpacePosition = ViewSpaceFromDepth(depth, i.uv, n, f, _INVERSE_P);
     
     float4 worldSpacePosition = mul(adfgdgf_CameraToWorldMatrix, viewSpacePosition);
 
+    
+    // return clipSpacePosition;
+
     // return float4(i.uv+0.5, 0 , 1);
 
     // return worldSpacePosition;
 
+    worldSpacePosition = SAMPLE_TEXTURE2D(_G_NormalWorldSpaceAtlas, sampler_G_NormalWorldSpaceAtlas, i.uv);
 
-    // return viewSpacePosition;
+
+    // return float4(i.uv * 2.0 - 1.0, 0,1);
+    
+    // return worldSpacePosition;
+
+    // return clipSpacePosition;
 
 
     // return float4(clipSpacePosition.xyz,1);
@@ -259,9 +306,11 @@ float4 frag (Interpolators i) : SV_Target
 
     float3 normalVS = mul((real3x3)adfgdgf_WorldToCameraMatrix, normalWS);
 
+    // return float4(normalVS, 1);
+
     float2 noiseUV = float2(float(100)/float(_NoiseScale.x),
                     float(100)/float(_NoiseScale.y))
-                    * i.uv * 1;
+                    * clipUV * 1;
     float3 randomVec = float3(normalize(SAMPLE_TEXTURE2D(_NoiseTexture, sampler_NoiseTexture, i.uv * _NoiseScale) * 2 - 1).xy,0);
     
     // return float4(normalVS, 1);
@@ -285,26 +334,54 @@ float4 frag (Interpolators i) : SV_Target
         offsetUV.xyz /= offsetUV.w;
         offsetUV.xy = offsetUV.xy * 0.5 + 0.5;
 
+        // return float4(i.uv, 0, 1);
 
+        // if (_ProjectionParams.x < 0.0) {
+        //     offsetUV.y = 1.0 - offsetUV.y;
+        // }
 
+        // return float4(offsetUV.xy, 0,1);
 
+        
         float offsetPositionDEPTH = SAMPLE_TEXTURE2D(Test, samplerTest, offsetUV.xy).r;
         float3 sampleNormalWS = normalize(SAMPLE_TEXTURE2D(_G_NormalWorldSpaceAtlas, sampler_G_NormalWorldSpaceAtlas, offsetUV.xy).xyz);
 
+        // return offsetPositionDEPTH.xxxx;
+        // return float4(sceneZ.xxx,1);
         if(dot(sampleNormalWS, normalWS) > 0.99)
             continue;
         
-        offsetPositionDEPTH = lerp(UNITY_NEAR_CLIP_VALUE, 1, offsetPositionDEPTH);
-        sceneZ =CalcLinearZ(offsetPositionDEPTH, n, f);
+        // offsetPositionDEPTH = lerp(UNITY_NEAR_CLIP_VALUE, 1, offsetPositionDEPTH);
+        // sceneZ =CalcLinearZ2(offsetPositionDEPTH, n, f);
+        // return float4(sceneZ.xxx,1);
 
         
+        // if (_ProjectionParams.x < 0.0) {
+        //     offsetUV.y = 1.0 - offsetUV.y;
+        // }
 
+        // return float4(clipUV, 0,1);
+        
+        // return float4(offsetUV.xy, 0,1);
+
+        // return float4(i.uv, 0, 1);
+        
 
         clipSpacePosition = float4((offsetUV.xy * 2.0 - 1.0) * sceneZ/offsetPositionDEPTH, sceneZ, 1.0 * sceneZ/offsetPositionDEPTH);
+        clipSpacePosition = float4(i.uv * 2 - 1, offsetPositionDEPTH, 1);
 
-        float4 viewSpacePosition2 = mul(_INVERSE_P, clipSpacePosition);
+        float4 viewSpacePosition2 = mul(Inverse(_LensProjection), clipSpacePosition);
+
+        // return float4(clipSpacePosition.zzz,1);
+
+        // return float4(samplePositionVS,1);
 
         viewSpacePosition2 /= viewSpacePosition2.w;
+        // return viewSpacePosition2;
+
+        // return viewSpacePosition2;
+        // return viewSpacePosition2;
+
         // return fragPositionVS;
         // return float4(samplePositionVS.xy,viewSpacePosition2.z ,1);
         // return float4(samplePositionVS.xyz,1);

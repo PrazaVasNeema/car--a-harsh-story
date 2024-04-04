@@ -100,6 +100,8 @@ Shader "DopeRP/Shaders/Decals"
 				float2 _nearFarPlanes;
 				float4x4 _INVERSE_P;
 			
+			    float4x4 _LensProjection;
+			
 			CBUFFER_END
 
 			UNITY_INSTANCING_BUFFER_START(UnityPerMaterial_DECALS)
@@ -185,6 +187,19 @@ Shader "DopeRP/Shaders/Decals"
 				float4 viewSpacePosition = mul(_INVERSE_P, clipSpacePosition);
 			
 				viewSpacePosition /= viewSpacePosition.w;
+
+				 clipSpacePosition = float4(uv * 2 - 1, depth, 1);
+    // return float4(clipSpacePosition.xy, 0, 1);
+    viewSpacePosition = mul(Inverse(GetViewToHClipMatrix()), clipSpacePosition);
+    viewSpacePosition /= viewSpacePosition.w;
+
+				// o.decalsArtisticAlbedoAtlas = viewSpacePosition;
+				// o.decalsArtisticAlbedoAtlas = depth+ 0.5;
+
+				
+
+				// o.decalsArtisticAlbedoAtlas = SAMPLE_TEXTURE2D(_GAux_ClearNormalWorldSpaceAtlas, sampler_GAux_ClearNormalWorldSpaceAtlas, uv);
+				// return o;
 				
 				float4 worldPos = float4(TransformViewToWorld(viewSpacePosition.xyz),1);
 				float4 objectPos = float4(TransformWorldToObject(worldPos), 1);

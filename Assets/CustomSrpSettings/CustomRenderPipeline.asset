@@ -23,22 +23,22 @@ MonoBehaviour:
     maxDistance: 300
     distanceFade: 0.1
     directional:
-      atlasSize: 4096
+      atlasSize: 2048
       filter: 3
       cascades: 1
       cascadeRatio1: 0.073
       cascadeRatio2: 0.319
       cascadeRatio3: 0.5
-  postFXSettings: {fileID: 11400000, guid: fe911ba97b277904caed8459cc8f6a12, type: 2}
+  postFXSettings: {fileID: 0}
   m_SSAO: 1
   m_decalsOn: 1
   ssaoSettings:
     samplesCount: 2
     noiseTexture: {fileID: 2800000, guid: 4d2d26443ff3f2c4980e45942ce45e79, type: 3}
-    randomSize: 80
-    sampleRadius: 0.67
+    randomSize: 78
+    sampleRadius: 0.83
     bias: 0.001
-    magnitude: 0.95
+    magnitude: 0.91
     contrast: 1
     SSAOMaterial: {fileID: 2100000, guid: 60abf83f57f21544994c9a37aa5bb374, type: 2}
   colorLUTResolution: 64
