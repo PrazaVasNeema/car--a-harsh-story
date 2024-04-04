@@ -56,8 +56,8 @@ float4 frag (Interpolators i) : SV_Target
     }
     
     float4 FragColor = result / (pow4(ITER_COUNT));
-    // return FragColor;
-    return SAMPLE_TEXTURE2D(_SSAORawAtlas, sampler_SSAORawAtlas, i.uv);
+    return FragColor;
+    // return SAMPLE_TEXTURE2D(_SSAORawAtlas, sampler_SSAORawAtlas, i.uv);
     
 }
 

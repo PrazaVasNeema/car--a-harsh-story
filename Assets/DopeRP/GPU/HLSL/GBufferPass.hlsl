@@ -252,7 +252,7 @@ float depth = i.positionCS.z/i.positionCS.w;
 
 
     o.specular = float4(specular, 1);
-    o.specular = mul(UNITY_MATRIX_V, i.positionWS);
+    // o.specular = mul(UNITY_MATRIX_V, i.positionWS);
 
     return o;
     

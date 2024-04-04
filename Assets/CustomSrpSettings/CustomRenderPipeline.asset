@@ -33,7 +33,7 @@ MonoBehaviour:
   m_SSAO: 1
   m_decalsOn: 1
   ssaoSettings:
-    samplesCount: 0
+    samplesCount: 2
     noiseTexture: {fileID: 2800000, guid: 4d2d26443ff3f2c4980e45942ce45e79, type: 3}
     randomSize: 78
     sampleRadius: 0.83
