@@ -219,8 +219,19 @@ namespace DopeRP.CPU
             Buffer.SetViewProjectionMatrices(Matrix4x4.identity, Matrix4x4.identity);
             Buffer.DrawMesh(fullscreenMesh, Matrix4x4.identity, material, 0, passNum);
         }
-        
-        
+
+        public static void BeginSample(string bufferName)
+        {
+            Buffer.name = bufferName;
+            Buffer.BeginSample(bufferName);
+            ExecuteBuffer();
+        }
+
+        public static void EndSample(string bufferName)
+        {
+            Buffer.EndSample(bufferName);
+            ExecuteBuffer();
+        }
 
     }
 }

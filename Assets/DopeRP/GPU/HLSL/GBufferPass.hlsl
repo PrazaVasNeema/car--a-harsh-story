@@ -27,9 +27,6 @@ SAMPLER(sampler_NormalMap);
 
 CBUFFER_START(GBuffer)
 
-    float _CameraNearPlane;
-    float _CameraFarPlane;
-
 CBUFFER_END
 
 struct MeshData {
@@ -180,7 +177,7 @@ fragOutput frag(Interpolators i)
 
 float depth = i.positionCS.z/i.positionCS.w;
     
-    float sceneZ = CalcLinearZ(depth, _CameraNearPlane, _CameraFarPlane);
+    float sceneZ = 1;
 
     o.normalWS = float4(sceneZ.xxx/ i.positionCS.w, 1);
 

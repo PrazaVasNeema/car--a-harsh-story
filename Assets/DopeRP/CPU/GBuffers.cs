@@ -34,11 +34,9 @@ namespace DopeRP.CPU
                 new RenderTargetIdentifier(SProps.GBuffer.G_SpecularAtlas),
                 new RenderTargetIdentifier(SProps.GBuffer.G_BRDFAtlas)
             };
-            RAPI.Buffer.SetRenderTarget(colorTargets, Shader.PropertyToID("Test"));
+            RAPI.Buffer.SetRenderTarget(colorTargets, SProps.Common.DepthBuffer);
             RAPI.Buffer.ClearRenderTarget(false, true, Color.clear);
             
-            RAPI.Buffer.SetGlobalFloat(SProps.GBuffer.CameraNearPlane, RAPI.CurCamera.nearClipPlane);
-            RAPI.Buffer.SetGlobalFloat(SProps.GBuffer.CameraFarPlane, RAPI.CurCamera.farClipPlane);
 
             RAPI.ExecuteBuffer();
             

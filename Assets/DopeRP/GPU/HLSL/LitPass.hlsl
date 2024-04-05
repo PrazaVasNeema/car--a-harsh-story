@@ -81,8 +81,8 @@ SAMPLER(sampler_G_SpecularAtlas);
 TEXTURE2D(_G_BRDFAtlas);
 SAMPLER(sampler_G_BRDFAtlas);
 
-TEXTURE2D(Test);
-SAMPLER(samplerTest);
+// TEXTURE2D(_DepthBuffer);
+// SAMPLER(sampler_DepthBuffer);
 
 
 struct MeshData {
@@ -154,17 +154,17 @@ float4 frag(Interpolators i) : SV_TARGET
 	#endif
 	// screenSpaceCoordinates = i.positionCS * _ScreenSize.zw;
 	
-	float depth = SAMPLE_TEXTURE2D(Test, samplerTest, screenSpaceCoordinates).r;
-
-    
-	depth = lerp(UNITY_NEAR_CLIP_VALUE, 1, depth);
-	// return float4(depth.xxx,1);
-	float testaa =lerp(UNITY_NEAR_CLIP_VALUE, 1, i.positionTEST.w);
-	float testbb =lerp(UNITY_NEAR_CLIP_VALUE, 1, i.positionCS.z);
-
-	// return  float4(testbb.xxx, 1);
-	// return  float4(i.positionTEST.zzz, 1);
-	clip(depth - testbb.x);
+	// float depth = SAMPLE_TEXTURE2D(_DepthBuffer, sampler_DepthBuffer, screenSpaceCoordinates).r;
+	//
+ //    
+	// depth = lerp(UNITY_NEAR_CLIP_VALUE, 1, depth);
+	// // return float4(depth.xxx,1);
+	// float testaa =lerp(UNITY_NEAR_CLIP_VALUE, 1, i.positionTEST.w);
+	// float testbb =lerp(UNITY_NEAR_CLIP_VALUE, 1, i.positionCS.z);
+	//
+	// // return  float4(testbb.xxx, 1);
+	// // return  float4(i.positionTEST.zzz, 1);
+	// clip(depth - testbb.x);
 	
 	
 	float4 baseColor = SAMPLE_TEXTURE2D(_AlbedoMap, sampler_AlbedoMap, i.uv);

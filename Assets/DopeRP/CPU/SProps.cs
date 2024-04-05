@@ -8,6 +8,10 @@ namespace DopeRP.CPU
         
         public static class Common
         {
+            public static ShaderTagId StencilPrePassId = new ShaderTagId("StencilPrePass");
+            
+            public static int ColorFiller = Shader.PropertyToID("_ColorFiller");
+            public static int DepthBuffer = Shader.PropertyToID("_DepthBuffer");
             
             public static int ScreenSize = Shader.PropertyToID("_ScreenSize");
             public static int Matrix_P = Shader.PropertyToID("_Matrix_P");
@@ -17,9 +21,6 @@ namespace DopeRP.CPU
             public static int WorldSpaceCameraPos = Shader.PropertyToID("_WorldSpaceCameraPos");
             public static int NearFarPlanes = Shader.PropertyToID("_NearFarPlanes");
 
-
-
-            
         }
         
         public static class CameraRenderer
@@ -30,12 +31,11 @@ namespace DopeRP.CPU
             
             public static string LitDeferredPassName = "LitDeferred";
 
-            
-            
         }
         
         public static class LightingMain
         {
+            
             public static string DirLightOnKeyword = "_DIR_LIGHT_ON";
             public static string OtherLightnCountKeyword_base = "_OTHER_LIGHT_COUNT_";
             
@@ -84,7 +84,6 @@ namespace DopeRP.CPU
             public static int SSAORawAtlas = Shader.PropertyToID("_SSAORawAtlas");
             public static int SSAOBlurAtlas = Shader.PropertyToID("_SSAOBlurAtlas");
             
-
             public static int NoiseScale = Shader.PropertyToID("_NoiseScale");
 
         }
@@ -104,9 +103,6 @@ namespace DopeRP.CPU
             public static int G_SpecularAtlas = Shader.PropertyToID("_G_SpecularAtlas");
             public static int G_BRDFAtlas = Shader.PropertyToID("_G_BRDFAtlas");
 
-            public static int CameraNearPlane = Shader.PropertyToID("_CameraNearPlane");
-            public static int CameraFarPlane = Shader.PropertyToID("_CameraFarPlane");
-
         }
         
         public static class Decals
@@ -117,8 +113,6 @@ namespace DopeRP.CPU
             // Forward rendering
             public static int DecalsAlbedoAtlas = Shader.PropertyToID("_DecalsAlbedoAtlas");
             public static int DecalsNormalAtlas = Shader.PropertyToID("_DecalsNormalAtlas");
-            
-            public static int ScreenSize = Shader.PropertyToID("_ScreenSize");
             
         }
         

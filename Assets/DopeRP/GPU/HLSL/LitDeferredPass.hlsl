@@ -74,8 +74,8 @@ SAMPLER(sampler_G_SpecularAtlas);
 TEXTURE2D(_G_BRDFAtlas);
 SAMPLER(sampler_G_BRDFAtlas);
 
-TEXTURE2D(Test);
-SAMPLER(samplerTest);
+TEXTURE2D(_DepthBuffer);
+SAMPLER(sampler_DepthBuffer);
 
 
 struct MeshData {
@@ -146,7 +146,7 @@ float4 frag(Interpolators i) : SV_TARGET
 	
 	surfaceData.normal = SAMPLE_TEXTURE2D(_G_NormalWorldSpaceAtlas, sampler_G_NormalWorldSpaceAtlas, i.uv).xyz;
 
-	float depth = SAMPLE_TEXTURE2D(Test, samplerTest, i.uv).r;
+	float depth = SAMPLE_TEXTURE2D(_DepthBuffer, sampler_DepthBuffer, i.uv).r;
 
 	float4 clipSpacePosition;
 	float4 viewSpacePosition;

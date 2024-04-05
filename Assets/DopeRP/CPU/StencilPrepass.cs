@@ -5,26 +5,27 @@ namespace DopeRP.CPU
 {
     public class StencilPrepass
     {
-        private const string BUFFER_NAME = "GBuffer";
+        private const string BUFFER_NAME = "StencilPrePass";
         
         
         public void Render()
         {
             
+            RAPI.BeginSample(BUFFER_NAME);
             
             
-            RAPI.ExecuteBuffer();
-            Vector2 cameraWidthHeight = new Vector2(RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight);
+            var cameraWidth = RAPI.CurCamera.pixelWidth;
+            var cameraHeight = RAPI.CurCamera.pixelHeight;
 
-            RAPI.Buffer.GetTemporaryRT(Shader.PropertyToID("1"), (int)cameraWidthHeight.x, (int)cameraWidthHeight.y, 0, FilterMode.Point, RenderTextureFormat.ARGBHalf);
-            RAPI.Buffer.GetTemporaryRT(Shader.PropertyToID("Test"), (int)cameraWidthHeight.x, (int)cameraWidthHeight.y, 32, FilterMode.Bilinear, RenderTextureFormat.Depth);
+            RAPI.Buffer.GetTemporaryRT(SProps.Common.ColorFiller, cameraWidth, cameraHeight, 0, FilterMode.Point, RenderTextureFormat.ARGBHalf);
+            RAPI.Buffer.GetTemporaryRT(SProps.Common.DepthBuffer, cameraWidth, cameraHeight, 32, FilterMode.Bilinear, RenderTextureFormat.Depth);
 
             RenderTargetIdentifier[] colorTargets =
             {
-                new RenderTargetIdentifier(Shader.PropertyToID("1")),
+                new RenderTargetIdentifier(SProps.Common.ColorFiller),
             };
                 
-            RAPI.Buffer.SetRenderTarget(colorTargets, Shader.PropertyToID("Test"));
+            RAPI.Buffer.SetRenderTarget(colorTargets, SProps.Common.DepthBuffer);
             RAPI.Buffer.ClearRenderTarget(true, true, Color.clear);
             
             RAPI.ExecuteBuffer();
@@ -34,29 +35,25 @@ namespace DopeRP.CPU
                 criteria = SortingCriteria.CommonTransparent
             };
 
-            
-            var drawingSettings = new DrawingSettings(new ShaderTagId("gfg"), sortingSettings)
+            var drawingSettings = new DrawingSettings(SProps.Common.StencilPrePassId, sortingSettings)
             {
                 enableDynamicBatching = false,
                 enableInstancing = true,
             };
-
-            
             
             var filteringSettings = new FilteringSettings(RenderQueueRange.opaque);
 
             RAPI.Context.DrawRenderers(RAPI.CullingResults, ref drawingSettings, ref filteringSettings);
             
             RAPI.ExecuteBuffer();
-            
 
-            RAPI.Buffer.SetGlobalTexture("Test", Shader.PropertyToID("Test"));
+            RAPI.Buffer.SetGlobalTexture(SProps.Common.DepthBuffer, SProps.Common.DepthBuffer);
 
-
-            
-            
             RAPI.ExecuteBuffer();
             
+            
+            RAPI.EndSample(BUFFER_NAME);
+
         }
         
     }

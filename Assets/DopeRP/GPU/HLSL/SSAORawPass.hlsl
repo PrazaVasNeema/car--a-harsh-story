@@ -112,8 +112,8 @@ SAMPLER(sampler_NoiseTexture);
 TEXTURE2D(_G_NormalWorldSpaceAtlas);
 SAMPLER(sampler_G_NormalWorldSpaceAtlas);
 
-TEXTURE2D(Test);
-SAMPLER(samplerTest);
+TEXTURE2D(_DepthBuffer);
+SAMPLER(sampler_DepthBuffer);
 
 struct MeshData
 {
@@ -196,7 +196,7 @@ float4 frag (Interpolators i) : SV_Target
     // return mul(adfgdgf_CameraToWorldMatrix, fragPositionVS);
     // return float4(TransformViewToWorld(fragPositionVS), 1);
 // return fragPositionVS;
-    float depth = SAMPLE_TEXTURE2D(Test, samplerTest, i.uv).r;
+    float depth = SAMPLE_TEXTURE2D(_DepthBuffer, sampler_DepthBuffer, i.uv).r;
     
     // depth = 1-depth;
     float sceneZ = 1;
@@ -365,7 +365,7 @@ float4 frag (Interpolators i) : SV_Target
 
         // return float4(offsetUV.xy, 0,1);
 
-        float offsetPositionDEPTH = SAMPLE_TEXTURE2D(Test, samplerTest, offsetUV.xy).r;
+        float offsetPositionDEPTH = SAMPLE_TEXTURE2D(_DepthBuffer, sampler_DepthBuffer, offsetUV.xy).r;
         float3 sampleNormalWS = normalize(SAMPLE_TEXTURE2D(_G_NormalWorldSpaceAtlas, sampler_G_NormalWorldSpaceAtlas, offsetUV.xy).xyz);
 
         // return offsetPositionDEPTH.xxxx;

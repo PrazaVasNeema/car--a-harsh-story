@@ -82,7 +82,7 @@ namespace DopeRP.CPU
 				RAPI.CleanupTempRT(SProps.SSAO.SSAORawAtlas);
 				RAPI.CleanupTempRT(SProps.SSAO.SSAOBlurAtlas);
 				// RAPI.Context.DrawSkybox(RAPI.CurCamera);
-				RAPI.CleanupTempRT(Shader.PropertyToID("Test"));
+				RAPI.CleanupTempRT(SProps.Common.DepthBuffer);
 
 				RAPI.CleanupTempRT((SProps.GBuffer.G_AlbedoAtlas));
 				RAPI.CleanupTempRT((SProps.GBuffer.G_NormalWorldSpaceAtlas));
@@ -93,7 +93,7 @@ namespace DopeRP.CPU
 				RAPI.CleanupTempRT(Shader.PropertyToID("Test2"));
 
 
-				RAPI.CleanupTempRT((Shader.PropertyToID("1")));
+				RAPI.CleanupTempRT(SProps.Common.ColorFiller);
 				DrawGizmosBeforeFX();
 				if (postFXStack.IsActive)
 				{
@@ -194,7 +194,7 @@ namespace DopeRP.CPU
 			RAPI.Context.DrawSkybox(RAPI.CurCamera);
 			RAPI.ExecuteBuffer();
 			
-			RAPI.Buffer.SetRenderTarget(Shader.PropertyToID("_CameraFrameBuffer"), new RenderTargetIdentifier(Shader.PropertyToID("Test")));
+			RAPI.Buffer.SetRenderTarget(Shader.PropertyToID("_CameraFrameBuffer"), new RenderTargetIdentifier(SProps.Common.DepthBuffer));
 			RAPI.ExecuteBuffer();
 
 			//Draw transparent geometry

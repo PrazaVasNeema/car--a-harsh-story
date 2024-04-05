@@ -36,12 +36,14 @@ namespace DopeRP.CPU
         }
         
         public void Render () {
+            RAPI.BeginSample(BUFFER_NAME);
             if (ready) {
                 RenderDepthBuffer();
             }
             else {
                 RAPI.Buffer.GetTemporaryRT(SProps.Shadows.DirShadowAtlasId, 1, 1, 16, FilterMode.Bilinear, RenderTextureFormat.Shadowmap);
             }
+            RAPI.EndSample(BUFFER_NAME);
         }
 
         private void RenderDepthBuffer()

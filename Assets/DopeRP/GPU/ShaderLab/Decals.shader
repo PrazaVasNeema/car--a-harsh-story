@@ -170,8 +170,8 @@ Shader "DopeRP/Shaders/Decals"
 
 // sampler2D Test;
 
-			TEXTURE2D(Test);
-			SAMPLER(samplerTest);
+			TEXTURE2D(_DepthBuffer);
+			SAMPLER(sampler_DepthBuffer);
 			
 			fragOutput frag(Interpolators i)
 			{
@@ -184,7 +184,7 @@ Shader "DopeRP/Shaders/Decals"
 				float2 uv = i.positionSV.xy * _ScreenSize.zw;
 				
 				// float depth = SAMPLE_TEXTURE2D(Test, samplerTest, uv).r;
-				float depth = SAMPLE_TEXTURE2D(Test, samplerTest, uv).r;
+				float depth = SAMPLE_TEXTURE2D(_DepthBuffer, sampler_DepthBuffer, uv).r;
 				// depth = SAMPLE_TEXTURE2D(Test2, samplerTest2, uv).r;
 float4 clipSpacePosition;
 float4 viewSpacePosition;

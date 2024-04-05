@@ -11,7 +11,7 @@ Shader "DopeRP/Shaders/StencilMask"
 		
 		Pass {
 			
-					Tags { "RenderType"="Opaque" "LightMode"="gfg"}
+					Tags { "RenderType"="Opaque" "LightMode"="StencilPrePass"}
 
 			Blend Zero One
 			ZWrite off
