@@ -6,5 +6,6 @@ using UnityEngine;
 public struct OnCollisionEnterEvent : IEventData
 {
     public Entity targetEntity;
-    public Collision collision;
+    public ContactPoint contactPoint;
+    public string name;
 }

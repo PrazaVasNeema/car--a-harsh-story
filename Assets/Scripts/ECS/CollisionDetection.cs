@@ -26,11 +26,21 @@ public class CollisionDetection : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
+        ContactPoint[] contacts = new ContactPoint[other.contactCount];
+        int points = other.GetContacts(contacts);
+        Debug.Log($"Damage amount loop NAME: {other.transform.name}, contactCount: {other.contactCount}");
+        for (int i = 0; i < points; i++)
+        {
+            Debug.Log($"Damage amount loop: {i}, {contacts[i].impulse.magnitude}, this collider NAME: {contacts[i].thisCollider.transform.name}");
+            // ContactPoint cp = contact*;*
+            // if (GetComponent().gameObject != gameObject)
+                // continue;
+        }
 
-        // foreach (var collider)
         Collider myCollider = other.GetContact(0).thisCollider;
         if (myCollider.TryGetComponent<EntityReverseProvider>(out var entityReverseProvider))
         {
+            Debug.Log($"Damage amount loop:  this collider NAME: {myCollider.transform.name}");
 
             var targetEntity = entityReverseProvider.GetEntity();
             //GameData.instance.currentWorld.GetEvent<OnCollisionEnterEvent>().NextFrame(new OnCollisionEnterEvent { targetEntity = targetEntity, collision = other });
@@ -44,8 +54,8 @@ public class CollisionDetection : MonoBehaviour
 
         if (GameData.instance.currentWorld != null) 
         {
-            Debug.Log($"NAMEEE: {gameObject.name}");
-            GameData.instance.currentWorld.GetEvent<OnCollisionEnterEvent>().NextFrame(new OnCollisionEnterEvent { targetEntity = affectedEntity, collision = collision });
+            Debug.Log($"Damage amount loop: {collision.GetContact(0).thisCollider.transform.name}, contactCount: {collision.contactCount}");
+            GameData.instance.currentWorld.GetEvent<OnCollisionEnterEvent>().NextFrame(new OnCollisionEnterEvent { targetEntity = affectedEntity, contactPoint = collision.GetContact(0) , name = collision.GetContact(0).thisCollider.transform.name});
         }
 
     }

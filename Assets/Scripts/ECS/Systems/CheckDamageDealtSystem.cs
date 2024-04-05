@@ -22,12 +22,14 @@ public sealed class CheckDamageDealtSystem : UpdateSystem {
         foreach (var change in changes)
         {
                 Debug.Log($"TEST: 1");
-            if (change.collision.contactCount == 0)
-                continue;
-            float damageAmount = change.collision.impulse.magnitude;
-                damageAmount = change.collision.GetContact(0).impulse.magnitude;
+                // Debug.Log($"damage amount before test name: {change.collision.GetContact(0).thisCollider.name}, point: {change.collision.contactCount}");
+            // Debug.Log($"Damage amount IN name: {change.name}, contactCount: {change.collision.contactCount}");
+            // if (change.collision.contactCount == 0)
+            //     continue;
+            float damageAmount = change.contactPoint.impulse.magnitude;
+                damageAmount = change.contactPoint.impulse.magnitude;
                 Debug.Log($"TEST: 2");
-                Debug.Log($"Damage amount: {damageAmount}");
+                Debug.Log($"Damage amount: {damageAmount}, name: {change.contactPoint.thisCollider.name}");
 
                 //Debug.Log($"EntityName: {change.targetEntity.GetComponent<TransformRef>().transform.name}");
                 if (damageAmount >= m_settingsData.spawnDecalsHPThreshold && change.targetEntity.Has<IsDamageDecalReceiver>())
@@ -40,7 +42,7 @@ public sealed class CheckDamageDealtSystem : UpdateSystem {
                     // }
                     Debug.Log($"TEST: 3");
 
-                    this.World.GetRequest<SpawnDamageDecalRequest>().Publish(new SpawnDamageDecalRequest { targetEntity = change.targetEntity, ContactPoint = change.collision.GetContact(0) }, true);
+                    this.World.GetRequest<SpawnDamageDecalRequest>().Publish(new SpawnDamageDecalRequest { targetEntity = change.targetEntity, ContactPoint = change.contactPoint }, true);
             }
                 Debug.Log($"TEST: 4");
 
@@ -72,8 +74,8 @@ public sealed class CheckDamageDealtSystem : UpdateSystem {
                     {
                         var entityTransform = entity.GetComponent<TransformRef>().transform;
                         Debug.Log($"Name: {entityTransform.name}");
-                        var entitiesDistance = (change.collision.GetContact(0).point - entityTransform.position).magnitude;
-                        var damageMultiplier = Mathf.InverseLerp(0, 3, entitiesDistance);
+                        var entitiesDistance = (change.contactPoint.point - entityTransform.position).magnitude;
+                        var damageMultiplier = Mathf.InverseLerp(0, 5, entitiesDistance);
                         var damageAmountSplash = damageAmount * -Mathf.Log10(damageMultiplier)/2;
                         Debug.Log($"Distance: {entitiesDistance}");
                         Debug.Log($"Initial damage: {damageAmount}; damageMultiplier: {damageMultiplier}; log: {-Mathf.Log10(damageMultiplier)}; Total damage: {damageAmountSplash}");
