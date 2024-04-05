@@ -12,8 +12,8 @@ Shader "DopeRP/Shaders/Lit"
 		_Roughness ("Roughness", Range(0, 1)) = 0.5
 		_Reflectance ("Reflectance", Range(0, 1)) = 0.5
 		
-		[NoScaleOffset] _EmissionMap("Emission", 2D) = "white" {}
-		[HDR] _EmissionColor("Emission", Color) = (0.0, 0.0, 0.0, 0.0)
+//		[NoScaleOffset] _EmissionMap("Emission", 2D) = "white" {}
+//		[HDR] _EmissionColor("Emission", Color) = (0.0, 0.0, 0.0, 0.0)
 		
 		_Cutoff ("Alpha Cutoff", Range(0.0, 1.0)) = 0.5
 		[Toggle(_CLIPPING)] _Clipping ("Alpha Clipping", Float) = 0
@@ -37,7 +37,6 @@ Shader "DopeRP/Shaders/Lit"
 		
 		[Enum(UnityEngine.Rendering.CullMode)] _CullingMode2 ("Culling Mode", Float) = 2
 		
-		[Toggle(_STENCIL_MASK)] _IstencilMask ("is Stencil Mask", Float) = 0
 //[Enum(UnityEngine.Rendering.StencilOp)] _StencilFail ("Stencil Fail", Float) = 0
 //[Enum(UnityEngine.Rendering.StencilOp)] _StencilZFail ("Stencil ZFail", Float) = 0
 

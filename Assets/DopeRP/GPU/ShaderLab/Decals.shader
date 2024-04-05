@@ -8,7 +8,8 @@ Shader "DopeRP/Shaders/Decals"
 		_BaseColor("Color", Color) = (1.0, 1.0, 1.0, 1.0)
 		
 		[Toggle(_OPACITY_ATLAS)] _OpacityAtlas ("Opacity as texture", Float) = 0
-		_OpacityMap("Albedo Texture", 2D) = "(0,0,0,0)" {}
+		[NoScaleOffset] _OpacityMap("Albedo Texture", 2D) = "(0,0,0,0)" {}
+		_Cutoff ("Cutoff", Range(0.0, 1.0)) = 0.5
 
 		[Toggle(_CONTRIBUTE_NORMAL)] _ContributeNormals ("Contribute Normals", Float) = 0
 		[NoScaleOffset] _NormalMap("Normal Texture", 2D) = "bump" {}
@@ -22,8 +23,7 @@ Shader "DopeRP/Shaders/Decals"
 		[Enum(UnityEngine.Rendering.BlendMode)] _SrcBlend ("Src Blend", Float) = 1
 		[Enum(UnityEngine.Rendering.BlendMode)] _DstBlend ("Dst Blend", Float) = 0
 		
-		_Cutoff ("Alpha Cutoff", Range(0.0, 1.0)) = 0.5
-		[Toggle(_CLIPPING)] _Clipping ("Alpha Clipping", Float) = 0
+//		[Toggle(_CLIPPING)] _Clipping ("Alpha Clipping", Float) = 0
 		
 		[Enum(Off, 0, On, 1)] _ZWrite ("Z Write", Float) = 1
 		
@@ -58,9 +58,9 @@ Shader "DopeRP/Shaders/Decals"
 			#pragma target 3.5
 			#pragma multi_compile_instancing
 			// #pragma enable_d3d11_debug_symbols
-			#pragma shader_feature _CLIPPING
+			// #pragma shader_feature _CLIPPING
 			#pragma shader_feature _CONTRIBUTE_ALBEDO
-						#pragma shader_feature _OPACITY_ATLAS
+			#pragma shader_feature _OPACITY_ATLAS
 			#pragma shader_feature _CONTRIBUTE_NORMAL
 			#pragma shader_feature _CONTRIBUTE_BRDF
 
@@ -78,7 +78,10 @@ Shader "DopeRP/Shaders/Decals"
 
 			TEXTURE2D(_NormalMap);
 			SAMPLER(sampler_NormalMap);
-			
+
+
+			TEXTURE2D(_DepthBuffer);
+			SAMPLER(sampler_DepthBuffer);
 
 			TEXTURE2D(_GAux_ClearNormalWorldSpaceAtlas);
 			SAMPLER(sampler_GAux_ClearNormalWorldSpaceAtlas);
@@ -89,23 +92,22 @@ Shader "DopeRP/Shaders/Decals"
 			TEXTURE2D(_G_BRDFAtlas);
 			SAMPLER(sampler_G_BRDFAtlas);
 
-
-			
 			
 			CBUFFER_START(Decals)
 			
 				float4 _ScreenSize;
-			
 				float2 _NearFarPlanes;
-				float4x4 _Matrix_I_P;
 			
+				float4x4 _Matrix_I_P;
 			    float4x4 _Matrix_P;
 			
 			CBUFFER_END
+			
 
 			UNITY_INSTANCING_BUFFER_START(UnityPerMaterial_DECALS)
 			
 				UNITY_DEFINE_INSTANCED_PROP(float4, _BaseColor)
+				UNITY_DEFINE_INSTANCED_PROP(float4, _BaseMap_ST)
 				UNITY_DEFINE_INSTANCED_PROP(float, _NormalScale)
 				UNITY_DEFINE_INSTANCED_PROP(float, _Cutoff)
 
@@ -154,13 +156,6 @@ Shader "DopeRP/Shaders/Decals"
 			}
 			
 
-			struct fragOutput
-			{
-			    float4 decalsArtisticAlbedoAtlas : SV_Target0;
-			    float4 decalsArtisticNormalAtlas : SV_Target1;
-				float4 decalsArtisticBRDFAtlas : SV_Target2;
-			};
-
 			float3 GetNormalTS (float2 baseUV) {
 				float4 map = SAMPLE_TEXTURE2D(_NormalMap, sampler_NormalMap, baseUV);
 				float scale = UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_DECALS, _NormalScale);
@@ -168,149 +163,92 @@ Shader "DopeRP/Shaders/Decals"
 				return normal;
 			}
 
-// sampler2D Test;
-
-			TEXTURE2D(_DepthBuffer);
-			SAMPLER(sampler_DepthBuffer);
+			
+			struct fragOutput
+			{
+			    float4 decalsArtisticAlbedoAtlas : SV_Target0;
+			    float4 decalsArtisticNormalAtlas : SV_Target1;
+				float4 decalsArtisticBRDFAtlas : SV_Target2;
+			};
 			
 			fragOutput frag(Interpolators i)
 			{
 				
 				UNITY_SETUP_INSTANCE_ID(i);
 				fragOutput o;
-				// return o;
 
-
-				float2 uv = i.positionSV.xy * _ScreenSize.zw;
+				float2 screenUV = i.positionSV.xy * _ScreenSize.zw;
 				
-				// float depth = SAMPLE_TEXTURE2D(Test, samplerTest, uv).r;
-				float depth = SAMPLE_TEXTURE2D(_DepthBuffer, sampler_DepthBuffer, uv).r;
-				// depth = SAMPLE_TEXTURE2D(Test2, samplerTest2, uv).r;
-float4 clipSpacePosition;
-float4 viewSpacePosition;
+				float depth = SAMPLE_TEXTURE2D(_DepthBuffer, sampler_DepthBuffer, screenUV).r;
+				float4 clipSpacePosition;
+				float4 viewSpacePosition;
 				#if !UNITY_REVERSED_Z
 					depth = lerp(UNITY_NEAR_CLIP_VALUE, 1, depth);
 
-				float sceneZ =CalcLinearZ(depth, _NearFarPlanes.x, _NearFarPlanes.y);
-				clipSpacePosition = float4((uv * 2.0 - 1.0) * sceneZ/depth, sceneZ, 1.0 * sceneZ/depth);
-				viewSpacePosition = mul(_Matrix_I_P, clipSpacePosition);
-								viewSpacePosition /= viewSpacePosition.w;
+					float sceneZ =CalcLinearZ(depth, _NearFarPlanes.x, _NearFarPlanes.y);
+					clipSpacePosition = float4((screenUV * 2.0 - 1.0) * sceneZ/depth, sceneZ, 1.0 * sceneZ/depth);
+					viewSpacePosition = mul(_Matrix_I_P, clipSpacePosition);
+					viewSpacePosition /= viewSpacePosition.w;
 
 				#else
 
-				 clipSpacePosition = float4(uv * 2 - 1, depth, 1);
-    // return float4(clipSpacePosition.xy, 0, 1);
-    viewSpacePosition = mul(Inverse(_Matrix_P), clipSpacePosition);
-    viewSpacePosition /= viewSpacePosition.w;
+					clipSpacePosition = float4(screenUV * 2 - 1, depth, 1);
+					viewSpacePosition = mul(Inverse(_Matrix_P), clipSpacePosition);
+					viewSpacePosition /= viewSpacePosition.w;
 				
 				#endif
 
-			
-			
-
-				
-
-				o.decalsArtisticAlbedoAtlas = viewSpacePosition;
-				// o.decalsArtisticAlbedoAtlas = float4(depth.xxx,1);
-				// o.decalsArtisticAlbedoAtlas =float4(uv-1, 0,1);
-				// o.decalsArtisticAlbedoAtlas = float4(0,0,0,depth);
-
-				
-
-				// o.decalsArtisticAlbedoAtlas = SAMPLE_TEXTURE2D(_GAux_ClearNormalWorldSpaceAtlas, sampler_GAux_ClearNormalWorldSpaceAtlas, uv);
-				// return o;
-					
 				float4 worldPos = float4(TransformViewToWorld(viewSpacePosition.xyz),1);
 				float4 objectPos = float4(TransformWorldToObject(worldPos), 1);
-
 				
 				clip(0.5 - abs(objectPos.xyz));
 				
-				
-				float2 texCoords = objectPos.xy + 0.5;
+				float4 baseMap_ST =  UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _BaseMap_ST);
+				float2 texCoords = (objectPos.xy + 0.5) * baseMap_ST.xy + baseMap_ST.zw;
 
 				#if defined(_OPACITY_ATLAS)
-					clip(SAMPLE_TEXTURE2D(_OpacityMap, sampler_OpacityMap, texCoords).r - 0.1);
-									clip(SAMPLE_TEXTURE2D(_OpacityMap, sampler_OpacityMap, texCoords).a - 0.1);
+				
+					clip(SAMPLE_TEXTURE2D(_OpacityMap, sampler_OpacityMap, texCoords).r - UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _Cutoff));
+					clip(SAMPLE_TEXTURE2D(_OpacityMap, sampler_OpacityMap, texCoords).a - UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _Cutoff));
 
 				#endif
 
 				
 				#if defined(_CONTRIBUTE_NORMAL)
 				
-					float3 normalWS = normalize(SAMPLE_TEXTURE2D(_GAux_ClearNormalWorldSpaceAtlas, sampler_GAux_ClearNormalWorldSpaceAtlas, uv).xyz);
-					float4 tangentWS = normalize(SAMPLE_TEXTURE2D(_GAux_TangentWorldSpaceAtlas, sampler_GAux_TangentWorldSpaceAtlas, uv));
+					float3 normalWS = normalize(SAMPLE_TEXTURE2D(_GAux_ClearNormalWorldSpaceAtlas, sampler_GAux_ClearNormalWorldSpaceAtlas, screenUV).xyz);
+					float4 tangentWS = normalize(SAMPLE_TEXTURE2D(_GAux_TangentWorldSpaceAtlas, sampler_GAux_TangentWorldSpaceAtlas, screenUV));
 
-				// 	float3 worldup = float3(0,1,0);
-				// 	float3 orthogonalVector = cross(normalWS.xyz, worldup);
-				// float angle = acos(normalWS.a);
-				//
-				// 	float3 rotatedVector = orthogonalVector * cos(angle) + cross(normalWS.xyz, orthogonalVector) * sin(angle) + normalWS.xyz * dot(normalWS.xyz, orthogonalVector) * (1 - cos(angle));
-
-					// float3 targetValue = float3(0.5, 0.5, 1);
-					// float epsilon = .05; // Tolerance for the comparison
-					//
-					// bool isEqual = all(abs(GetNormalTS(texCoords) - DecodeNormal(targetValue.xyzz, 1)) < epsilon);
-
-					
-				
-
-
-									o.decalsArtisticNormalAtlas = float4(NormalTangentToWorld(GetNormalTS(texCoords), normalWS, tangentWS),1) ;
-
-				// o.decalsArtisticNormalAtlas = float4(rotatedVector, 1);
-				
-			// o.decalsArtisticAlbedoAtlas = float4(rotatedVector, 1);
-
-				// o.decalsArtisticAlbedoAtlas = tangentWS;
-				// return o;
-
+					o.decalsArtisticNormalAtlas = float4(NormalTangentToWorld(GetNormalTS(texCoords), normalWS, tangentWS),1) ;
 
 				#else
 
 					// o.decalsArtisticNormalAtlas = 0;
 
 				#endif
-				
-
 
 				
 				#if defined(_CONTRIBUTE_ALBEDO)
 				
 					float4 baseColor = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, texCoords);
-	
-					#if defined(_CLIPPING)
-
-				
-				
-				if (baseColor.a - UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_DECALS, _Cutoff) < 0)
-					{
-					o.decalsArtisticAlbedoAtlas = 0;
-					return o;
-					}
-						// // #if !defined(_CONTRIBUTE_NORMAL)
-						// 	clip(baseColor.a - UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_DECALS, _Cutoff));
-						// // #endif
-					#endif
-	
 					baseColor *= UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_DECALS, _BaseColor);
 				
 					o.decalsArtisticAlbedoAtlas = baseColor;
 
-
 				#endif
 
+				
 				#if defined(_CONTRIBUTE_BRDF)
 				
-				float metallic = UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_DECALS, _Metallic);
-				float roughness = perceptualRoughnessToRoughness(UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_DECALS, _Roughness));
-				float reflectance = UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_DECALS, _Reflectance);
+					float metallic = UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_DECALS, _Metallic);
+					float roughness = perceptualRoughnessToRoughness(UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_DECALS, _Roughness));
+					float reflectance = UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_DECALS, _Reflectance);
+					float4 brdf = float4(metallic, roughness, reflectance, 1);
 
-				float4 brdf = float4(metallic, roughness, reflectance, 1);
-
-				o.decalsArtisticBRDFAtlas = brdf;
+					o.decalsArtisticBRDFAtlas = brdf;
 
 				#endif
+
 				
 				return o;
 				
@@ -318,8 +256,7 @@ float4 viewSpacePosition;
 			
 			ENDHLSL
 		}
-
-
+		
 	}
 
 }
