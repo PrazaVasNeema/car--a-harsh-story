@@ -16,7 +16,7 @@ namespace DopeRP.CPU
             var cameraWidth = RAPI.CurCamera.pixelWidth;
             var cameraHeight = RAPI.CurCamera.pixelHeight;
             
-            RAPI.Buffer.GetTemporaryRT(SProps.SSAO.SSAORawAtlas, cameraWidth / 2, cameraHeight / 2, 0, FilterMode.Bilinear, RenderTextureFormat.ARGBFloat);
+            RAPI.Buffer.GetTemporaryRT(SProps.SSAO.SSAORawAtlas, cameraWidth / 2, cameraHeight / 2, 0, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
             RAPI.Buffer.SetRenderTarget(SProps.SSAO.SSAORawAtlas, RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store);
             RAPI.Buffer.ClearRenderTarget(true, true, Color.clear);
 
@@ -31,7 +31,7 @@ namespace DopeRP.CPU
             
             RAPI.Buffer.SetGlobalTexture(SProps.SSAO.SSAORawAtlas, SProps.SSAO.SSAORawAtlas);
 
-            RAPI.Buffer.GetTemporaryRT(SProps.SSAO.SSAOBlurAtlas, cameraWidth, cameraHeight, 0, FilterMode.Bilinear, RenderTextureFormat.ARGBFloat);
+            RAPI.Buffer.GetTemporaryRT(SProps.SSAO.SSAOBlurAtlas, cameraWidth, cameraHeight, 0, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
             RAPI.Buffer.SetRenderTarget(SProps.SSAO.SSAOBlurAtlas, RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store);
             RAPI.Buffer.ClearRenderTarget(true, true, Color.clear);
             

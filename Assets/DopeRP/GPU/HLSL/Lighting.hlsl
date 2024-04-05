@@ -20,24 +20,20 @@
 
 CBUFFER_START(_LightingMain)
 
-	// #if defined(_DIR_LIGHT_ON)
-		float3 _DirLightDirection;
-		float3 _DirLightColor;
-		float4 _DirectionalLightShadowData;
-	// #endif
-
-	// #if defined(MAX_OTHER_LIGHT_COUNT)
-		int _OtherLightCount;
-		float4 _OtherLightPositions[MAX_OTHER_LIGHT_COUNT];
-		float4 _OtherLightColors[MAX_OTHER_LIGHT_COUNT];
-		float4 _OtherLightDirections[MAX_OTHER_LIGHT_COUNT];
-		float4 _OtherLightSpotAngles[MAX_OTHER_LIGHT_COUNT];
-	// #endif
+	float3 _DirLightDirection;
+	float3 _DirLightColor;
+	float4 _DirectionalLightShadowData;
+	int _OtherLightCount;
+	float4 _OtherLightPositions[MAX_OTHER_LIGHT_COUNT];
+	float4 _OtherLightColors[MAX_OTHER_LIGHT_COUNT];
+	float4 _OtherLightDirections[MAX_OTHER_LIGHT_COUNT];
+	float4 _OtherLightSpotAngles[MAX_OTHER_LIGHT_COUNT];
 
 CBUFFER_END
 
 
-struct Light {
+struct Light
+{
 	
 	float3 direction;
 	float3 color;
@@ -45,10 +41,12 @@ struct Light {
 	
 };
 
-DirectionalShadowData GetDirectionalShadowData (ShadowData shadowData){
+DirectionalShadowData GetDirectionalShadowData (ShadowData shadowData)
+{
 	DirectionalShadowData data;
 	data.strength = _DirectionalLightShadowData.x * shadowData.strength;
 	data.normalBias = _DirectionalLightShadowData.z;
+	
 	return data;
 }
 
@@ -71,7 +69,8 @@ float3 specularLobe(const SurfaceData surfaceData, const float3 lightDir, const 
 	return isotropicLobe(surfaceData, h, NoV, NoL, NoH, LoH);
 }
 
-float3 diffuseLobe(const SurfaceData surfaceData, float NoV, float NoL, float LoH) {
+float3 diffuseLobe(const SurfaceData surfaceData, float NoV, float NoL, float LoH)
+{
 	return surfaceData.color * max(diffuse(surfaceData.roughness, NoV, NoL, LoH).xxx, 0.2);
 }
 
@@ -79,7 +78,8 @@ float3 diffuseLobe(const SurfaceData surfaceData, float NoV, float NoL, float Lo
 
 #if defined(MAX_OTHER_LIGHT_COUNT)
 
-Light GetOtherLight (int index, SurfaceData surfaceWS) {
+Light GetOtherLight (int index, SurfaceData surfaceWS)
+{
 	Light light;
 	light.color = _OtherLightColors[index].rgb;
 	float3 ray = _OtherLightPositions[index].xyz - surfaceWS.positionWS;
@@ -105,10 +105,6 @@ float3 GetLighting(SurfaceData surfaceData, Light light)
 	
 	float3 Fr = specularLobe(surfaceData, light.direction, h, NoV, NoL, NoH, LoH);
 	float3 Fd = diffuseLobe(surfaceData, NoV, NoL, LoH);
-	// Fr = 1;
-	// Fd = dot(surfaceData.normal, -_lightDir);
-	// float3 color = Fd * 0.5 + 0.5;
-	float3 energyCompensation = 1.0 + surfaceData.f0 * (1.0 / 0.1 - 1.0);
 
 	float3 color = Fd + Fr;
 
@@ -135,20 +131,16 @@ float3 GetLighting(SurfaceData surfaceData)
 		light.attenuation = max(GetDirectionalShadowAttenuation(dirShadowData, shadowData, surfaceData), 0.2);
 
 	#else
-	//
+	
 		light.attenuation = 1;
-	//
+	
 	#endif
 
 	color += GetLighting(surfaceData, light);
-	// color = light.attenuation;
-	// color = shadowData.color;
-	// color = shadowData.strength;
-// return color;
-	// return color;
-	// color = 1;
+	
 	#endif	
 
+	
 	#if defined(_OTHER_LIGHT_COUNT)
 	
 	UNITY_UNROLL
