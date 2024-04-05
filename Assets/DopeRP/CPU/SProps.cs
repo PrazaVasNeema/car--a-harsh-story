@@ -30,6 +30,7 @@ namespace DopeRP.CPU
             public static ShaderTagId LitShaderTagId = new ShaderTagId("Lit");
             
             public static string LitDeferredPassName = "LitDeferred";
+            public static int AmbientLightScale = Shader.PropertyToID("_AmbientLightScale");
 
         }
         

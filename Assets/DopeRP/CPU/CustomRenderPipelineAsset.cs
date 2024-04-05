@@ -1,5 +1,8 @@
 using UnityEngine;
+using UnityEngine.Experimental.GlobalIllumination;
 using UnityEngine.Rendering;
+using UnityEngine.Serialization;
+using LightType = UnityEngine.LightType;
 
 namespace DopeRP.CPU
 {
@@ -7,7 +10,13 @@ namespace DopeRP.CPU
 	public class CustomRenderPipelineAsset : RenderPipelineAsset
 	{
 
-		[SerializeField] public bool m_samplingOn;
+		[SerializeField] public bool samplingOn;
+		[SerializeField] public bool ambientLightOn;
+		[Range(0, 0.2f)]
+		[SerializeField] public float ambientLightScale;
+		[OnChangedCall("onPropertyChangeMain")]
+		[Range(0, 1f)]
+		[SerializeField] public float mainDirLightStrength;
 		
 		[Header("(Just so unity don't create a new material each render call)")]
 		public Material EmptyMaterial;
@@ -57,6 +66,19 @@ namespace DopeRP.CPU
 			ssaoMaterial.SetFloat(SProps.SSAO.Bias, ssaoSettings.bias);
 			ssaoMaterial.SetFloat(SProps.SSAO.Magnitude, ssaoSettings.magnitude);
 			ssaoMaterial.SetFloat(SProps.SSAO.Contrast, ssaoSettings.contrast);
+		}
+		
+		public void onPropertyChangeMain()
+		{
+			var lights = FindObjectsOfType<Light>();
+			foreach (var light in lights)
+			{
+				if (light.type == LightType.Directional)
+				{
+					light.shadowStrength = mainDirLightStrength;
+					return;
+				}
+			}
 		}
 	}
 }

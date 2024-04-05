@@ -101,9 +101,9 @@ float diffuse(float roughness, float NoV, float NoL, float LoH) {
 	return Fd_Burley(roughness, NoV, NoL, LoH);
 }
 
-float3 IndirectBRDF (SurfaceData surfaceData, float3 specular) {
+float3 IndirectBRDF (SurfaceData surfaceData) {
 
-	float3 reflection = specular * surfaceData.f0 * (1-surfaceData.roughness);
+	float3 reflection = surfaceData.specular * surfaceData.f0 * (1-surfaceData.roughness);
 	reflection /= surfaceData.roughness * surfaceData.roughness + 1.0;
 	return reflection;
 }

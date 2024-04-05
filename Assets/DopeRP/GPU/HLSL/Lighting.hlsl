@@ -71,7 +71,7 @@ float3 specularLobe(const SurfaceData surfaceData, const float3 lightDir, const 
 
 float3 diffuseLobe(const SurfaceData surfaceData, float NoV, float NoL, float LoH)
 {
-	return surfaceData.color * max(diffuse(surfaceData.roughness, NoV, NoL, LoH).xxx, 0.2);
+	return surfaceData.color * diffuse(surfaceData.roughness, NoV, NoL, LoH).xxx;
 }
 
 // ----
@@ -128,7 +128,7 @@ float3 GetLighting(SurfaceData surfaceData)
 	
 		ShadowData shadowData = GetShadowData(surfaceData);
 		DirectionalShadowData dirShadowData = GetDirectionalShadowData(shadowData);
-		light.attenuation = max(GetDirectionalShadowAttenuation(dirShadowData, shadowData, surfaceData), 0.2);
+		light.attenuation = GetDirectionalShadowAttenuation(dirShadowData, shadowData, surfaceData);
 
 	#else
 	

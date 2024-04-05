@@ -72,6 +72,7 @@ Shader "DopeRP/Shaders/Lit"
 			#pragma multi_compile _ SHADOWS_ON
 			#pragma multi_compile _ _DIRECTIONAL_PCF_NONE _DIRECTIONAL_PCF2x2 _DIRECTIONAL_PCF4x4 _DIRECTIONAL_PCF6x6 _DIRECTIONAL_PCF8x8
 			#pragma multi_compile _ CASCADE_COUNT_2 CASCADE_COUNT_4
+			#pragma multi_compile _ AMBIENT_LIGHT_ON
 			
 			#pragma multi_compile _ SSAO_ON
 			#pragma multi_compile _ DECALS_ON

@@ -161,7 +161,7 @@ float4 frag(Interpolators i) : SV_TARGET
 	float3 fragColor = 0;;
 	
 	// GI gi = GetGI(GI_FRAGMENT_DATA(input), surfaceData);
-	fragColor += IndirectBRDF(surfaceData, surfaceData.specular)* 0.1;
+	fragColor += IndirectBRDF(surfaceData)* 0.1;
 
 	fragColor += GetLighting(surfaceData);
 	// fragColor += GetEmission(i.uv) ;

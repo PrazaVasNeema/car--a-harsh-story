@@ -33,7 +33,7 @@ namespace DopeRP.CPU
 				return;
 			}
 
-			RAPI.m_samplingOn = customRenderPipelineAsset.m_samplingOn;
+			RAPI.m_samplingOn = customRenderPipelineAsset.samplingOn;
 			RAPI.Context.SetupCameraProperties(RAPI.CurCamera);
 			RAPI.SetupCommonUniforms();
 			
@@ -69,6 +69,16 @@ namespace DopeRP.CPU
 			postFXStack.Setup(RAPI.Context, camera, postFXSettings, colorLUTResolution);
 			Setup();
 
+			if (customRenderPipelineAsset.ambientLightOn)
+			{
+				RAPI.SetKeyword("AMBIENT_LIGHT_ON", true);
+				RAPI.Buffer.SetGlobalFloat(SProps.CameraRenderer.AmbientLightScale, customRenderPipelineAsset.ambientLightScale);
+			}
+			else
+			{
+				RAPI.SetKeyword("AMBIENT_LIGHT_ON", false);
+			}
+			
 			if (RAPI.CurCamera.cameraType == CameraType.Reflection)
 			{
 				DrawVisibleGeometryRefProbes(useDynamicBatching, useGPUInstancing);
