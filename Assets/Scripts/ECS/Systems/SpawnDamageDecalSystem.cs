@@ -47,8 +47,7 @@ public sealed class SpawnDamageDecalSystem : UpdateSystem {
             GameObject decalPrefab = spawnDecalRequest.damageType == SpawnDamageDecalRequest.DecalDamageType.Low
                 ? data.decalLowDamagePrefabs[Random.Range((int)0, data.decalLowDamagePrefabs.Count)]
                 : data.decalHighDamagePrefabs[Random.Range((int)0, data.decalHighDamagePrefabs.Count)];
-            var b = Instantiate(decalPrefab, targetPosition,
-                a);
+            var b = Instantiate(decalPrefab, targetPosition, a);
             b.transform.parent =    spawnDecalRequest.targetEntity.GetComponent<TransformRef>().transform;
         }
     }

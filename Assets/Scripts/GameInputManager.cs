@@ -98,18 +98,21 @@ public class GameInputManager : MonoBehaviour
     {
         public event EventHandler OnInteractAction;
         public event EventHandler OnFireAction;
+        public event EventHandler OnFireHeavyAction;
 
         protected const string INTERACT = "INTERACT";
         protected const string MOUSE = "MOUSE";
         protected const string MOVE_UPDOWN = "MOVE_UPDOWN";
         protected const string MOVE_SPEEDSLOW = "MOVE_SPEEDSLOW";
         protected const string FIRE = "FIRE";
+        protected const string FIRE_HEAVY = "FIRE_HEAVY";
 
         protected InputAction m_interactAction;
         protected InputAction m_mouseAction;
         protected InputAction m_moveUpDownAction;
         protected InputAction m_moveSpeedSlowAction;
         protected InputAction m_fire;
+        protected InputAction m_fireHeavy;
 
         public SpectatorActorInputManager(string mapName, InputActionAsset inputActionAsset) : base(mapName, inputActionAsset)
         {
@@ -119,6 +122,7 @@ public class GameInputManager : MonoBehaviour
             m_moveUpDownAction = m_inputActionMap.FindAction(MOVE_UPDOWN);
             m_moveSpeedSlowAction = m_inputActionMap.FindAction(MOVE_SPEEDSLOW);
             m_fire = m_inputActionMap.FindAction(FIRE);
+            m_fireHeavy = m_inputActionMap.FindAction(FIRE_HEAVY);
 
             Enable();
 
@@ -129,6 +133,7 @@ public class GameInputManager : MonoBehaviour
             base.Enable();
             m_interactAction.started += InteractAction_performed;
             m_fire.started += FireAction_performed;
+            m_fireHeavy.started += FireHeavyAction_performed;
         }
 
         public override void Disable()
@@ -136,6 +141,7 @@ public class GameInputManager : MonoBehaviour
             base.Disable();
             m_interactAction.started -= InteractAction_performed;
             m_fire.started -= FireAction_performed;
+            m_fireHeavy.started += FireHeavyAction_performed;
         }
 
         public float GetMovementUpDown()
@@ -163,8 +169,12 @@ public class GameInputManager : MonoBehaviour
 
         private void FireAction_performed(InputAction.CallbackContext obj)
         {
-            Debug.Log(10);
             OnFireAction?.Invoke(this, EventArgs.Empty);
+        }
+        
+        private void FireHeavyAction_performed(InputAction.CallbackContext obj)
+        {
+            OnFireHeavyAction?.Invoke(this, EventArgs.Empty);
         }
 
 

@@ -60,6 +60,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "FIRE_HEAVY",
+                    "type": "Button",
+                    "id": "a22a8f52-dafe-4cb2-af83-0025e9f6ae58",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "CHANGE_MODE",
                     "type": "Button",
                     "id": "b23d090b-f1ab-4862-9282-91de46e1f1f3",
@@ -232,6 +241,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "CHANGE_MODE",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4be8407b-528d-4e70-b506-48f5252e4b4d",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "FIRE_HEAVY",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

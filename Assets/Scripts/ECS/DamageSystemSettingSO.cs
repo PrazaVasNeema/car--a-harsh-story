@@ -12,8 +12,9 @@ public class DamageSystemSettingSO : ScriptableObject
     [System.Serializable]
     public class Data
     {
-        public float spawnDecalsHPThreshold = 10;
-        public float gigaSplashHPThreshold = 100;
+        public float spawnDecalsHPThresholdLow = 10;
+        public float spawnDecalsHPThresholdHigh = 30;
+        public float gigaSplashHPThreshold = 200;
         public float gigaSplashSphereRadius = 2;
         public float gigaSplashCastDistance = 2;
         public LayerMask gigaSplashLayerMask;

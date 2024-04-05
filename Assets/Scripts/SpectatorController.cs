@@ -20,12 +20,14 @@ public class SpectatorController : PlayerActorControllerAbstract
     {
         base.Activate();
         m_spectatorActorInputManager.OnFireAction += ActorInputManager_OnFireAction;
+        m_spectatorActorInputManager.OnFireHeavyAction += ActorInputManager_OnFireHeavyAction;
     }
 
     public override void Deactivate()
     {
         base.Deactivate();
         m_spectatorActorInputManager.OnFireAction -= ActorInputManager_OnFireAction;
+        m_spectatorActorInputManager.OnFireHeavyAction -= ActorInputManager_OnFireHeavyAction;
     }
 
     protected override void Update()
@@ -46,10 +48,17 @@ public class SpectatorController : PlayerActorControllerAbstract
 
     private void ActorInputManager_OnFireAction(object sender, System.EventArgs e)
     {
-        Debug.Log($"test {gameObject.name}");
         if (m_attackManager != null)
         {
             m_attackManager.Attack();
+        }
+    }
+    
+    private void ActorInputManager_OnFireHeavyAction(object sender, System.EventArgs e)
+    {
+        if (m_attackManager != null)
+        {
+            m_attackManager.AttackAlt();
         }
     }
 }

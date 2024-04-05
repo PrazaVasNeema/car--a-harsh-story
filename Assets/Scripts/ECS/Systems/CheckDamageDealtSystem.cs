@@ -34,7 +34,7 @@ public sealed class CheckDamageDealtSystem : UpdateSystem {
                 Debug.Log($"Damage amount: {damageAmount}, name: {change.contactPoint.thisCollider.name}");
 
                 //Debug.Log($"EntityName: {change.targetEntity.GetComponent<TransformRef>().transform.name}");
-                if (damageAmount >= m_settingsData.spawnDecalsHPThreshold && change.targetEntity.Has<IsDamageDecalReceiver>())
+                if (damageAmount >= m_settingsData.spawnDecalsHPThresholdLow && change.targetEntity.Has<IsDamageDecalReceiver>())
             {
                     // List<ContactPoint> contact = new List<ContactPoint>();
                     // Debug.Log("Test1");
@@ -43,8 +43,11 @@ public sealed class CheckDamageDealtSystem : UpdateSystem {
                     //     
                     // }
                     Debug.Log($"TEST: 3");
-
-                    this.World.GetRequest<SpawnDamageDecalRequest>().Publish(new SpawnDamageDecalRequest { targetEntity = change.targetEntity, ContactPoint = change.contactPoint }, true);
+                    SpawnDamageDecalRequest.DecalDamageType damageType =
+                        damageAmount >= m_settingsData.spawnDecalsHPThresholdHigh
+                            ? SpawnDamageDecalRequest.DecalDamageType.High
+                            : SpawnDamageDecalRequest.DecalDamageType.Low;
+                    this.World.GetRequest<SpawnDamageDecalRequest>().Publish(new SpawnDamageDecalRequest { targetEntity = change.targetEntity, ContactPoint = change.contactPoint, damageType = damageType}, true);
             }
                 Debug.Log($"TEST: 4");
 

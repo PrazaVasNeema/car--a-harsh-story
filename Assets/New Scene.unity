@@ -4395,6 +4395,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: decalHighDamage1
       objectReference: {fileID: 0}
+    - target: {fileID: 1713633965622710192, guid: 271ef4daf211a2f44b17865ac71770d8, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8708747160342802384, guid: 271ef4daf211a2f44b17865ac71770d8, type: 3}
       propertyPath: m_LocalScale.x
       value: 3.482523
@@ -5801,8 +5805,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3327e6f8536bf7f48aea4f27a926145f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_launchForce: 1000
+  m_launchForceLight: 10
+  m_launchForceBig: 10
   m_bullet: {fileID: 222364515084077123, guid: 676ac1f511eb68746be4645314760486, type: 3}
+  m_biggyBoi: {fileID: 222364515084077123, guid: bcb0e4787344a394dad180f45c37ad06, type: 3}
 --- !u!4 &628119130
 Transform:
   m_ObjectHideFlags: 0
@@ -35358,7 +35364,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4693008393147467419}
   serializedVersion: 4
-  m_Mass: 3
+  m_Mass: 10
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -50696,7 +50702,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1974896044492576972}
   serializedVersion: 4
-  m_Mass: 3
+  m_Mass: 10
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -68323,7 +68329,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6840322362770410987}
   serializedVersion: 4
-  m_Mass: 3
+  m_Mass: 10
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -71973,7 +71979,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 928358660690917566}
   serializedVersion: 4
-  m_Mass: 3
+  m_Mass: 10
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}

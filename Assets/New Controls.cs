@@ -82,6 +82,15 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""FIRE_HEAVY"",
+                    ""type"": ""Button"",
+                    ""id"": ""a22a8f52-dafe-4cb2-af83-0025e9f6ae58"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""CHANGE_MODE"",
                     ""type"": ""Button"",
                     ""id"": ""b23d090b-f1ab-4862-9282-91de46e1f1f3"",
@@ -256,6 +265,17 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
                     ""action"": ""CHANGE_MODE"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4be8407b-528d-4e70-b506-48f5252e4b4d"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""FIRE_HEAVY"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -402,6 +422,7 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
         m_SPECTATOR_MOVE_UPDOWN = m_SPECTATOR.FindAction("MOVE_UPDOWN", throwIfNotFound: true);
         m_SPECTATOR_MOVE_SPEEDSLOW = m_SPECTATOR.FindAction("MOVE_SPEEDSLOW", throwIfNotFound: true);
         m_SPECTATOR_FIRE = m_SPECTATOR.FindAction("FIRE", throwIfNotFound: true);
+        m_SPECTATOR_FIRE_HEAVY = m_SPECTATOR.FindAction("FIRE_HEAVY", throwIfNotFound: true);
         m_SPECTATOR_CHANGE_MODE = m_SPECTATOR.FindAction("CHANGE_MODE", throwIfNotFound: true);
         // CAR
         m_CAR = asset.FindActionMap("CAR", throwIfNotFound: true);
@@ -476,6 +497,7 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_SPECTATOR_MOVE_UPDOWN;
     private readonly InputAction m_SPECTATOR_MOVE_SPEEDSLOW;
     private readonly InputAction m_SPECTATOR_FIRE;
+    private readonly InputAction m_SPECTATOR_FIRE_HEAVY;
     private readonly InputAction m_SPECTATOR_CHANGE_MODE;
     public struct SPECTATORActions
     {
@@ -487,6 +509,7 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
         public InputAction @MOVE_UPDOWN => m_Wrapper.m_SPECTATOR_MOVE_UPDOWN;
         public InputAction @MOVE_SPEEDSLOW => m_Wrapper.m_SPECTATOR_MOVE_SPEEDSLOW;
         public InputAction @FIRE => m_Wrapper.m_SPECTATOR_FIRE;
+        public InputAction @FIRE_HEAVY => m_Wrapper.m_SPECTATOR_FIRE_HEAVY;
         public InputAction @CHANGE_MODE => m_Wrapper.m_SPECTATOR_CHANGE_MODE;
         public InputActionMap Get() { return m_Wrapper.m_SPECTATOR; }
         public void Enable() { Get().Enable(); }
@@ -515,6 +538,9 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
             @FIRE.started += instance.OnFIRE;
             @FIRE.performed += instance.OnFIRE;
             @FIRE.canceled += instance.OnFIRE;
+            @FIRE_HEAVY.started += instance.OnFIRE_HEAVY;
+            @FIRE_HEAVY.performed += instance.OnFIRE_HEAVY;
+            @FIRE_HEAVY.canceled += instance.OnFIRE_HEAVY;
             @CHANGE_MODE.started += instance.OnCHANGE_MODE;
             @CHANGE_MODE.performed += instance.OnCHANGE_MODE;
             @CHANGE_MODE.canceled += instance.OnCHANGE_MODE;
@@ -540,6 +566,9 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
             @FIRE.started -= instance.OnFIRE;
             @FIRE.performed -= instance.OnFIRE;
             @FIRE.canceled -= instance.OnFIRE;
+            @FIRE_HEAVY.started -= instance.OnFIRE_HEAVY;
+            @FIRE_HEAVY.performed -= instance.OnFIRE_HEAVY;
+            @FIRE_HEAVY.canceled -= instance.OnFIRE_HEAVY;
             @CHANGE_MODE.started -= instance.OnCHANGE_MODE;
             @CHANGE_MODE.performed -= instance.OnCHANGE_MODE;
             @CHANGE_MODE.canceled -= instance.OnCHANGE_MODE;
@@ -638,6 +667,7 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
         void OnMOVE_UPDOWN(InputAction.CallbackContext context);
         void OnMOVE_SPEEDSLOW(InputAction.CallbackContext context);
         void OnFIRE(InputAction.CallbackContext context);
+        void OnFIRE_HEAVY(InputAction.CallbackContext context);
         void OnCHANGE_MODE(InputAction.CallbackContext context);
     }
     public interface ICARActions
