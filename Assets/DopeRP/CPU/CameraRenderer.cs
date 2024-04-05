@@ -5,7 +5,9 @@ namespace DopeRP.CPU
 {
 	public partial class CameraRenderer {
 		
-		private const string BUFFER_NAME = "RenderCamera";
+		private const string BUFFER_NAME_MAIN = "AssembleMain";
+		private const string BUFFER_NAME_TRANSPARENCY = "Transapency";
+
 
 		private readonly StencilPrepass m_stencilPrepass = new StencilPrepass();
 		
@@ -30,7 +32,8 @@ namespace DopeRP.CPU
 			if (!RAPI.Cull(customRenderPipelineAsset.shadowSettings.maxDistance)) {
 				return;
 			}
-			
+
+			RAPI.m_samplingOn = customRenderPipelineAsset.m_samplingOn;
 			RAPI.Context.SetupCameraProperties(RAPI.CurCamera);
 			RAPI.SetupCommonUniforms();
 			
@@ -39,15 +42,15 @@ namespace DopeRP.CPU
 			// if ( customRenderPipelineAsset.SSAO || customRenderPipelineAsset.decalsOn)
 			m_stencilPrepass.Render();
 				m_gBuffers.Render();
-				RAPI.DrawEmpty(customRenderPipelineAsset.EmptyMaterial);
+				// RAPI.DrawEmpty(customRenderPipelineAsset.EmptyMaterial);
 				if (customRenderPipelineAsset.decalsOn)
 				{
-					RAPI.SetKeyword("DECALS_ON", true);
+					// RAPI.SetKeyword("DECALS_ON", true);
 					m_decals.Render();
 				}
 				else
 				{
-					RAPI.SetKeyword("DECALS_ON", false);
+					// RAPI.SetKeyword("DECALS_ON", false);
 				}
 			if (customRenderPipelineAsset.SSAO)
 			{
@@ -81,25 +84,19 @@ namespace DopeRP.CPU
 				RAPI.CleanupTempRT(SProps.GBuffer.GAux_TangentWorldSpaceAtlas);
 				RAPI.CleanupTempRT(SProps.SSAO.SSAORawAtlas);
 				RAPI.CleanupTempRT(SProps.SSAO.SSAOBlurAtlas);
-				// RAPI.Context.DrawSkybox(RAPI.CurCamera);
 				RAPI.CleanupTempRT(SProps.Common.DepthBuffer);
-
 				RAPI.CleanupTempRT((SProps.GBuffer.G_AlbedoAtlas));
 				RAPI.CleanupTempRT((SProps.GBuffer.G_NormalWorldSpaceAtlas));
 				RAPI.CleanupTempRT((SProps.GBuffer.GAux_ClearNormalWorldSpaceAtlas));
 				RAPI.CleanupTempRT((SProps.GBuffer.G_SpecularAtlas));
 				RAPI.CleanupTempRT((SProps.GBuffer.G_BRDFAtlas));
-
-				RAPI.CleanupTempRT(Shader.PropertyToID("Test2"));
-
-
 				RAPI.CleanupTempRT(SProps.Common.ColorFiller);
+				
 				DrawGizmosBeforeFX();
 				if (postFXStack.IsActive)
 				{
 					postFXStack.Render(frameBufferId);
 				}
-
 				DrawGizmosAfterFX();
 				if (postFXStack.IsActive)
 				{
@@ -137,25 +134,7 @@ namespace DopeRP.CPU
 
 		void DrawVisibleGeometry (bool useDynamicBatching, bool useGPUInstancing, Material litDeferredMaterial)
 		{
-			var a = GL.GetGPUProjectionMatrix(RAPI.CurCamera.cameraToWorldMatrix, false);
-			RAPI.Buffer.SetGlobalVector(Shader.PropertyToID("_nearFarPlanes"), new Vector4(RAPI.CurCamera.nearClipPlane, RAPI.CurCamera.farClipPlane, 0, 0 ));
-
-			var m = RAPI.CurCamera.worldToCameraMatrix;
-			if (SystemInfo.usesReversedZBuffer) {
-				m.m20 = -m.m20;
-				m.m21 = -m.m21;
-				m.m22 = -m.m22;
-				m.m23 = -m.m23;
-			}
-			// RAPI.Buffer.SetGlobalMatrix(Shader.PropertyToID("adfgdgf_WorldToCameraMatrix"),  RAPI.CurCamera.worldToCameraMatrix);
-
-			// RAPI.Buffer.SetGlobalMatrix(Shader.PropertyToID("adfgdgf_CameraToWorldMatrix"),  RAPI.CurCamera.cameraToWorldMatrix);
-            
-			Matrix4x4 invProjectionMatrix = RAPI.CurCamera.projectionMatrix.inverse;
-			RAPI.Buffer.SetGlobalMatrix(Shader.PropertyToID("_INVERSE_P"), invProjectionMatrix);
 			
-			RAPI.ExecuteBuffer();
-
 			var sortingSettings = new SortingSettings(RAPI.CurCamera)
 			{
 				criteria = SortingCriteria.CommonOpaque
@@ -175,28 +154,25 @@ namespace DopeRP.CPU
 			
 			var filteringSettings = new FilteringSettings(RenderQueueRange.opaque);
 			
-			// var sortingSettings = new SortingSettings(RAPI.CurCamera)
-			// {
-			// 	criteria = SortingCriteria.CommonOpaque
-			// };
-
-			// var filteringSettings = new FilteringSettings(RenderQueueRange.opaque);
-			//
 			RAPI.Context.DrawRenderers(RAPI.CullingResults, ref drawingSettings, ref filteringSettings);
-			
-			// RAPI.Buffer.Blit(null, BuiltinRenderTextureType.CurrentActive, litDeferredMaterial, litDeferredMaterial.FindPass(SProps.CameraRenderer.LitDeferredPassName));
-
-			RAPI.Buffer.SetViewProjectionMatrices(Matrix4x4.identity, Matrix4x4.identity);
-			RAPI.Buffer.DrawMesh(RAPI.fullscreenMesh, Matrix4x4.identity, litDeferredMaterial, 0, litDeferredMaterial.FindPass(SProps.CameraRenderer.LitDeferredPassName));
-			RAPI.Buffer.SetViewProjectionMatrices(RAPI.CurCamera.worldToCameraMatrix, RAPI.CurCamera.projectionMatrix);
-			// RAPI.ExecuteBuffer();
 
 			RAPI.Context.DrawSkybox(RAPI.CurCamera);
+
+			
+			RAPI.BeginSample(BUFFER_NAME_MAIN);
+			
+			RAPI.DrawFullscreenQuad(litDeferredMaterial, litDeferredMaterial.FindPass(SProps.CameraRenderer.LitDeferredPassName));
+			RAPI.Buffer.SetViewProjectionMatrices(RAPI.CurCamera.worldToCameraMatrix, RAPI.CurCamera.projectionMatrix);
+
+			RAPI.EndSample(BUFFER_NAME_MAIN);
+
 			RAPI.ExecuteBuffer();
 			
 			RAPI.Buffer.SetRenderTarget(Shader.PropertyToID("_CameraFrameBuffer"), new RenderTargetIdentifier(SProps.Common.DepthBuffer));
 			RAPI.ExecuteBuffer();
-
+			
+			RAPI.BeginSample(BUFFER_NAME_TRANSPARENCY);
+				
 			//Draw transparent geometry
 			drawingSettings.SetShaderPassName(1, SProps.CameraRenderer.LitShaderTagId);
 
@@ -204,6 +180,8 @@ namespace DopeRP.CPU
 			drawingSettings.sortingSettings = sortingSettings;
 			filteringSettings.renderQueueRange = RenderQueueRange.transparent;
 			RAPI.Context.DrawRenderers(RAPI.CullingResults, ref drawingSettings, ref filteringSettings);
+			
+			RAPI.EndSample(BUFFER_NAME_TRANSPARENCY);
 			
 		}
 		

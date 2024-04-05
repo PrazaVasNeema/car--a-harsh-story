@@ -6,6 +6,9 @@ namespace DopeRP.CPU
 	[CreateAssetMenu(menuName = "Rendering/Custom Render Pipeline")]
 	public class CustomRenderPipelineAsset : RenderPipelineAsset
 	{
+
+		[SerializeField] public bool m_samplingOn;
+		
 		[Header("(Just so unity don't create a new material each render call)")]
 		public Material EmptyMaterial;
 		public static CustomRenderPipelineAsset instance;

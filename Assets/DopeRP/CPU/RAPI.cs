@@ -19,6 +19,8 @@ namespace DopeRP.CPU
         public static RenderTexture a;
         
         static Mesh s_FullscreenMesh = null;
+
+        public static bool m_samplingOn;
         
     
         public static void ExecuteBuffer () {
@@ -222,6 +224,10 @@ namespace DopeRP.CPU
 
         public static void BeginSample(string bufferName)
         {
+            if (!m_samplingOn)
+            {
+                return;
+            }
             Buffer.name = bufferName;
             Buffer.BeginSample(bufferName);
             ExecuteBuffer();
@@ -229,6 +235,10 @@ namespace DopeRP.CPU
 
         public static void EndSample(string bufferName)
         {
+            if (!m_samplingOn)
+            {
+                return;
+            }
             Buffer.EndSample(bufferName);
             ExecuteBuffer();
         }
