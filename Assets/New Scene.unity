@@ -5809,6 +5809,8 @@ MonoBehaviour:
   m_launchForceBig: 10
   m_bullet: {fileID: 222364515084077123, guid: 676ac1f511eb68746be4645314760486, type: 3}
   m_biggyBoi: {fileID: 222364515084077123, guid: bcb0e4787344a394dad180f45c37ad06, type: 3}
+  m_launchForceSuper: 1000
+  m_superBoi: {fileID: 222364515084077123, guid: a737fb1a1e9594347ab0bd8e8d275f8f, type: 3}
 --- !u!4 &628119130
 Transform:
   m_ObjectHideFlags: 0

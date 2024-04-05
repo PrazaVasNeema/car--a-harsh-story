@@ -69,6 +69,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "FIRE_SUPER",
+                    "type": "Button",
+                    "id": "6ecd64e5-c786-4cbb-91af-1694b694c4ff",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "CHANGE_MODE",
                     "type": "Button",
                     "id": "b23d090b-f1ab-4862-9282-91de46e1f1f3",
@@ -252,6 +261,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "FIRE_HEAVY",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f20cadd3-e239-4f67-8b77-52efac948379",
+                    "path": "<Mouse>/middleButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "FIRE_SUPER",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

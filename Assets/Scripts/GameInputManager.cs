@@ -99,6 +99,7 @@ public class GameInputManager : MonoBehaviour
         public event EventHandler OnInteractAction;
         public event EventHandler OnFireAction;
         public event EventHandler OnFireHeavyAction;
+        public event EventHandler OnFireSuperAction;
 
         protected const string INTERACT = "INTERACT";
         protected const string MOUSE = "MOUSE";
@@ -106,6 +107,7 @@ public class GameInputManager : MonoBehaviour
         protected const string MOVE_SPEEDSLOW = "MOVE_SPEEDSLOW";
         protected const string FIRE = "FIRE";
         protected const string FIRE_HEAVY = "FIRE_HEAVY";
+        protected const string FIRE_SUPER = "FIRE_SUPER";
 
         protected InputAction m_interactAction;
         protected InputAction m_mouseAction;
@@ -113,6 +115,7 @@ public class GameInputManager : MonoBehaviour
         protected InputAction m_moveSpeedSlowAction;
         protected InputAction m_fire;
         protected InputAction m_fireHeavy;
+        protected InputAction m_fireSuper;
 
         public SpectatorActorInputManager(string mapName, InputActionAsset inputActionAsset) : base(mapName, inputActionAsset)
         {
@@ -123,6 +126,7 @@ public class GameInputManager : MonoBehaviour
             m_moveSpeedSlowAction = m_inputActionMap.FindAction(MOVE_SPEEDSLOW);
             m_fire = m_inputActionMap.FindAction(FIRE);
             m_fireHeavy = m_inputActionMap.FindAction(FIRE_HEAVY);
+            m_fireSuper = m_inputActionMap.FindAction(FIRE_SUPER);
 
             Enable();
 
@@ -134,6 +138,7 @@ public class GameInputManager : MonoBehaviour
             m_interactAction.started += InteractAction_performed;
             m_fire.started += FireAction_performed;
             m_fireHeavy.started += FireHeavyAction_performed;
+            m_fireSuper.started += FireSuperAction_performed;
         }
 
         public override void Disable()
@@ -141,7 +146,8 @@ public class GameInputManager : MonoBehaviour
             base.Disable();
             m_interactAction.started -= InteractAction_performed;
             m_fire.started -= FireAction_performed;
-            m_fireHeavy.started += FireHeavyAction_performed;
+            m_fireHeavy.started -= FireHeavyAction_performed;
+            m_fireSuper.started -= FireSuperAction_performed;
         }
 
         public float GetMovementUpDown()
@@ -175,6 +181,11 @@ public class GameInputManager : MonoBehaviour
         private void FireHeavyAction_performed(InputAction.CallbackContext obj)
         {
             OnFireHeavyAction?.Invoke(this, EventArgs.Empty);
+        }
+        
+        private void FireSuperAction_performed(InputAction.CallbackContext obj)
+        {
+            OnFireSuperAction?.Invoke(this, EventArgs.Empty);
         }
 
 

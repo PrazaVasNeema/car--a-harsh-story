@@ -21,6 +21,7 @@ public class SpectatorController : PlayerActorControllerAbstract
         base.Activate();
         m_spectatorActorInputManager.OnFireAction += ActorInputManager_OnFireAction;
         m_spectatorActorInputManager.OnFireHeavyAction += ActorInputManager_OnFireHeavyAction;
+        m_spectatorActorInputManager.OnFireSuperAction += ActorInputManager_OnFireSuperAction;
     }
 
     public override void Deactivate()
@@ -28,6 +29,7 @@ public class SpectatorController : PlayerActorControllerAbstract
         base.Deactivate();
         m_spectatorActorInputManager.OnFireAction -= ActorInputManager_OnFireAction;
         m_spectatorActorInputManager.OnFireHeavyAction -= ActorInputManager_OnFireHeavyAction;
+        m_spectatorActorInputManager.OnFireSuperAction -= ActorInputManager_OnFireSuperAction;
     }
 
     protected override void Update()
@@ -59,6 +61,14 @@ public class SpectatorController : PlayerActorControllerAbstract
         if (m_attackManager != null)
         {
             m_attackManager.AttackAlt();
+        }
+    }
+    
+    private void ActorInputManager_OnFireSuperAction(object sender, System.EventArgs e)
+    {
+        if (m_attackManager != null)
+        {
+            m_attackManager.AttackSuper();
         }
     }
 }
