@@ -21,5 +21,11 @@ MonoBehaviour:
       serializedVersion: 2
       m_Bits: 64
     impactForceModifier: 1
-    decalPrefabs:
-    - {fileID: 1713633965622710192, guid: 68d9e64ea9e1b4744bef390a6671b41b, type: 3}
+    decalLowDamagePrefabs:
+    - {fileID: 1713633965622710192, guid: 4c9440de6f61f934e95dcf5804c3daa7, type: 3}
+    - {fileID: 1713633965622710192, guid: 2b999e7220a7d6f4c969f0b5010d462f, type: 3}
+    - {fileID: 1713633965622710192, guid: 3ffd639a45fad944fb306c1f4e483906, type: 3}
+    decalHighDamagePrefabs:
+    - {fileID: 1713633965622710192, guid: 271ef4daf211a2f44b17865ac71770d8, type: 3}
+    - {fileID: 1713633965622710192, guid: f4c141a44e9b2f241908d36069d61054, type: 3}
+    - {fileID: 1713633965622710192, guid: de18f4a0acc17ed4c98f8f6345ab48b0, type: 3}

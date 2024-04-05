@@ -21,6 +21,8 @@ public sealed class CheckDamageDealtSystem : UpdateSystem {
         {
         foreach (var change in changes)
         {
+            if(change.targetEntity.IsDisposed())
+                continue;
                 Debug.Log($"TEST: 1");
                 // Debug.Log($"damage amount before test name: {change.collision.GetContact(0).thisCollider.name}, point: {change.collision.contactCount}");
             // Debug.Log($"Damage amount IN name: {change.name}, contactCount: {change.collision.contactCount}");

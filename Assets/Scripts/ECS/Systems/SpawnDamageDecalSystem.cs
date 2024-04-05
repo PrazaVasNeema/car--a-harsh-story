@@ -23,8 +23,9 @@ public sealed class SpawnDamageDecalSystem : UpdateSystem {
         foreach (var spawnDecalRequest in spawnDecalRequest.Consume())
         {
             Debug.Log("Test2");
-            Debug.Log(GameData.instance.damageSystemSetting.data.decalPrefabs[0]);
+            // Debug.Log(GameData.instance.damageSystemSetting.data.decalPrefabs[0]);
             var contactPoint = spawnDecalRequest.ContactPoint;
+            
             
             
             Vector3 meshForward = spawnDecalRequest.targetEntity.GetComponent<TransformRef>().transform.forward;
@@ -41,8 +42,12 @@ public sealed class SpawnDamageDecalSystem : UpdateSystem {
             Quaternion a = Quaternion.LookRotation(-contactPoint.normal, Vector3.up); 
             Debug.Log(a);
             var targetPosition = contactPoint.point + (float).1 * contactPoint.normal;
+            DamageSystemSettingSO.Data data = GameData.instance.damageSystemSetting.data;
             targetPosition = contactPoint.point;
-            var b = Instantiate(GameData.instance.damageSystemSetting.data.decalPrefabs[0], targetPosition,
+            GameObject decalPrefab = spawnDecalRequest.damageType == SpawnDamageDecalRequest.DecalDamageType.Low
+                ? data.decalLowDamagePrefabs[Random.Range((int)0, data.decalLowDamagePrefabs.Count)]
+                : data.decalHighDamagePrefabs[Random.Range((int)0, data.decalHighDamagePrefabs.Count)];
+            var b = Instantiate(decalPrefab, targetPosition,
                 a);
             b.transform.parent =    spawnDecalRequest.targetEntity.GetComponent<TransformRef>().transform;
         }

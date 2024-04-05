@@ -231,6 +231,8 @@ float4 viewSpacePosition;
 
 				#if defined(_OPACITY_ATLAS)
 					clip(SAMPLE_TEXTURE2D(_OpacityMap, sampler_OpacityMap, texCoords).r - 0.1);
+									clip(SAMPLE_TEXTURE2D(_OpacityMap, sampler_OpacityMap, texCoords).a - 0.1);
+
 				#endif
 
 				

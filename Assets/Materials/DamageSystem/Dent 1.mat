@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: JustCrack3
+  m_Name: Dent 1
   m_Shader: {fileID: 4800000, guid: 13622ffa3b32e5f47b07272f6ebd4df4, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -15,6 +15,7 @@ Material:
   - _CLIPPING
   - _CONTRIBUTE_ALBEDO
   - _CONTRIBUTE_BRDF
+  - _CONTRIBUTE_NORMAL
   - _OPACITY_ATLAS
   m_InvalidKeywords:
   - _RECEIVE_SHADOWS
@@ -29,7 +30,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: b0d5b210ec4fc1b41b7cc170bf6e43b4, type: 3}
+        m_Texture: {fileID: 2800000, guid: e628214959d8c9c4dbb025814cf89de9, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
@@ -61,7 +62,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalMap:
-        m_Texture: {fileID: 2800000, guid: 871c0359e7c84cf40b38785a448bfcf0, type: 3}
+        m_Texture: {fileID: 2800000, guid: 770dadca86ce7f649aa7be27f9824db9, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -69,7 +70,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OpacityMap:
-        m_Texture: {fileID: 2800000, guid: b0d5b210ec4fc1b41b7cc170bf6e43b4, type: 3}
+        m_Texture: {fileID: 2800000, guid: e628214959d8c9c4dbb025814cf89de9, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
@@ -82,8 +83,8 @@ Material:
     - _Clipping: 1
     - _ContributeAlbedo: 1
     - _ContributeBRDF: 1
-    - _ContributeNormals: 0
-    - _Cutoff: 0.278
+    - _ContributeNormals: 1
+    - _Cutoff: 0.571
     - _DepthLevel: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 10

@@ -18,7 +18,8 @@ public class DamageSystemSettingSO : ScriptableObject
         public float gigaSplashCastDistance = 2;
         public LayerMask gigaSplashLayerMask;
         public float impactForceModifier;
-        public List<GameObject> decalPrefabs;
+        public List<GameObject> decalLowDamagePrefabs;
+        public List<GameObject> decalHighDamagePrefabs;
 
 
     }
