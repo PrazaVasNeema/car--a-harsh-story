@@ -14,13 +14,13 @@ CBUFFER_START(LitMain)
 
 	float4 _ScreenSize;
 
-float2 _nearFarPlanes;
-float4x4 _INVERSE_P;
-float4x4 adfgdgf_CameraToWorldMatrix;
+float2 _NearFarPlanes;
+float4x4 _Matrix_I_P;
+float4x4 _Matrix_I_V;
 
-float4x4 adfgdgf_WorldToCameraMatrix;
+float4x4 _Matrix_V;
 
-float4x4 _LensProjection;
+float4x4 _Matrix_P;
 
 CBUFFER_END
 
@@ -155,11 +155,11 @@ float4 frag(Interpolators i) : SV_TARGET
 
 	depth = lerp(UNITY_NEAR_CLIP_VALUE, 1, depth);
 
-	float sceneZ =CalcLinearZ(depth, _nearFarPlanes.x, _nearFarPlanes.y);
+	float sceneZ =CalcLinearZ(depth, _NearFarPlanes.x, _NearFarPlanes.y);
 
 	clipSpacePosition = float4((i.uv * 2.0 - 1.0) * sceneZ/depth, sceneZ, 1.0 * sceneZ/depth);
 
-	viewSpacePosition = mul(_INVERSE_P, clipSpacePosition);
+	viewSpacePosition = mul(_Matrix_I_P, clipSpacePosition);
 
 	viewSpacePosition /= viewSpacePosition.w;
 
@@ -174,10 +174,10 @@ float4 frag(Interpolators i) : SV_TARGET
 	
 	clipSpacePosition = float4(i.uv * 2 - 1, depth, 1);
 	// return float4(clipSpacePosition.xy, 0, 1);
-	viewSpacePosition = mul(Inverse(_LensProjection), clipSpacePosition);
+	viewSpacePosition = mul(Inverse(_Matrix_P), clipSpacePosition);
 	viewSpacePosition /= viewSpacePosition.w;
 	
-	surfaceData.positionWS = mul(adfgdgf_CameraToWorldMatrix, viewSpacePosition).xyz;
+	surfaceData.positionWS = mul(_Matrix_I_V, viewSpacePosition).xyz;
 	// return float4(surfaceData.positionWS,1);
 // return float4(depth.xxxx * 20);
 	surfaceData.viewDirection = normalize(_WorldSpaceCameraPos - surfaceData.positionWS);

@@ -32,7 +32,8 @@ namespace DopeRP.CPU
 			}
 			
 			RAPI.Context.SetupCameraProperties(RAPI.CurCamera);
-
+			RAPI.SetupCommonUniforms();
+			
 			RAPI.CurCamera.depthTextureMode = DepthTextureMode.None;
 
 			// if ( customRenderPipelineAsset.SSAO || customRenderPipelineAsset.decalsOn)
@@ -136,8 +137,6 @@ namespace DopeRP.CPU
 
 		void DrawVisibleGeometry (bool useDynamicBatching, bool useGPUInstancing, Material litDeferredMaterial)
 		{
-			RAPI.Buffer.SetGlobalVector(SProps.CameraRenderer.ScreenSize, new Vector4(RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight,
-				(float)1/RAPI.CurCamera.pixelWidth , (float)1/RAPI.CurCamera.pixelHeight));
 			var a = GL.GetGPUProjectionMatrix(RAPI.CurCamera.cameraToWorldMatrix, false);
 			RAPI.Buffer.SetGlobalVector(Shader.PropertyToID("_nearFarPlanes"), new Vector4(RAPI.CurCamera.nearClipPlane, RAPI.CurCamera.farClipPlane, 0, 0 ));
 

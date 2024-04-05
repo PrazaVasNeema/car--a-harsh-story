@@ -46,7 +46,6 @@ namespace DopeRP.CPU
             RAPI.Buffer.SetGlobalMatrix(Shader.PropertyToID("_INVERSE_P"), invProjectionMatrix);
             Matrix4x4 projectionMatrix = RAPI.CurCamera.projectionMatrix;
             projectionMatrix = GL.GetGPUProjectionMatrix(projectionMatrix, false);
-            RAPI.Buffer.SetGlobalMatrix(SProps.SSAO.LensProjection, projectionMatrix);
             // RAPI.Buffer.ClearRenderTarget(true, true, Color.clear);
             RAPI.ExecuteBuffer();
 

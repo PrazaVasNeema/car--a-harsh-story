@@ -96,10 +96,10 @@ Shader "DopeRP/Shaders/Decals"
 			
 				float4 _ScreenSize;
 			
-				float2 _nearFarPlanes;
-				float4x4 _INVERSE_P;
+				float2 _NearFarPlanes;
+				float4x4 _Matrix_I_P;
 			
-			    float4x4 _LensProjection;
+			    float4x4 _Matrix_P;
 			
 			CBUFFER_END
 
@@ -191,16 +191,16 @@ float4 viewSpacePosition;
 				#if !UNITY_REVERSED_Z
 					depth = lerp(UNITY_NEAR_CLIP_VALUE, 1, depth);
 
-				float sceneZ =CalcLinearZ(depth, _nearFarPlanes.x, _nearFarPlanes.y);
+				float sceneZ =CalcLinearZ(depth, _NearFarPlanes.x, _NearFarPlanes.y);
 				clipSpacePosition = float4((uv * 2.0 - 1.0) * sceneZ/depth, sceneZ, 1.0 * sceneZ/depth);
-				viewSpacePosition = mul(_INVERSE_P, clipSpacePosition);
+				viewSpacePosition = mul(_Matrix_I_P, clipSpacePosition);
 								viewSpacePosition /= viewSpacePosition.w;
 
 				#else
 
 				 clipSpacePosition = float4(uv * 2 - 1, depth, 1);
     // return float4(clipSpacePosition.xy, 0, 1);
-    viewSpacePosition = mul(Inverse(_LensProjection), clipSpacePosition);
+    viewSpacePosition = mul(Inverse(_Matrix_P), clipSpacePosition);
     viewSpacePosition /= viewSpacePosition.w;
 				
 				#endif

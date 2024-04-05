@@ -8,7 +8,7 @@ namespace DopeRP.CPU
     public static class RAPI
     {
         private const string BUFFER_NAME = "DefaultBufferName";
-        static Mesh s_FullscreenTriangle;
+        static Mesh s_FullscreenTriangle = null;
         public static CommandBuffer Buffer { get;  set; } = new CommandBuffer {
             name = BUFFER_NAME
         };
@@ -19,6 +19,7 @@ namespace DopeRP.CPU
         public static RenderTexture a;
         
         static Mesh s_FullscreenMesh = null;
+        
     
         public static void ExecuteBuffer () {
             Context.ExecuteCommandBuffer(Buffer);
@@ -142,6 +143,37 @@ namespace DopeRP.CPU
             
             
         }
+        
+        public static Mesh fullscreenTrig
+        {
+            
+            get
+            {
+                if (s_FullscreenTriangle != null)
+                    return s_FullscreenTriangle;
+
+                s_FullscreenTriangle = new Mesh { name = "Fullscreen Triangle" };
+                s_FullscreenTriangle.SetVertices(new List<Vector3>
+                {
+                    new Vector3(-1f, -1f, 0f),  // Bottom-left
+                    new Vector3(3f, -1f, 0f),   // Far right
+                    new Vector3(-1f, 3f, 0f)    // Far top
+                });
+
+                // Even though we're drawing a triangle, UVs can still be useful for certain shaders.
+                s_FullscreenTriangle.SetUVs(0, new List<Vector2>
+                {
+                    new Vector2(0f, 0f),
+                    new Vector2(2f, 0f),
+                    new Vector2(0f, 2f)
+                });
+
+                s_FullscreenTriangle.SetIndices(new[] { 0, 1, 2 }, MeshTopology.Triangles, 0);
+                s_FullscreenTriangle.UploadMeshData(true);
+
+                return s_FullscreenTriangle;
+            }
+        }
         public static void DrawEmpty(Material emptyMat)
         {
             RAPI.Buffer.SetRenderTarget(BuiltinRenderTextureType.None, BuiltinRenderTextureType.None);
@@ -153,47 +185,42 @@ namespace DopeRP.CPU
             RAPI.ExecuteBuffer();
 
         }
+
+        public static void SetupCommonUniforms()
+        {
+            Matrix4x4 projectionMatrix = CurCamera.projectionMatrix;
+            projectionMatrix = GL.GetGPUProjectionMatrix(projectionMatrix, false);
+            Buffer.SetGlobalMatrix(SProps.Common.Matrix_P, projectionMatrix);
+            Buffer.SetGlobalMatrix(SProps.Common.Matrix_I_P, Matrix4x4.Inverse(projectionMatrix));
+
+            Buffer.SetGlobalMatrix(SProps.Common.Matrix_V,  RAPI.CurCamera.worldToCameraMatrix);
+            Buffer.SetGlobalMatrix(SProps.Common.Matrix_I_V,  RAPI.CurCamera.cameraToWorldMatrix);
+            
+            var camPos = CurCamera.transform.position;
+            Buffer.SetGlobalVector(SProps.Common.WorldSpaceCameraPos, new Vector4(camPos.x, camPos.y, camPos.z, 0 ));
+            Buffer.SetGlobalVector(SProps.Common.NearFarPlanes, new Vector4(CurCamera.nearClipPlane, CurCamera.farClipPlane, 0, 0 ));
+
+            var pixelWidth = CurCamera.pixelWidth;
+            var pixelHeight = CurCamera.pixelHeight;
+            RAPI.Buffer.SetGlobalVector(SProps.Common.ScreenSize, new Vector4(pixelWidth, pixelHeight, 1f/(float)pixelWidth, 1f/pixelHeight));
+
+            
+        }
+
+        public static void DrawFullscreenQuad(Material material, string passName)
+        {
+            Buffer.SetViewProjectionMatrices(Matrix4x4.identity, Matrix4x4.identity);
+            Buffer.DrawMesh(fullscreenMesh, Matrix4x4.identity, material, 0, material.FindPass(passName));
+            // RAPI.Buffer.SetViewProjectionMatrices(RAPI.CurCamera.worldToCameraMatrix, RAPI.CurCamera.projectionMatrix);
+        }
         
-        public static Vector3 WorldToLocal(Vector3 aCamPos, Quaternion aCamRot, Vector3 aPos)
+        public static void DrawFullscreenQuad(Material material, int passNum)
         {
-            return Quaternion.Inverse(aCamRot) * (aPos - aCamPos);
+            Buffer.SetViewProjectionMatrices(Matrix4x4.identity, Matrix4x4.identity);
+            Buffer.DrawMesh(fullscreenMesh, Matrix4x4.identity, material, 0, passNum);
         }
-        public static Vector3 Project(Vector3 aPos, float aFov, float aAspect)
-        {
-            float f = 1f / Mathf.Tan(aFov * Mathf.Deg2Rad * 0.5f);
-            f /= aPos.z;
-            aPos.x *= f / aAspect;
-            aPos.y *= f;
-            return aPos;
-        }
-        public static Vector3 ClipSpaceToViewport(Vector3 aPos)
-        {
-            aPos.x = aPos.x * 0.5f + 0.5f;
-            aPos.y = aPos.y * 0.5f + 0.5f;
-            return aPos;
-        }
- 
-        public static Vector3 WorldToViewport(Vector3 aCamPos, Quaternion aCamRot, float aFov, float aAspect, Vector3 aPos)
-        {
-            Vector3 p = WorldToLocal(aCamPos, aCamRot, aPos);
-            p = Project(p, aFov, aAspect);
-            return ClipSpaceToViewport(p);
-        }
- 
-        public static Vector3 WorldToScreenPos(Vector3 aCamPos, Quaternion aCamRot, float aFov, float aScrWidth, float aScrHeight, Vector3 aPos)
-        {
-            Vector3 p = WorldToViewport(aCamPos, aCamRot, aFov, aScrWidth / aScrHeight, aPos);
-            p.x *= aScrWidth;
-            p.y *= aScrHeight;
-            return p;
-        }
- 
-        public static Vector3 WorldToGUIPos(Vector3 aCamPos, Quaternion aCamRot, float aFov, float aScrWidth, float aScrHeight, Vector3 aPos)
-        {
-            Vector3 p = WorldToScreenPos(aCamPos, aCamRot, aFov, aScrWidth, aScrHeight, aPos);
-            p.y = aScrHeight - p.y;
-            return p;
-        }
+        
+        
 
     }
 }

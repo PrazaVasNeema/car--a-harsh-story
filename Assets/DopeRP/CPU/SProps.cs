@@ -6,6 +6,22 @@ namespace DopeRP.CPU
     public static class SProps
     {
         
+        public static class Common
+        {
+            
+            public static int ScreenSize = Shader.PropertyToID("_ScreenSize");
+            public static int Matrix_P = Shader.PropertyToID("_Matrix_P");
+            public static int Matrix_I_P = Shader.PropertyToID("_Matrix_I_P");
+            public static int Matrix_V = Shader.PropertyToID("_Matrix_V");
+            public static int Matrix_I_V = Shader.PropertyToID("_Matrix_I_V");
+            public static int WorldSpaceCameraPos = Shader.PropertyToID("_WorldSpaceCameraPos");
+            public static int NearFarPlanes = Shader.PropertyToID("_NearFarPlanes");
+
+
+
+            
+        }
+        
         public static class CameraRenderer
         {
             
@@ -15,7 +31,6 @@ namespace DopeRP.CPU
             public static string LitDeferredPassName = "LitDeferred";
 
             
-            public static int ScreenSize = Shader.PropertyToID("_ScreenSize");
             
         }
         
@@ -69,8 +84,7 @@ namespace DopeRP.CPU
             public static int SSAORawAtlas = Shader.PropertyToID("_SSAORawAtlas");
             public static int SSAOBlurAtlas = Shader.PropertyToID("_SSAOBlurAtlas");
             
-            public static int ScreenSize = Shader.PropertyToID("_ScreenSize");
-            public static int LensProjection = Shader.PropertyToID("_LensProjection");
+
             public static int NoiseScale = Shader.PropertyToID("_NoiseScale");
 
         }
