@@ -8,7 +8,7 @@ namespace DopeRP.CPU
 		private const string BUFFER_NAME = "Lighting";
 
 		private const int MAX_DIR_LIGHT_COUNT = 1;
-		private const int MAX_OTHER_LIGHT_COUNT = 20;
+		private const int MAX_OTHER_LIGHT_COUNT = 40;
 		
 
 		// Dir light
@@ -111,20 +111,12 @@ namespace DopeRP.CPU
 				
 			}
 			
-			int otherLightCountDiv5 = (otherLightCount - 1) / 5;
+			int otherLightCountDiv10 = (otherLightCount - 1) / 10;
 
-			for (int i = 0; i <= (MAX_OTHER_LIGHT_COUNT - 1) / 5; i++)
+			for (int i = 0; i <= (MAX_OTHER_LIGHT_COUNT - 1) / 10; i++)
 			{
-				string keyword = SProps.LightingMain.OtherLightnCountKeyword_base + (i+1) * 5;
-				if (otherLightCount != 0 && i == otherLightCountDiv5)
-				{
-
-					RAPI.SetKeyword(keyword, true);
-				}
-				else
-				{
-					RAPI.SetKeyword(keyword, false);
-				}
+				string keyword = SProps.LightingMain.OtherLightnCountKeyword_base + (i+1) * 10;
+				RAPI.SetKeyword(keyword, i == otherLightCountDiv10);
 			}
 		}
 

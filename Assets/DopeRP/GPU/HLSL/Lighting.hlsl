@@ -6,8 +6,17 @@
 #include "Assets/DopeRP/GPU/HLSL/BRDF.hlsl"
 #include "Assets/DopeRP/GPU/HLSL/Shadows.hlsl"
 
-#define MAX_OTHER_LIGHT_COUNT 20
+#define MAX_OTHER_LIGHT_COUNT 40
 
+#if defined(_OTHER_LIGHT_COUNT_40)
+	#define _OTHER_LIGHT_COUNT 40
+#elif defined(_OTHER_LIGHT_COUNT_30)
+	#define _OTHER_LIGHT_COUNT 30
+#elif  defined(_OTHER_LIGHT_COUNT_20)
+	#define _OTHER_LIGHT_COUNT 20
+#elif defined(_OTHER_LIGHT_COUNT_10)
+	#define _OTHER_LIGHT_COUNT 10
+#endif
 
 CBUFFER_START(_LightingMain)
 
@@ -140,83 +149,93 @@ float3 GetLighting(SurfaceData surfaceData)
 	// color = 1;
 	// #endif	
 
-
-	#if defined(_OTHER_LIGHT_COUNT_20) || defined(_OTHER_LIGHT_COUNT_15) || defined(_OTHER_LIGHT_COUNT_10) || defined(_OTHER_LIGHT_COUNT_5)
+	#if defined(_OTHER_LIGHT_COUNT)
 	
-	light = GetOtherLight(0, surfaceData);
-	color += GetLighting(surfaceData, light);
-
-	light = GetOtherLight(1, surfaceData);
-	color += GetLighting(surfaceData, light);
-
-	light = GetOtherLight(2, surfaceData);
-	color += GetLighting(surfaceData, light);
-
-	light = GetOtherLight(3, surfaceData);
-	color += GetLighting(surfaceData, light);
-
-	light = GetOtherLight(4, surfaceData);
-	color += GetLighting(surfaceData, light);
-
-	#endif
+	UNITY_UNROLL
+	for (int i = 0; i < _OTHER_LIGHT_COUNT; ++i)
+	{
+		light = GetOtherLight(i, surfaceData);
+		color += GetLighting(surfaceData, light);
+	}
 	
-
-	#if defined(_OTHER_LIGHT_COUNT_20) || defined(_OTHER_LIGHT_COUNT_15) || defined(_OTHER_LIGHT_COUNT_10)
-	
-	light = GetOtherLight(5, surfaceData);
-	color += GetLighting(surfaceData, light);
-
-	light = GetOtherLight(6, surfaceData);
-	color += GetLighting(surfaceData, light);
-
-	light = GetOtherLight(7, surfaceData);
-	color += GetLighting(surfaceData, light);
-
-	light = GetOtherLight(8, surfaceData);
-	color += GetLighting(surfaceData, light);
-
-	light = GetOtherLight(9, surfaceData);
-	color += GetLighting(surfaceData, light);
-
 	#endif
-
-	#if defined(_OTHER_LIGHT_COUNT_20) || defined(_OTHER_LIGHT_COUNT_15)
-
-	light = GetOtherLight(10, surfaceData);
-	color += GetLighting(surfaceData, light);
-
-	light = GetOtherLight(11, surfaceData);
-	color += GetLighting(surfaceData, light);
-
-	light = GetOtherLight(12, surfaceData);
-	color += GetLighting(surfaceData, light);
-
-	light = GetOtherLight(13, surfaceData);
-	color += GetLighting(surfaceData, light);
-
-	light = GetOtherLight(14, surfaceData);
-	color += GetLighting(surfaceData, light);
-
-	#endif
-
-	#if defined(_OTHER_LIGHT_COUNT_20)
-
-	light = GetOtherLight(15, surfaceData);
-	color += GetLighting(surfaceData, light);
-
-	light = GetOtherLight(16, surfaceData);
-	color += GetLighting(surfaceData, light);
-
-	light = GetOtherLight(17, surfaceData);
-	color += GetLighting(surfaceData, light);
-
-	light = GetOtherLight(18, surfaceData);
-	color += GetLighting(surfaceData, light);
-
-	light = GetOtherLight(19, surfaceData);
-	color += GetLighting(surfaceData, light);
-
-	#endif
+	//
+	// #if defined(_OTHER_LIGHT_COUNT_20) || defined(_OTHER_LIGHT_COUNT_15) || defined(_OTHER_LIGHT_COUNT_10) || defined(_OTHER_LIGHT_COUNT_5)
+	//
+	// light = GetOtherLight(0, surfaceData);
+	// color += GetLighting(surfaceData, light);
+	//
+	// light = GetOtherLight(1, surfaceData);
+	// color += GetLighting(surfaceData, light);
+	//
+	// light = GetOtherLight(2, surfaceData);
+	// color += GetLighting(surfaceData, light);
+	//
+	// light = GetOtherLight(3, surfaceData);
+	// color += GetLighting(surfaceData, light);
+	//
+	// light = GetOtherLight(4, surfaceData);
+	// color += GetLighting(surfaceData, light);
+	//
+	// #endif
+	//
+	//
+	// #if defined(_OTHER_LIGHT_COUNT_20) || defined(_OTHER_LIGHT_COUNT_15) || defined(_OTHER_LIGHT_COUNT_10)
+	//
+	// light = GetOtherLight(5, surfaceData);
+	// color += GetLighting(surfaceData, light);
+	//
+	// light = GetOtherLight(6, surfaceData);
+	// color += GetLighting(surfaceData, light);
+	//
+	// light = GetOtherLight(7, surfaceData);
+	// color += GetLighting(surfaceData, light);
+	//
+	// light = GetOtherLight(8, surfaceData);
+	// color += GetLighting(surfaceData, light);
+	//
+	// light = GetOtherLight(9, surfaceData);
+	// color += GetLighting(surfaceData, light);
+	//
+	// #endif
+	//
+	// #if defined(_OTHER_LIGHT_COUNT_20) || defined(_OTHER_LIGHT_COUNT_15)
+	//
+	// light = GetOtherLight(10, surfaceData);
+	// color += GetLighting(surfaceData, light);
+	//
+	// light = GetOtherLight(11, surfaceData);
+	// color += GetLighting(surfaceData, light);
+	//
+	// light = GetOtherLight(12, surfaceData);
+	// color += GetLighting(surfaceData, light);
+	//
+	// light = GetOtherLight(13, surfaceData);
+	// color += GetLighting(surfaceData, light);
+	//
+	// light = GetOtherLight(14, surfaceData);
+	// color += GetLighting(surfaceData, light);
+	//
+	// #endif
+	//
+	// #if defined(_OTHER_LIGHT_COUNT_20)
+	//
+	// light = GetOtherLight(15, surfaceData);
+	// color += GetLighting(surfaceData, light);
+	//
+	// light = GetOtherLight(16, surfaceData);
+	// color += GetLighting(surfaceData, light);
+	//
+	// light = GetOtherLight(17, surfaceData);
+	// color += GetLighting(surfaceData, light);
+	//
+	// light = GetOtherLight(18, surfaceData);
+	// color += GetLighting(surfaceData, light);
+	//
+	// light = GetOtherLight(19, surfaceData);
+	// color += GetLighting(surfaceData, light);
+	//
+	// #endif
 
 	
 	return color;

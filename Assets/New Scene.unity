@@ -6571,8 +6571,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 695818173}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.026580872, y: -0.29065433, z: -0.0083944285, w: 0.95642203}
-  m_LocalPosition: {x: 169.671, y: -34.3727, z: -69.620544}
+  m_LocalRotation: {x: 0.2113957, y: 0.34589037, z: -0.08029687, w: 0.9106175}
+  m_LocalPosition: {x: 145.32272, y: -56.88, z: -59.673386}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -6615,7 +6615,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 695818173}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 72ece51f2901e7445ab60da3685d6b5f, type: 3}
   m_Name: 
@@ -68278,7 +68278,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serializedData:
     HPThreshold: 500
-    minAngle: -10
+    minAngle: 0
     maxAngle: 70
     bounciness: 0
     bounceMinVelocity: 5

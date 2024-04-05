@@ -68,8 +68,8 @@ Shader "DopeRP/Shaders/Lit"
 			#pragma multi_compile_instancing
 			
 			#pragma multi_compile _ _DIR_LIGHT_ON
-			#pragma multi_compile _ _OTHER_LIGHT_COUNT_20 _OTHER_LIGHT_COUNT_15 _OTHER_LIGHT_COUNT_10 _OTHER_LIGHT_COUNT_5
-			
+			#pragma multi_compile _ _OTHER_LIGHT_COUNT_40 _OTHER_LIGHT_COUNT_30 _OTHER_LIGHT_COUNT_20 _OTHER_LIGHT_COUNT_10
+
 			#pragma multi_compile _ SHADOWS_ON
 			#pragma multi_compile _ _DIRECTIONAL_PCF_NONE _DIRECTIONAL_PCF2x2 _DIRECTIONAL_PCF4x4 _DIRECTIONAL_PCF6x6 _DIRECTIONAL_PCF8x8
 			#pragma multi_compile _ CASCADE_COUNT_2 CASCADE_COUNT_4
