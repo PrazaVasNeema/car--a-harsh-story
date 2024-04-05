@@ -123,7 +123,6 @@ struct Interpolators
 {
     float4 positionSV : SV_POSITION;
     float2 uv : TEXCOORD0;
-    float3 camRelativeWorldPos : TEXCOORD1;
 
     UNITY_VERTEX_INPUT_INSTANCE_ID
 };
@@ -137,199 +136,47 @@ Interpolators vert (MeshData i)
 
     o.uv = i.uv;
     o.positionSV = TransformObjectToHClip(i.position);
-    o.camRelativeWorldPos = mul(unity_ObjectToWorld, float4(i.position.xyz, 1.0)).xyz - _WorldSpaceCameraPos;
+    
     return o;
 }
 
-// This function reconstructs the view space position from the depth value
-float3 ReconstructViewSpacePosition(float2 uv, float depth)
-{
-    // Convert UV and depth into a homogeneous clip space position
-    float4 clipSpacePosition = float4(uv, depth, 1.0);
-    // Transform clip space position back to view space
-    // float4 viewSpacePosition = mul(clipSpacePosition, _LensProjection);
-    // Perspective division
-    // viewSpacePosition /= viewSpacePosition.w;
-    // return viewSpacePosition.xyz;
-    return clipSpacePosition.xyz;
-}
-
-// Linearizes a Z buffer value
-
-
-// this is supposed to get the world position from the depth buffer
-float3 WorldPosFromDepth(float depth, float2 TexCoord) {
-    float z = depth -1000000;
-
-    float4 clipSpacePosition = float4(TexCoord * 2.0 - 1.0, z, 1.0);
-
-    // return clipSpacePosition;
-    float4 viewSpacePosition = mul(_Matrix_I_P, clipSpacePosition);
-    viewSpacePosition.z = viewSpacePosition.z;
-    // Perspective division
-    viewSpacePosition /= viewSpacePosition.w;
-    // return viewSpacePosition.xyz;
-    
-    float4 worldSpacePosition = mul(_Matrix_I_V, viewSpacePosition);
-    
-    return worldSpacePosition.xyz;
-}
-
-float OrthographicDepthBufferToLinear (float rawDepth) {
-    #if UNITY_REVERSED_Z
-    rawDepth = 1.0 - rawDepth;
-    #endif
-    return (_ProjectionParams.z - _ProjectionParams.y) * rawDepth + _ProjectionParams.y;
-}
 
 float4 frag (Interpolators i) : SV_Target
 {
     UNITY_SETUP_INSTANCE_ID(i);
-
-    // return normalVSNOT;
-    // return mul(adfgdgf_CameraToWorldMatrix, fragPositionVS);
-    // return float4(TransformViewToWorld(fragPositionVS), 1);
-// return fragPositionVS;
+    
     float depth = SAMPLE_TEXTURE2D(_DepthBuffer, sampler_DepthBuffer, i.uv).r;
     
-    // depth = 1-depth;
-    float sceneZ = 1;
-
     float n = _NearFarPlanes.x;
     float f = _NearFarPlanes.y;
-    // depth = 1-depth;
-
     float4 clipSpacePosition;
     float4 viewSpacePosition;
+    
     #if !UNITY_REVERSED_Z
         depth = lerp(UNITY_NEAR_CLIP_VALUE, 1, depth);
     
-    sceneZ = CalcLinearZ(depth, n, f);
-
-    sceneZ =CalcLinearZ(depth, n, f);
-
-
-
-
-    clipSpacePosition = float4((i.uv.xy * 2.0 - 1.0) * sceneZ/depth, sceneZ, 1.0 * sceneZ/depth);
-
-    viewSpacePosition = mul(_Matrix_I_P, clipSpacePosition);
-
-    viewSpacePosition /= viewSpacePosition.w;
+        float sceneZ  = CalcLinearZ(depth, n, f);
+        clipSpacePosition = float4((i.uv.xy * 2.0 - 1.0) * sceneZ/depth, sceneZ, 1.0 * sceneZ/depth);
+        viewSpacePosition = mul(_Matrix_I_P, clipSpacePosition);
+        viewSpacePosition /= viewSpacePosition.w;
 
     #else
 
-    clipSpacePosition = float4(i.uv * 2 - 1, depth, 1);
-    // return float4(clipSpacePosition.xy, 0, 1);
-    viewSpacePosition = mul(Inverse(_Matrix_P), clipSpacePosition);
-    viewSpacePosition /= viewSpacePosition.w;
+        clipSpacePosition = float4(i.uv * 2 - 1, depth, 1);
+        viewSpacePosition = mul(Inverse(_Matrix_P), clipSpacePosition);
+        viewSpacePosition /= viewSpacePosition.w;
     
     #endif
 
-    // return 1-depth;
-
-    // zBufferParam = { (f-n)/n, 1, (f-n)/n*f, 1/f }
-
-    
-    float4 zBufferParam = float4((f-n)/n, 1, (f-n)/n*f, 1/f);
-
-    sceneZ =CalcLinearZ(depth, n, f);
-
-    sceneZ = OrthographicDepthBufferToLinear(depth);
-// depth = 2.0 * depth - 1.0;
-
-    // return float4(depth.xxx,0);
-    // return float4(i.uv * 2.0 - 1.0, 0,1);
-
-    float2 clipUV = i.uv;
-    // if (_ProjectionParams.x < 0.0) {
-    //     clipUV.y = 1.0 - clipUV.y;
-    // }
-
-    // depth = depth *2 - 1;
-    // return depth;
-   
-    // return viewSpacePosition;
-    // viewSpacePosition = ViewSpaceFromDepth(clipUV, depth, Inverse(_LensProjection));
-
-    // return viewSpacePosition;
-    // return depth;
-    // return viewSpacePosition;
-    
-    // return clipSpacePosition;
-
-    
-    // return viewSpacePosition;
-
-    // viewSpacePosition /= viewSpacePosition.w;
-
-    // float4 viewSpacePosition = ViewSpaceFromDepth(depth, i.uv, n, f, _INVERSE_P);
-    
-    float4 worldSpacePosition = mul(_Matrix_I_V, viewSpacePosition);
-
-    // return worldSpacePosition;
-    // return clipSpacePosition;
-
-    // return float4(i.uv+0.5, 0 , 1);
-
-    // return worldSpacePosition;
-
-    worldSpacePosition = SAMPLE_TEXTURE2D(_G_NormalWorldSpaceAtlas, sampler_G_NormalWorldSpaceAtlas, i.uv);
-
-
-    // return float4(i.uv * 2.0 - 1.0, 0,1);
-    
-    // return worldSpacePosition;
-
-    // return clipSpacePosition;
-
-
-    // return float4(clipSpacePosition.xyz,1);
-
-    float3 viewPlane = i.camRelativeWorldPos.xyz / dot(i.camRelativeWorldPos.xyz, _Matrix_V._m20_m21_m22);
-
-    float3 worldPos = viewPlane * sceneZ + _WorldSpaceCameraPos;
-    worldPos = mul(_Matrix_I_V, float4(worldPos, 1.0));
-
-    float4 col = 0;
-    col.rgb = saturate(2.0 - abs(frac(worldPos) * 2.0 - 1.0) * 100.0);
-
-    float3 wp2 = ComputeWorldSpacePosition(i.uv, depth, mul(Inverse(GetViewToHClipMatrix()), UNITY_MATRIX_I_V));
-
-    // return mul(UNITY_MATRIX_I_V, fragPositionVS);
-
-    // return float4(wp2, 1);
-    
-    // return col;
-    // return float4(worldPos, 1);
-
-    float3 ab = WorldPosFromDepth(depth, i.uv);
-
-    // return float4(ab, 1);
-
-
-    float3 testReconstruct = ReconstructViewSpacePosition(i.uv, depth);
-    // return float4(testReconstruct,1);
-    // return float4(depth.xxx, 1);
-
-    // float4 fragPositionVS = SAMPLE_TEXTURE2D(_PositionViewSpace, sampler_PositionViewSpace, i.uv);
-// return fragPositionVS;
     float4 fragPositionVS = viewSpacePosition;
-// return fragPositionVS;  
-    // clip(fragPositionVS.a);
 
     float3 normalWS = normalize(SAMPLE_TEXTURE2D(_G_NormalWorldSpaceAtlas, sampler_G_NormalWorldSpaceAtlas, i.uv).xyz);
-
     float3 normalVS = mul((real3x3)_Matrix_V, normalWS);
-
-    // return float4(normalVS, 1);
 
     float2 noiseUV = float2(float(100)/float(_NoiseScale.x),
                     float(100)/float(_NoiseScale.y))
-                    * clipUV * 1;
+                    * i.uv * 1;
     float3 randomVec = float3(normalize(SAMPLE_TEXTURE2D(_NoiseTexture, sampler_NoiseTexture, i.uv * _NoiseScale) * 2 - 1).xy,0);
-    
-    // return float4(normalVS, 1);
     
     float3 tangent = normalize(randomVec - normalVS * dot(randomVec, normalVS));
     float3 binormal = cross(normalVS, tangent);
@@ -340,32 +187,19 @@ float4 frag (Interpolators i) : SV_Target
     UNITY_UNROLL
     for (int j = HALF_ZERO; j < SAMPLES_COUNT; j++)
     {
+        
         float3 samplePositionVS = mul(tbn, samples[j]);
         samplePositionVS = fragPositionVS + samplePositionVS * _SampleRadius ;
-        // samplePositionVS = fragPositionVS +  mul(tbn, float3(0.05,0.05,0.1));
 
         float4 offsetUV = mul(_Matrix_P, samplePositionVS);
-        // return float4(offsetUV);
-
         offsetUV.xyz /= offsetUV.w;
         offsetUV.xy = offsetUV.xy * 0.5 + 0.5;
-
-        // return float4(i.uv, 0, 1);
-
-        // if (_ProjectionParams.x < 0.0) {
-        //     offsetUV.y = 1.0 - offsetUV.y;
-        // }
-
-        // return float4(offsetUV.xy, 0,1);
 
         float offsetPositionDEPTH = SAMPLE_TEXTURE2D(_DepthBuffer, sampler_DepthBuffer, offsetUV.xy).r;
         float3 sampleNormalWS = normalize(SAMPLE_TEXTURE2D(_G_NormalWorldSpaceAtlas, sampler_G_NormalWorldSpaceAtlas, offsetUV.xy).xyz);
 
-        // return offsetPositionDEPTH.xxxx;
-        // return float4(sceneZ.xxx,1);
         if(dot(sampleNormalWS, normalWS) > 0.99)
             continue;
-
 
         float4 viewSpacePosition2;
         #if !UNITY_REVERSED_Z
@@ -373,72 +207,22 @@ float4 frag (Interpolators i) : SV_Target
 
             offsetPositionDEPTH = lerp(UNITY_NEAR_CLIP_VALUE, 1, offsetPositionDEPTH);
             sceneZ =CalcLinearZ(offsetPositionDEPTH, n, f);
-    
-            
-    
-    
             clipSpacePosition = float4((offsetUV.xy * 2.0 - 1.0) * sceneZ/offsetPositionDEPTH, sceneZ, 1.0 * sceneZ/offsetPositionDEPTH);
-    
             viewSpacePosition2 = mul(_Matrix_I_P, clipSpacePosition);
-    
             viewSpacePosition2 /= viewSpacePosition2.w;
 
         #else
 
-            clipSpacePosition = float4((offsetUV.xy * 2.0 - 1.0) * sceneZ/offsetPositionDEPTH, sceneZ, 1.0 * sceneZ/offsetPositionDEPTH);
             clipSpacePosition = float4(i.uv * 2 - 1, offsetPositionDEPTH, 1);
-    
             viewSpacePosition2 = mul(Inverse(_Matrix_P), clipSpacePosition);
-    
-            // return float4(clipSpacePosition.zzz,1);
-    
-            // return float4(samplePositionVS,1);
-    
             viewSpacePosition2 /= viewSpacePosition2.w;
         
         #endif
-        // offsetPositionDEPTH = lerp(UNITY_NEAR_CLIP_VALUE, 1, offsetPositionDEPTH);
-        // sceneZ =CalcLinearZ2(offsetPositionDEPTH, n, f);
-        // return float4(sceneZ.xxx,1);
-
-        
-        // if (_ProjectionParams.x < 0.0) {
-        //     offsetUV.y = 1.0 - offsetUV.y;
-        // }
-
-        // return float4(clipUV, 0,1);
-        
-        // return float4(offsetUV.xy, 0,1);
-
-        // return float4(i.uv, 0, 1);
-        
-
-
-        // return viewSpacePosition2;
-
-        // return viewSpacePosition2;
-        // return viewSpacePosition2;
-
-        // return fragPositionVS;
-        // return float4(samplePositionVS.xy,viewSpacePosition2.z ,1);
-        // return float4(samplePositionVS.xyz,1);
-        // return float4(fragPositionVS2.xyz,1);
-        // return float4( samplePositionVS.x - viewSpacePosition2.x, viewSpacePosition2.y   > samplePositionVS.y ,samplePositionVS.z ,1);
-
-        // return float4(viewSpacePosition2.xyz, 1);
-        // return viewSpacePosition2;
 
         float intensity = smoothstep(HALF_ZERO, HALF_ONE, _SampleRadius / abs(samplePositionVS.z - viewSpacePosition2.z));
         occlusion += when_ge(viewSpacePosition2.z, samplePositionVS.z + _Bias) * intensity;
 
-        // occlusion += when_ge(offsetPositionDEPTH , offsetUV.z + _Bias);
-        // return float4(occlusion.xxx,1);
     }
-
-
-
-
-  
     
     occlusion /= SAMPLES_COUNT;
     occlusion  = pow(occlusion, _Magnitude);
