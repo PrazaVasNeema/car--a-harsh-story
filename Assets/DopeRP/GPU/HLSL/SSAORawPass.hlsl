@@ -92,16 +92,12 @@ UNITY_INSTANCING_BUFFER_END(PerMaterialSSAO)
 CBUFFER_START(SSAORaw)
 
     float4 _ScreenSize;
-    float4x4 _Matrix_P;
     float2 _NoiseScale;
-
     float2 _NearFarPlanes;
     float4x4 _Matrix_V;
-float4x4 _Matrix_I_V;
-
-float4x4 _Matrix_I_P;
-
-float4 SAMPLES[64];
+    float4x4 _Matrix_I_V;
+    float4x4 _Matrix_P;
+    float4x4 _Matrix_I_P;
 
 CBUFFER_END
 
@@ -127,7 +123,6 @@ struct Interpolators
 {
     float4 positionSV : SV_POSITION;
     float2 uv : TEXCOORD0;
-
     float3 camRelativeWorldPos : TEXCOORD1;
 
     UNITY_VERTEX_INPUT_INSTANCE_ID
@@ -142,7 +137,6 @@ Interpolators vert (MeshData i)
 
     o.uv = i.uv;
     o.positionSV = TransformObjectToHClip(i.position);
-
     o.camRelativeWorldPos = mul(unity_ObjectToWorld, float4(i.position.xyz, 1.0)).xyz - _WorldSpaceCameraPos;
     return o;
 }
@@ -214,7 +208,6 @@ float4 frag (Interpolators i) : SV_Target
 
     sceneZ =CalcLinearZ(depth, n, f);
 
-    return 1;
 
 
 

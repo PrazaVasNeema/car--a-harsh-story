@@ -28,7 +28,6 @@ Shader "DopeRP/Shaders/Decals"
 		[Enum(Off, 0, On, 1)] _ZWrite ("Z Write", Float) = 1
 		
 		[InRange] _StencilID ("Stencil ID", Range(0, 255)) = 0
-		
 		[InRange] _StencilReadMask ("Stencil Readmask", Range(0, 255)) = 0
 
 		

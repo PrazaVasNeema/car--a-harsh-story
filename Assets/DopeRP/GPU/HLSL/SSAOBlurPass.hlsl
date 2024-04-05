@@ -41,7 +41,6 @@ Interpolators vert (MeshData i)
 float4 frag (Interpolators i) : SV_Target
 {
     
-    float2 texelSize = 1/_ScreenSize.xy;
     float result = 0;
     
     UNITY_UNROLL
@@ -50,7 +49,7 @@ float4 frag (Interpolators i) : SV_Target
         UNITY_UNROLL
         for (int y = -ITER_COUNT; y < ITER_COUNT; ++y) 
         {
-            float2 offset = float2(float(x), float(y)) * texelSize.xy;
+            float2 offset = float2(float(x), float(y)) * _ScreenSize.zw;
             result += SAMPLE_TEXTURE2D(_SSAORawAtlas, sampler_SSAORawAtlas, i.uv + offset).r;
         }
     }
