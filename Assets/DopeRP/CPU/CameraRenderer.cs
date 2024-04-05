@@ -64,38 +64,48 @@ namespace DopeRP.CPU
 			m_lighting.Setup(customRenderPipelineAsset.shadowSettings);
 			postFXStack.Setup(RAPI.Context, camera, postFXSettings, colorLUTResolution);
 			Setup();
-			
-			DrawVisibleGeometry(useDynamicBatching, useGPUInstancing, customRenderPipelineAsset.LitDeferredMaterial);
-			DrawUnsupportedShaders();
-			// DrawGizmos();
-			
-			
-			RAPI.CleanupTempRT(SProps.Shadows.DirShadowAtlasId);
-			RAPI.CleanupTempRT(SProps.GBuffer.GAux_TangentWorldSpaceAtlas);
-			RAPI.CleanupTempRT(SProps.SSAO.SSAORawAtlas);
-			RAPI.CleanupTempRT(SProps.SSAO.SSAOBlurAtlas);
-			// RAPI.Context.DrawSkybox(RAPI.CurCamera);
-			RAPI.CleanupTempRT(Shader.PropertyToID("Test"));
-			
-			RAPI.CleanupTempRT((SProps.GBuffer.G_AlbedoAtlas));
-			RAPI.CleanupTempRT((SProps.GBuffer.G_NormalWorldSpaceAtlas));
-			RAPI.CleanupTempRT((SProps.GBuffer.GAux_ClearNormalWorldSpaceAtlas));
-			RAPI.CleanupTempRT((SProps.GBuffer.G_SpecularAtlas));
-			RAPI.CleanupTempRT((SProps.GBuffer.G_BRDFAtlas));
-			
-			RAPI.CleanupTempRT(Shader.PropertyToID("Test2"));
-			
-			
-			RAPI.CleanupTempRT((Shader.PropertyToID("1")));
-			DrawGizmosBeforeFX();
-			if (postFXStack.IsActive) {
-				postFXStack.Render(frameBufferId);
-			}
 
-			DrawGizmosAfterFX();
-			if (postFXStack.IsActive) {
-				RAPI.Buffer.ReleaseTemporaryRT(frameBufferId);
+			if (RAPI.CurCamera.cameraType == CameraType.Reflection)
+			{
+				DrawVisibleGeometryRefProbes(useDynamicBatching, useGPUInstancing);
 			}
+			else
+			{
+				DrawVisibleGeometry(useDynamicBatching, useGPUInstancing,
+					customRenderPipelineAsset.LitDeferredMaterial);
+				DrawUnsupportedShaders();
+				// DrawGizmos();
+
+
+				RAPI.CleanupTempRT(SProps.GBuffer.GAux_TangentWorldSpaceAtlas);
+				RAPI.CleanupTempRT(SProps.SSAO.SSAORawAtlas);
+				RAPI.CleanupTempRT(SProps.SSAO.SSAOBlurAtlas);
+				// RAPI.Context.DrawSkybox(RAPI.CurCamera);
+				RAPI.CleanupTempRT(Shader.PropertyToID("Test"));
+
+				RAPI.CleanupTempRT((SProps.GBuffer.G_AlbedoAtlas));
+				RAPI.CleanupTempRT((SProps.GBuffer.G_NormalWorldSpaceAtlas));
+				RAPI.CleanupTempRT((SProps.GBuffer.GAux_ClearNormalWorldSpaceAtlas));
+				RAPI.CleanupTempRT((SProps.GBuffer.G_SpecularAtlas));
+				RAPI.CleanupTempRT((SProps.GBuffer.G_BRDFAtlas));
+
+				RAPI.CleanupTempRT(Shader.PropertyToID("Test2"));
+
+
+				RAPI.CleanupTempRT((Shader.PropertyToID("1")));
+				DrawGizmosBeforeFX();
+				if (postFXStack.IsActive)
+				{
+					postFXStack.Render(frameBufferId);
+				}
+
+				DrawGizmosAfterFX();
+				if (postFXStack.IsActive)
+				{
+					RAPI.Buffer.ReleaseTemporaryRT(frameBufferId);
+				}
+			}
+			RAPI.CleanupTempRT(SProps.Shadows.DirShadowAtlasId);
 
 			Submit();
 		}
@@ -196,6 +206,46 @@ namespace DopeRP.CPU
 			filteringSettings.renderQueueRange = RenderQueueRange.transparent;
 			RAPI.Context.DrawRenderers(RAPI.CullingResults, ref drawingSettings, ref filteringSettings);
 			
+		}
+		
+				
+		void DrawVisibleGeometryRefProbes (
+			bool useDynamicBatching, bool useGPUInstancing
+		) {
+
+			var sortingSettings = new SortingSettings(RAPI.CurCamera) {
+				criteria = SortingCriteria.CommonOpaque
+			};
+			var drawingSettings = new DrawingSettings(
+				SProps.CameraRenderer.UnlitShaderTagId, sortingSettings
+			) {
+				enableDynamicBatching = useDynamicBatching,
+				enableInstancing = useGPUInstancing,
+				perObjectData =
+					PerObjectData.ReflectionProbes |
+					PerObjectData.Lightmaps | PerObjectData.ShadowMask |
+					PerObjectData.LightProbe | PerObjectData.OcclusionProbe |
+					PerObjectData.LightProbeProxyVolume |
+					PerObjectData.OcclusionProbeProxyVolume
+					
+			};
+			drawingSettings.SetShaderPassName(1, SProps.CameraRenderer.LitShaderTagId);
+
+			var filteringSettings = new FilteringSettings(RenderQueueRange.opaque);
+
+			RAPI.Context.DrawRenderers(
+				RAPI.CullingResults, ref drawingSettings, ref filteringSettings
+			);
+
+			RAPI.Context.DrawSkybox(RAPI.CurCamera);
+
+			sortingSettings.criteria = SortingCriteria.CommonTransparent;
+			drawingSettings.sortingSettings = sortingSettings;
+			filteringSettings.renderQueueRange = RenderQueueRange.transparent;
+
+			RAPI.Context.DrawRenderers(
+				RAPI.CullingResults, ref drawingSettings, ref filteringSettings
+			);
 		}
 
 		void Submit () {
