@@ -9,6 +9,9 @@ UNITY_INSTANCING_BUFFER_START(LitBasePerMaterial)
     UNITY_DEFINE_INSTANCED_PROP(float4, _BaseColor)
     UNITY_DEFINE_INSTANCED_PROP(float4, _AlbedoMap_ST)
 
+    UNITY_DEFINE_INSTANCED_PROP(float4, _DetailsColor)
+    UNITY_DEFINE_INSTANCED_PROP(float4, _AlbedoDetailsMap_ST)
+
     UNITY_DEFINE_INSTANCED_PROP(float, _NormalScale)
 
     UNITY_DEFINE_INSTANCED_PROP(float, _Metallic)
@@ -21,6 +24,9 @@ UNITY_INSTANCING_BUFFER_END(LitBasePerMaterial)
 
 TEXTURE2D(_AlbedoMap);
 SAMPLER(sampler_AlbedoMap);
+
+TEXTURE2D(_AlbedoDetailsMap);
+SAMPLER(sampler_AlbedoDetailsMap);
 
 TEXTURE2D(_NormalMap);
 SAMPLER(sampler_NormalMap);
@@ -105,8 +111,40 @@ fragOutput frag(Interpolators i)
     #endif
     
     o.tangentWorldSpace = i.tangentWS;
+
+    #if defined(_ADD_COLOR)
     
-    baseColor *= UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _BaseColor);
+        baseColor += UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _BaseColor);
+
+    #else
+    
+        baseColor *= UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _BaseColor);
+
+    #endif
+
+    #if defined(_USE_DETAILS_ALBEDO_MAP)
+        // baseColor = 0;
+        float4 detailsMap_ST = UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _AlbedoDetailsMap_ST);
+        float4 detailsColor = SAMPLE_TEXTURE2D(_AlbedoDetailsMap, sampler_AlbedoDetailsMap, i.uv *  detailsMap_ST.xy + detailsMap_ST.zw);
+        float detailsCutout;
+    
+        #if defined(_R_CUTOUT)
+
+            detailsCutout = when_gt(detailsColor.r - 0.1, 0);
+
+        #else
+
+            detailsCutout = when_gt(detailsColor.a - 0.1, 0);
+    
+        #endif
+
+            detailsColor *= detailsCutout;
+            detailsColor *= UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _DetailsColor);
+            baseColor = detailsColor * detailsCutout + baseColor * not(detailsCutout);
+
+    #endif
+    
+    
     o.albedo = baseColor;
     
     float3 normal = NormalTangentToWorld(GetNormalTS(i.uv), normalize(i.normalWS), normalize(i.tangentWS));

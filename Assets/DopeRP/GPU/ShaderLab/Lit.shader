@@ -3,8 +3,15 @@ Shader "DopeRP/Shaders/Lit"
 	Properties
 	{
 		_AlbedoMap("Albedo Map", 2D) = "white" {}
+//		[Toggle(_ACT_AS_OPACITY)] _ActAsOpacity ("Act as Opacity", Float) = 0
 		_BaseColor("Color", Color) = (1.0, 1.0, 1.0, 1.0)
+		[Toggle(_ADD_COLOR)] _AddColor ("Additive Color", Float) = 0
 		
+		[Toggle(_USE_DETAILS_ALBEDO_MAP)] _UseDetails ("Use details albedo map", Float) = 0
+		_AlbedoDetailsMap("Albedo Details Map", 2D) = "white" {}
+		_DetailsColor("Details Color", Color) = (1.0, 1.0, 1.0, 1.0)
+		[Toggle(_R_CUTOUT)] _RCutout ("R Cutout for details (notalpha)", Float) = 0
+
 		[NoScaleOffset] _NormalMap("Normal Map", 2D) = "bump" {}
 		_NormalScale("Normal Scale", Range(0, 1)) = 1
 		
@@ -79,6 +86,12 @@ Shader "DopeRP/Shaders/Lit"
 			
 			#pragma shader_feature _PREMULTIPLY_ALPHA
 						#pragma shader_feature _CLIPPING
+						#pragma shader_feature _ADD_COLOR
+									// #pragma shader_feature _ACT_AS_OPACITY
+			#pragma shader_feature _USE_DETAILS_ALBEDO_MAP
+			#pragma shader_feature _R_CUTOUT
+
+
 
 			// #pragma shader_feature _RECEIVE_SHADOWS
 			#pragma vertex vert
@@ -129,7 +142,12 @@ Shader "DopeRP/Shaders/Lit"
 			#pragma target 3.5
 			#pragma multi_compile_instancing
 			#pragma shader_feature _CLIPPING
-			#pragma shader_feature _STENCIL_MASK
+			// #pragma shader_feature _STENCIL_MASK
+			#pragma shader_feature _ADD_COLOR
+			// #pragma shader_feature _ACT_AS_OPACITY
+						#pragma shader_feature _USE_DETAILS_ALBEDO_MAP
+			#pragma shader_feature _R_CUTOUT
+
 			// #pragma enable_d3d11_debug_symbols
 			#pragma vertex vert
 			#pragma fragment frag
