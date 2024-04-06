@@ -67,6 +67,8 @@ struct fragOutput
     float4 clearNormalWS : SV_Target3;
     float4 specular : SV_Target4;
     float4 BRDF : SV_Target5;
+    float4 positionWS : SV_Target6;
+
 };
 
 Interpolators vert(MeshData i)
@@ -160,6 +162,8 @@ fragOutput frag(Interpolators i)
     float3 viewDir = normalize(_WorldSpaceCameraPos - i.positionWS);
     float3 specular = SampleEnvironment(viewDir, i.normalWS);
     o.specular = float4(specular, 1);
+
+    o.positionWS = float4(i.positionWS, 1);
 
     return o;
     

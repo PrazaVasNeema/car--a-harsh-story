@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 778ad8e651f0de342a2caea668796a73, type: 3}
   m_Name: CustomRenderPipeline
   m_EditorClassIdentifier: 
-  samplingOn: 0
+  samplingOn: 1
   ambientLightOn: 1
   ambientLightScale: 0.011
   mainDirLightStrength: 0.894

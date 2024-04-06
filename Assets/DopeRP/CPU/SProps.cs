@@ -12,6 +12,7 @@ namespace DopeRP.CPU
             
             public static int ColorFiller = Shader.PropertyToID("_ColorFiller");
             public static int DepthBuffer = Shader.PropertyToID("_DepthBuffer");
+            public static int DepthBufferAux = Shader.PropertyToID("_DepthBufferAux");
             
             public static int ScreenSize = Shader.PropertyToID("_ScreenSize");
             public static int Matrix_P = Shader.PropertyToID("_Matrix_P");
@@ -98,6 +99,7 @@ namespace DopeRP.CPU
             
             public static int GAux_TangentWorldSpaceAtlas = Shader.PropertyToID("_GAux_TangentWorldSpace");
             public static int GAux_ClearNormalWorldSpaceAtlas = Shader.PropertyToID("_GAux_ClearNormalWorldSpaceAtlas");
+            public static int GAux_WorldSpaceAtlas = Shader.PropertyToID("_GAux_WorldSpaceAtlas");
             
             public static int G_AlbedoAtlas = Shader.PropertyToID("_G_AlbedoAtlas");
             public static int G_NormalWorldSpaceAtlas = Shader.PropertyToID("_G_NormalWorldSpaceAtlas");

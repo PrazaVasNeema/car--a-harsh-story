@@ -22,6 +22,11 @@ namespace DopeRP.CPU
 
         public static bool m_samplingOn;
         
+        private static int fxSourceId = Shader.PropertyToID("_PostFXSource");
+
+        public static Material Material;
+
+        
     
         public static void ExecuteBuffer () {
             Context.ExecuteCommandBuffer(Buffer);
@@ -242,6 +247,11 @@ namespace DopeRP.CPU
             Buffer.EndSample(bufferName);
             ExecuteBuffer();
         }
-
+        
+        public static void CopyTexture (RenderTargetIdentifier from, RenderTargetIdentifier to) {
+            Buffer.SetGlobalTexture(fxSourceId, from);
+            Buffer.SetRenderTarget(to);
+            Buffer.DrawProcedural(Matrix4x4.identity, Material, 0, MeshTopology.Triangles, 3);
+        }
     }
 }

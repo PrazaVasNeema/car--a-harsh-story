@@ -33,6 +33,7 @@ namespace DopeRP.CPU
 				return;
 			}
 
+			RAPI.Material = postFXSettings.Material;
 			RAPI.m_samplingOn = customRenderPipelineAsset.samplingOn;
 			RAPI.Context.SetupCameraProperties(RAPI.CurCamera);
 			RAPI.SetupCommonUniforms();
@@ -95,12 +96,14 @@ namespace DopeRP.CPU
 				RAPI.CleanupTempRT(SProps.SSAO.SSAORawAtlas);
 				RAPI.CleanupTempRT(SProps.SSAO.SSAOBlurAtlas);
 				RAPI.CleanupTempRT(SProps.Common.DepthBuffer);
+
 				RAPI.CleanupTempRT((SProps.GBuffer.G_AlbedoAtlas));
 				RAPI.CleanupTempRT((SProps.GBuffer.G_NormalWorldSpaceAtlas));
 				RAPI.CleanupTempRT((SProps.GBuffer.GAux_ClearNormalWorldSpaceAtlas));
 				RAPI.CleanupTempRT((SProps.GBuffer.G_SpecularAtlas));
 				RAPI.CleanupTempRT((SProps.GBuffer.G_BRDFAtlas));
 				RAPI.CleanupTempRT(SProps.Common.ColorFiller);
+				RAPI.CleanupTempRT(SProps.GBuffer.GAux_WorldSpaceAtlas);
 				
 				DrawGizmosBeforeFX();
 				if (postFXStack.IsActive)

@@ -77,10 +77,20 @@ Shader "DopeRP/Shaders/Decals"
 
 			TEXTURE2D(_NormalMap);
 			SAMPLER(sampler_NormalMap);
+			
 
+			#if !UNITY_REVERSED_Z
+			
+				TEXTURE2D(_DepthBuffer);
+				SAMPLER(sampler_DepthBuffer);
+			
+			#else
+			
+				TEXTURE2D(_GAux_WorldSpaceAtlas);
+				SAMPLER(sampler_GAux_WorldSpaceAtlas);
 
-			TEXTURE2D(_DepthBuffer);
-			SAMPLER(sampler_DepthBuffer);
+			#endif
+			
 
 			TEXTURE2D(_GAux_ClearNormalWorldSpaceAtlas);
 			SAMPLER(sampler_GAux_ClearNormalWorldSpaceAtlas);
@@ -177,55 +187,66 @@ Shader "DopeRP/Shaders/Decals"
 				fragOutput o;
 
 				float2 screenUV = i.positionSV.xy * _ScreenSize.zw;
+				float4 worldPos;
 				
+				#if !UNITY_REVERSED_Z
 				float depth = SAMPLE_TEXTURE2D(_DepthBuffer, sampler_DepthBuffer, screenUV).r;
 				float4 clipSpacePosition;
 				float4 viewSpacePosition;
-				#if !UNITY_REVERSED_Z
+				// #if !UNITY_REVERSED_Z
 					depth = lerp(UNITY_NEAR_CLIP_VALUE, 1, depth);
-
+				
 					float sceneZ =CalcLinearZ(depth, _NearFarPlanes.x, _NearFarPlanes.y);
 					clipSpacePosition = float4((screenUV * 2.0 - 1.0) * sceneZ/depth, sceneZ, 1.0 * sceneZ/depth);
 					viewSpacePosition = mul(_Matrix_I_P, clipSpacePosition);
 					viewSpacePosition /= viewSpacePosition.w;
+				
+				// #else
+				//
+				// 	clipSpacePosition = float4(screenUV * 2 - 1, depth, 1);
+				// 	viewSpacePosition = mul(Inverse(_Matrix_P), clipSpacePosition);
+				// 	viewSpacePosition /= viewSpacePosition.w;
+				
+				// #endif
+				
+				worldPos = float4(TransformViewToWorld(viewSpacePosition.xyz),1);
 
 				#else
 
-					clipSpacePosition = float4(screenUV * 2 - 1, depth, 1);
-					viewSpacePosition = mul(Inverse(_Matrix_P), clipSpacePosition);
-					viewSpacePosition /= viewSpacePosition.w;
-				
-				#endif
+					worldPos = SAMPLE_TEXTURE2D(_GAux_WorldSpaceAtlas, sampler_GAux_WorldSpaceAtlas, screenUV);
+					o.decalsArtisticAlbedoAtlas = 0;
 
-				float4 worldPos = float4(TransformViewToWorld(viewSpacePosition.xyz),1);
+				// o.decalsArtisticAlbedoAtlas = worldPos;
+				// return o;
+				#endif
+				// o.decalsArtisticAlbedoAtlas = worldPos;
 				float4 objectPos = float4(TransformWorldToObject(worldPos), 1);
-				
+				// return o;
 				clip(0.5 - abs(objectPos.xyz));
 				
 				float4 baseMap_ST =  UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _BaseMap_ST);
 				float2 texCoords = (objectPos.xy + 0.5) * baseMap_ST.xy + baseMap_ST.zw;
-
 				#if defined(_OPACITY_ATLAS)
 				
 					clip(SAMPLE_TEXTURE2D(_OpacityMap, sampler_OpacityMap, texCoords).r - UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _Cutoff));
 					clip(SAMPLE_TEXTURE2D(_OpacityMap, sampler_OpacityMap, texCoords).a - UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _Cutoff));
-
+				
 				#endif
-
+				
 				
 				#if defined(_CONTRIBUTE_NORMAL)
 				
 					float3 normalWS = normalize(SAMPLE_TEXTURE2D(_GAux_ClearNormalWorldSpaceAtlas, sampler_GAux_ClearNormalWorldSpaceAtlas, screenUV).xyz);
 					float4 tangentWS = normalize(SAMPLE_TEXTURE2D(_GAux_TangentWorldSpaceAtlas, sampler_GAux_TangentWorldSpaceAtlas, screenUV));
-
+				
 					o.decalsArtisticNormalAtlas = float4(NormalTangentToWorld(GetNormalTS(texCoords), normalWS, tangentWS),1) ;
-
+				
 				#else
-
+				
 					// o.decalsArtisticNormalAtlas = 0;
-
+				
 				#endif
-
+				
 				
 				#if defined(_CONTRIBUTE_ALBEDO)
 				
@@ -233,9 +254,9 @@ Shader "DopeRP/Shaders/Decals"
 					baseColor *= UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_DECALS, _BaseColor);
 				
 					o.decalsArtisticAlbedoAtlas = baseColor;
-
+				
 				#endif
-
+				
 				
 				#if defined(_CONTRIBUTE_BRDF)
 				
@@ -243,11 +264,11 @@ Shader "DopeRP/Shaders/Decals"
 					float roughness = perceptualRoughnessToRoughness(UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_DECALS, _Roughness));
 					float reflectance = UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_DECALS, _Reflectance);
 					float4 brdf = float4(metallic, roughness, reflectance, 1);
-
+				
 					o.decalsArtisticBRDFAtlas = brdf;
-
+				
 				#endif
-
+				
 				
 				return o;
 				

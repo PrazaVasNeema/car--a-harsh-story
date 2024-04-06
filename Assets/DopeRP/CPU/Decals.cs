@@ -12,15 +12,8 @@ namespace DopeRP.CPU
         {
 
             RAPI.BeginSample(BUFFER_NAME);
-            // RAPI.Buffer = new CommandBuffer
-            // {
-            //     name = "decal"
-            // };
-            // RAPI.Buffer.name = "decal";
-            // RAPI.Buffer.BeginSample("decal");
-            // RAPI.ExecuteBuffer();
             
-            
+           
             RAPI.ExecuteBuffer();
 
             RenderTargetIdentifier[] colorTargets = {
@@ -29,8 +22,9 @@ namespace DopeRP.CPU
                 new RenderTargetIdentifier(SProps.GBuffer.G_BRDFAtlas)
             };
 
-            RAPI.Buffer.SetRenderTarget(colorTargets, BuiltinRenderTextureType.None);
+            RAPI.Buffer.SetRenderTarget(colorTargets, SProps.Common.DepthBuffer);
             // RAPI.Buffer.ClearRenderTarget(true, true, Color.clear);
+            // RAPI.Buffer.ClearRenderTarget((RTClearFlags)( (int)RTClearFlags.Depth), Color.green, 1.0f, 0xF0);
             RAPI.ExecuteBuffer();
             
             var sortingSettings = new SortingSettings(RAPI.CurCamera)

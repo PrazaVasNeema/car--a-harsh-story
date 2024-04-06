@@ -46,10 +46,6 @@ namespace DopeRP.CPU
             RAPI.Context.DrawRenderers(RAPI.CullingResults, ref drawingSettings, ref filteringSettings);
             
             RAPI.ExecuteBuffer();
-
-            RAPI.Buffer.SetGlobalTexture(SProps.Common.DepthBuffer, SProps.Common.DepthBuffer);
-
-            RAPI.ExecuteBuffer();
             
             
             RAPI.EndSample(BUFFER_NAME);
