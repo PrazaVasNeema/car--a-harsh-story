@@ -104,7 +104,7 @@ Material:
     - _RCutout: 1
     - _ReceiveShadows: 1
     - _Reflectance: 0.502
-    - _Roughness: 0.62
+    - _Roughness: 0.82
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
