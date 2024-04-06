@@ -41,6 +41,8 @@ public class GameData : MonoBehaviour
     
     public void AddBrokenGlass(GameObject glass)
     {
-        glass.transform.SetParent(m_brokenGlassPlaceholder);
+        // var pureGO = new GameObject();
+        // glass.transform.SetParent(pureGO.transform, false);
+        glass.transform.SetParent(m_brokenGlassPlaceholder, true);
     }
 }

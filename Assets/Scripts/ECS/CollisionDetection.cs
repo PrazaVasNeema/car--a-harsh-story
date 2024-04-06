@@ -37,16 +37,31 @@ public class CollisionDetection : MonoBehaviour
                 // continue;
         }
 
+        Entity targetEntity = null;
         Collider myCollider = other.GetContact(0).thisCollider;
         if (myCollider.TryGetComponent<EntityReverseProvider>(out var entityReverseProvider))
         {
             Debug.Log($"Damage amount loop:  this collider NAME: {myCollider.transform.name}");
 
-            var targetEntity = entityReverseProvider.GetEntity();
+            targetEntity = entityReverseProvider.GetEntity();
             //GameData.instance.currentWorld.GetEvent<OnCollisionEnterEvent>().NextFrame(new OnCollisionEnterEvent { targetEntity = targetEntity, collision = other });
 
-            PublishCollisionEvent(other, targetEntity);
         }
+        else if (myCollider.TryGetComponent<LocalMainframeRefForAServant>(out var refForMainframe))
+        {
+            if (refForMainframe.refForMainframe.TryGetComponent<EntityReverseProvider>(out entityReverseProvider))
+            {
+                Debug.Log($"Damage amount loop:  this collider NAME: {myCollider.transform.name}");
+
+                targetEntity = entityReverseProvider.GetEntity();
+                //GameData.instance.currentWorld.GetEvent<OnCollisionEnterEvent>().NextFrame(new OnCollisionEnterEvent { targetEntity = targetEntity, collision = other });
+
+            }
+        }
+        
+        if (targetEntity != null)
+            PublishCollisionEvent(other, targetEntity);
+
     }
 
     public void PublishCollisionEvent(Collision collision, Entity affectedEntity)
