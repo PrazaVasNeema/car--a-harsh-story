@@ -39,6 +39,19 @@ public sealed class BreakMeshSystem : UpdateSystem {
                         a.toBeLeft.SetActive(true);
                     }
 
+                    if (entity.Has<EnableThisDisableThat>())
+                    {
+                        EnableThisDisableThat comp = entity.GetComponent<EnableThisDisableThat>();
+                        foreach (var enableThi in comp.enableThis)
+                        {
+                            enableThi.SetActive(true);
+                        }
+                        foreach (var disableTha in comp.disableThat)
+                        {
+                            disableTha.SetActive(false);
+                        }
+                    }
+
                     entity.Dispose();
                 }
                 else if (entity.Has<IsDetachable>())

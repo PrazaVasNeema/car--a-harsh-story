@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: RoadBlack 1
+  m_Name: ConcreteWallDarkerParking
   m_Shader: {fileID: 4800000, guid: f1f01039c6b893e438f28148234db9f3, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -24,9 +24,13 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _AlbedoMap:
+    - _AlbedoDetailsMap:
         m_Texture: {fileID: 0}
-        m_Scale: {x: 5, y: 5}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _AlbedoMap:
+        m_Texture: {fileID: 2800000, guid: 71c7b85b49e4ae14996e6126c6de28d6, type: 3}
+        m_Scale: {x: 15, y: 15}
         m_Offset: {x: 0, y: 0}
     - _BaseMap:
         m_Texture: {fileID: 0}
@@ -61,7 +65,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalMap:
-        m_Texture: {fileID: 2800000, guid: 6ecb498fa83014a45a7e252e2226757b, type: 3}
+        m_Texture: {fileID: 2800000, guid: f1f4bb97b270ebd48a9b41ada24dfb62, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -74,9 +78,9 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _AddColor: 0
     - _BumpScale: 1
     - _Clipping: 0
-    - _CullingMode: 1
     - _CullingMode2: 2
     - _Cutoff: 0.5
     - _DepthLevel: 1
@@ -85,7 +89,6 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _IstencilMask: 0
     - _Metallic: 0
     - _Metalness: 0
     - _Mode: 0
@@ -93,22 +96,24 @@ Material:
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _PremulAlpha: 0
+    - _RCutout: 0
     - _ReceiveShadows: 1
     - _Reflectance: 0.502
-    - _Roughness: 0.51
+    - _Roughness: 0.819
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _StencilComp: 8
-    - _StencilCompare: 8
-    - _StencilID: 0
+    - _StencilCompare: 6
+    - _StencilID: 68
     - _StencilOp: 0
     - _UVSec: 0
+    - _UseDetails: 0
     - _WorkingVar: 1
     - _ZWrite: 1
-    - _ZWritfe: 1
     m_Colors:
-    - _BaseColor: {r: 0.7132075, g: 0.7132075, b: 0.7132075, a: 1}
+    - _BaseColor: {r: 0.5396226, g: 0.5396226, b: 0.5396226, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _DetailsColor: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []

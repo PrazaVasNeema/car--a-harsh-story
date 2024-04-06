@@ -257,7 +257,8 @@ Shader "DopeRP/Shaders/Decals"
 				
 				#endif
 				
-				
+									// o.decalsArtisticAlbedoAtlas = 1;
+
 				#if defined(_CONTRIBUTE_BRDF)
 				
 					float metallic = UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_DECALS, _Metallic);
