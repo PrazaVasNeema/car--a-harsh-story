@@ -6,9 +6,13 @@
 #include "Assets/DopeRP/GPU/HLSL/BRDF.hlsl"
 #include "Assets/DopeRP/GPU/HLSL/Shadows.hlsl"
 
-#define MAX_OTHER_LIGHT_COUNT 40
+#define MAX_OTHER_LIGHT_COUNT 60
 
-#if defined(_OTHER_LIGHT_COUNT_40)
+#if defined(_OTHER_LIGHT_COUNT_60)
+	#define _OTHER_LIGHT_COUNT 60
+#elif defined(_OTHER_LIGHT_COUNT_50)
+	#define _OTHER_LIGHT_COUNT 50
+#elif defined(_OTHER_LIGHT_COUNT_40)
 	#define _OTHER_LIGHT_COUNT 40
 #elif defined(_OTHER_LIGHT_COUNT_30)
 	#define _OTHER_LIGHT_COUNT 30
