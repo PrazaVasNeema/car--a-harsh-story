@@ -91,6 +91,7 @@ Material:
     - _DepthLevel: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
+    - _EmissionScale: 1
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
@@ -111,10 +112,11 @@ Material:
     - _SrcBlend: 1
     - _StencilComp: 8
     - _StencilCompare: 8
-    - _StencilID: 0
-    - _StencilOp: 0
+    - _StencilID: 4
+    - _StencilOp: 2
     - _UVSec: 0
     - _UseDetails: 1
+    - _UseEmission: 0
     - _WorkingVar: 1
     - _ZWrite: 1
     - _ZWritfe: 1
