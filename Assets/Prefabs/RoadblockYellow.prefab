@@ -50,7 +50,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializedData:
-    HP: 20
+    HP: 10
 --- !u!114 &4695758287299541936
 MonoBehaviour:
   m_ObjectHideFlags: 0
