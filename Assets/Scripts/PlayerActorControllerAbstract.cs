@@ -23,19 +23,25 @@ public class PlayerActorControllerAbstract : MonoBehaviour
     public virtual void Activate()
     {
         m_actorInputManager.OnChangeModeAction += M_actorInputManager_OnChangeModeAction; ;
+        m_actorInputManager.OnChangeDayTimeAction += M_actorInputManager_OnChangeDaytimeAction; ;
         this.enabled = true;
     }
 
     public virtual void Deactivate()
     {
         m_actorInputManager.OnChangeModeAction -= M_actorInputManager_OnChangeModeAction; ;
+        m_actorInputManager.OnChangeDayTimeAction -= M_actorInputManager_OnChangeDaytimeAction; ;
         this.enabled = false;
     }
 
     private void M_actorInputManager_OnChangeModeAction(object sender, System.EventArgs e)
     {
         GameEvents.OnChangeMode?.Invoke();
-        Debug.Log("check");
+    }
+    
+    private void M_actorInputManager_OnChangeDaytimeAction(object sender, System.EventArgs e)
+    {
+        GameEvents.OnChangeDaytime?.Invoke();
     }
 
 

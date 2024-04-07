@@ -107,6 +107,15 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""CHANGE_DAYTIME"",
+                    ""type"": ""Button"",
+                    ""id"": ""b671ba95-4dbd-4f19-ae0b-43e6c0f58da1"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -296,6 +305,17 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
                     ""action"": ""FIRE_SUPER"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""701d66cc-268d-4b24-a0c5-5ba8baa9e0e1"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CHANGE_DAYTIME"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -311,6 +331,15 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""CHANGE_DAYTIME"",
+                    ""type"": ""Button"",
+                    ""id"": ""94280ef5-47da-4898-8aad-034f8a2807b4"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 },
                 {
                     ""name"": ""CHANGE_MODE"",
@@ -428,6 +457,17 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
                     ""action"": ""FRONT_LIGHTS"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""81930c82-ea72-4c52-9f00-c84a9da3ccaf"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CHANGE_DAYTIME"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -445,9 +485,11 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
         m_SPECTATOR_FIRE_HEAVY = m_SPECTATOR.FindAction("FIRE_HEAVY", throwIfNotFound: true);
         m_SPECTATOR_FIRE_SUPER = m_SPECTATOR.FindAction("FIRE_SUPER", throwIfNotFound: true);
         m_SPECTATOR_CHANGE_MODE = m_SPECTATOR.FindAction("CHANGE_MODE", throwIfNotFound: true);
+        m_SPECTATOR_CHANGE_DAYTIME = m_SPECTATOR.FindAction("CHANGE_DAYTIME", throwIfNotFound: true);
         // CAR
         m_CAR = asset.FindActionMap("CAR", throwIfNotFound: true);
         m_CAR_MOVE = m_CAR.FindAction("MOVE", throwIfNotFound: true);
+        m_CAR_CHANGE_DAYTIME = m_CAR.FindAction("CHANGE_DAYTIME", throwIfNotFound: true);
         m_CAR_CHANGE_MODE = m_CAR.FindAction("CHANGE_MODE", throwIfNotFound: true);
         m_CAR_HANDBREAK = m_CAR.FindAction("HANDBREAK", throwIfNotFound: true);
         m_CAR_FRONT_LIGHTS = m_CAR.FindAction("FRONT_LIGHTS", throwIfNotFound: true);
@@ -521,6 +563,7 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_SPECTATOR_FIRE_HEAVY;
     private readonly InputAction m_SPECTATOR_FIRE_SUPER;
     private readonly InputAction m_SPECTATOR_CHANGE_MODE;
+    private readonly InputAction m_SPECTATOR_CHANGE_DAYTIME;
     public struct SPECTATORActions
     {
         private @NewControls m_Wrapper;
@@ -534,6 +577,7 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
         public InputAction @FIRE_HEAVY => m_Wrapper.m_SPECTATOR_FIRE_HEAVY;
         public InputAction @FIRE_SUPER => m_Wrapper.m_SPECTATOR_FIRE_SUPER;
         public InputAction @CHANGE_MODE => m_Wrapper.m_SPECTATOR_CHANGE_MODE;
+        public InputAction @CHANGE_DAYTIME => m_Wrapper.m_SPECTATOR_CHANGE_DAYTIME;
         public InputActionMap Get() { return m_Wrapper.m_SPECTATOR; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -570,6 +614,9 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
             @CHANGE_MODE.started += instance.OnCHANGE_MODE;
             @CHANGE_MODE.performed += instance.OnCHANGE_MODE;
             @CHANGE_MODE.canceled += instance.OnCHANGE_MODE;
+            @CHANGE_DAYTIME.started += instance.OnCHANGE_DAYTIME;
+            @CHANGE_DAYTIME.performed += instance.OnCHANGE_DAYTIME;
+            @CHANGE_DAYTIME.canceled += instance.OnCHANGE_DAYTIME;
         }
 
         private void UnregisterCallbacks(ISPECTATORActions instance)
@@ -601,6 +648,9 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
             @CHANGE_MODE.started -= instance.OnCHANGE_MODE;
             @CHANGE_MODE.performed -= instance.OnCHANGE_MODE;
             @CHANGE_MODE.canceled -= instance.OnCHANGE_MODE;
+            @CHANGE_DAYTIME.started -= instance.OnCHANGE_DAYTIME;
+            @CHANGE_DAYTIME.performed -= instance.OnCHANGE_DAYTIME;
+            @CHANGE_DAYTIME.canceled -= instance.OnCHANGE_DAYTIME;
         }
 
         public void RemoveCallbacks(ISPECTATORActions instance)
@@ -623,6 +673,7 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_CAR;
     private List<ICARActions> m_CARActionsCallbackInterfaces = new List<ICARActions>();
     private readonly InputAction m_CAR_MOVE;
+    private readonly InputAction m_CAR_CHANGE_DAYTIME;
     private readonly InputAction m_CAR_CHANGE_MODE;
     private readonly InputAction m_CAR_HANDBREAK;
     private readonly InputAction m_CAR_FRONT_LIGHTS;
@@ -631,6 +682,7 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
         private @NewControls m_Wrapper;
         public CARActions(@NewControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @MOVE => m_Wrapper.m_CAR_MOVE;
+        public InputAction @CHANGE_DAYTIME => m_Wrapper.m_CAR_CHANGE_DAYTIME;
         public InputAction @CHANGE_MODE => m_Wrapper.m_CAR_CHANGE_MODE;
         public InputAction @HANDBREAK => m_Wrapper.m_CAR_HANDBREAK;
         public InputAction @FRONT_LIGHTS => m_Wrapper.m_CAR_FRONT_LIGHTS;
@@ -646,6 +698,9 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
             @MOVE.started += instance.OnMOVE;
             @MOVE.performed += instance.OnMOVE;
             @MOVE.canceled += instance.OnMOVE;
+            @CHANGE_DAYTIME.started += instance.OnCHANGE_DAYTIME;
+            @CHANGE_DAYTIME.performed += instance.OnCHANGE_DAYTIME;
+            @CHANGE_DAYTIME.canceled += instance.OnCHANGE_DAYTIME;
             @CHANGE_MODE.started += instance.OnCHANGE_MODE;
             @CHANGE_MODE.performed += instance.OnCHANGE_MODE;
             @CHANGE_MODE.canceled += instance.OnCHANGE_MODE;
@@ -662,6 +717,9 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
             @MOVE.started -= instance.OnMOVE;
             @MOVE.performed -= instance.OnMOVE;
             @MOVE.canceled -= instance.OnMOVE;
+            @CHANGE_DAYTIME.started -= instance.OnCHANGE_DAYTIME;
+            @CHANGE_DAYTIME.performed -= instance.OnCHANGE_DAYTIME;
+            @CHANGE_DAYTIME.canceled -= instance.OnCHANGE_DAYTIME;
             @CHANGE_MODE.started -= instance.OnCHANGE_MODE;
             @CHANGE_MODE.performed -= instance.OnCHANGE_MODE;
             @CHANGE_MODE.canceled -= instance.OnCHANGE_MODE;
@@ -699,10 +757,12 @@ public partial class @NewControls: IInputActionCollection2, IDisposable
         void OnFIRE_HEAVY(InputAction.CallbackContext context);
         void OnFIRE_SUPER(InputAction.CallbackContext context);
         void OnCHANGE_MODE(InputAction.CallbackContext context);
+        void OnCHANGE_DAYTIME(InputAction.CallbackContext context);
     }
     public interface ICARActions
     {
         void OnMOVE(InputAction.CallbackContext context);
+        void OnCHANGE_DAYTIME(InputAction.CallbackContext context);
         void OnCHANGE_MODE(InputAction.CallbackContext context);
         void OnHANDBREAK(InputAction.CallbackContext context);
         void OnFRONT_LIGHTS(InputAction.CallbackContext context);

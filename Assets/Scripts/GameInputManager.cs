@@ -41,11 +41,12 @@ public class GameInputManager : MonoBehaviour
     public abstract class ActorInputManagerAbstract
     {
         public event EventHandler OnChangeModeAction;
+        public event EventHandler OnChangeDayTimeAction;
 
 
         protected const string MOVE = "MOVE";
         protected const string CHANGE_MODE = "CHANGE_MODE";
-
+        protected const string CHANGE_DAYTIME = "CHANGE_DAYTIME";
 
 
 
@@ -53,6 +54,7 @@ public class GameInputManager : MonoBehaviour
 
         protected InputAction m_moveAction;
         protected InputAction m_changeMode;
+        protected InputAction m_changeDaytime;
 
 
 
@@ -61,17 +63,20 @@ public class GameInputManager : MonoBehaviour
             m_inputActionMap = inputActionAsset.FindActionMap(mapName);
             m_moveAction = m_inputActionMap.FindAction(MOVE);
             m_changeMode = m_inputActionMap.FindAction(CHANGE_MODE);
+            m_changeDaytime = m_inputActionMap.FindAction(CHANGE_DAYTIME);
 
         }
 
         virtual public void Enable()
         {
             m_changeMode.started += M_changeMode_started;
+            m_changeDaytime.started += M_changeDaytime_started;
         }
 
         virtual public void Disable()
         {
             m_changeMode.started -= M_changeMode_started;
+            m_changeDaytime.started -= M_changeDaytime_started;
         }
 
         public Vector2 GetMovementVector()
@@ -90,6 +95,11 @@ public class GameInputManager : MonoBehaviour
         private void M_changeMode_started(InputAction.CallbackContext obj)
         {
             OnChangeModeAction?.Invoke(this, EventArgs.Empty);
+        }
+        
+        private void M_changeDaytime_started(InputAction.CallbackContext obj)
+        {
+            OnChangeDayTimeAction?.Invoke(this, EventArgs.Empty);
         }
 
     }

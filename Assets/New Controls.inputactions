@@ -85,6 +85,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "CHANGE_DAYTIME",
+                    "type": "Button",
+                    "id": "b671ba95-4dbd-4f19-ae0b-43e6c0f58da1",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -274,6 +283,17 @@
                     "action": "FIRE_SUPER",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "701d66cc-268d-4b24-a0c5-5ba8baa9e0e1",
+                    "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CHANGE_DAYTIME",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
@@ -289,6 +309,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "CHANGE_DAYTIME",
+                    "type": "Button",
+                    "id": "94280ef5-47da-4898-8aad-034f8a2807b4",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "CHANGE_MODE",
@@ -404,6 +433,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "FRONT_LIGHTS",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "81930c82-ea72-4c52-9f00-c84a9da3ccaf",
+                    "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CHANGE_DAYTIME",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

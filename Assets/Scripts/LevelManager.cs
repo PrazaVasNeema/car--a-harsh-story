@@ -14,6 +14,11 @@ public class LevelManager : MonoBehaviour
 
     [SerializeField] private CameraManager m_cameraManager;
 
+    [SerializeField] private Material m_skyboxDay;
+    [SerializeField] private Material m_skyboxNight;
+
+    [SerializeField] private SwapperManager m_swapperManager;
+
     public void Start()
     {
         //m_playerSpectatorMovementComponent.Init(m_gameInputManager.GetActorInputMapManager(GameInputManager.InputMap.Spectator));
@@ -29,17 +34,25 @@ public class LevelManager : MonoBehaviour
     private void OnEnable()
     {
         GameEvents.OnChangeMode += GameEvents_OnChangeMode;
+        GameEvents.OnChangeDaytime += GameEvents_OnChangeDaytime;
     }
 
     private void OnDisable()
     {
         GameEvents.OnChangeMode -= GameEvents_OnChangeMode;
+        GameEvents.OnChangeDaytime -= GameEvents_OnChangeDaytime;
     }
 
     private void GameEvents_OnChangeMode()
     {
         var newMode = m_currentMode == GameInputManager.InputMap.Spectator ? GameInputManager.InputMap.Car : GameInputManager.InputMap.Spectator;
         SetCurrentMode(newMode);
+    }
+    
+    private void GameEvents_OnChangeDaytime()
+    {   
+        RenderSettings.skybox = m_swapperManager.swapStatus ? m_skyboxDay : m_skyboxNight;
+        m_swapperManager.SwapIt();
     }
 
     private void SetCurrentMode(GameInputManager.InputMap currentMode)
@@ -63,6 +76,10 @@ public class LevelManager : MonoBehaviour
 
         }
 
-        m_currentMode = currentMode;
+    }
+    
+    private void SetCurrentDaytime(GameInputManager.InputMap currentMode)
+    {
+
     }
 }
