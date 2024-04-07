@@ -19,8 +19,10 @@ Shader "DopeRP/Shaders/Lit"
 		_Roughness ("Roughness", Range(0, 1)) = 0.5
 		_Reflectance ("Reflectance", Range(0, 1)) = 0.5
 		
-//		[NoScaleOffset] _EmissionMap("Emission", 2D) = "white" {}
+		[Toggle(_USE_EMISSION)] _UseEmission ("Use Emission", Float) = 0
+		[NoScaleOffset] _EmissionMap("Emission", 2D) = "white" {}
 //		[HDR] _EmissionColor("Emission", Color) = (0.0, 0.0, 0.0, 0.0)
+		_EmissionScale ("Emission scale", Range(0, 10)) = 1
 		
 		_Cutoff ("Alpha Cutoff", Range(0.0, 1.0)) = 0.5
 		[Toggle(_CLIPPING)] _Clipping ("Alpha Clipping", Float) = 0
@@ -83,6 +85,8 @@ Shader "DopeRP/Shaders/Lit"
 			
 			#pragma multi_compile _ SSAO_ON
 			#pragma multi_compile _ DECALS_ON
+									#pragma shader_feature _USE_EMISSION
+
 			
 			#pragma shader_feature _PREMULTIPLY_ALPHA
 						#pragma shader_feature _CLIPPING
@@ -147,6 +151,7 @@ Shader "DopeRP/Shaders/Lit"
 			// #pragma shader_feature _ACT_AS_OPACITY
 						#pragma shader_feature _USE_DETAILS_ALBEDO_MAP
 			#pragma shader_feature _R_CUTOUT
+						#pragma shader_feature _USE_EMISSION
 
 			// #pragma enable_d3d11_debug_symbols
 			#pragma vertex vert

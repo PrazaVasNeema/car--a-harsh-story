@@ -50,7 +50,7 @@ public sealed class CheckDamageDealtSystem : UpdateSystem {
                     this.World.GetRequest<SpawnDamageDecalRequest>().Publish(new SpawnDamageDecalRequest { targetEntity = change.targetEntity, ContactPoint = change.contactPoint, damageType = damageType}, true);
             }
                 Debug.Log($"TEST: 4");
-
+ 
                 if (change.targetEntity.Has<HealthComponent>())
                 {
                     Debug.Log($"TEST: 5");

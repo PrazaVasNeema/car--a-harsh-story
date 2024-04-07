@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Light
+  m_Name: LightOff
   m_Shader: {fileID: 4800000, guid: f1f01039c6b893e438f28148234db9f3, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -86,6 +86,7 @@ Material:
     - _DepthLevel: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
+    - _EmissionScale: 1
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
@@ -109,6 +110,7 @@ Material:
     - _StencilOp: 0
     - _UVSec: 0
     - _UseDetails: 0
+    - _UseEmission: 0
     - _WorkingVar: 1
     - _ZWrite: 1
     m_Colors:

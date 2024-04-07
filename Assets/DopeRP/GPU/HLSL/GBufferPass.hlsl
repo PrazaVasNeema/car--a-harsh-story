@@ -12,6 +12,8 @@ UNITY_INSTANCING_BUFFER_START(LitBasePerMaterial)
     UNITY_DEFINE_INSTANCED_PROP(float4, _DetailsColor)
     UNITY_DEFINE_INSTANCED_PROP(float4, _AlbedoDetailsMap_ST)
 
+    UNITY_DEFINE_INSTANCED_PROP(float, _EmissionScale)
+
     UNITY_DEFINE_INSTANCED_PROP(float, _NormalScale)
 
     UNITY_DEFINE_INSTANCED_PROP(float, _Metallic)
@@ -27,6 +29,13 @@ SAMPLER(sampler_AlbedoMap);
 
 TEXTURE2D(_AlbedoDetailsMap);
 SAMPLER(sampler_AlbedoDetailsMap);
+
+#if defined(_USE_EMISSION)
+
+    TEXTURE2D(_EmissionMap);
+    SAMPLER(sampler_EmissionMap);
+
+#endif
 
 TEXTURE2D(_NormalMap);
 SAMPLER(sampler_NormalMap);
@@ -157,7 +166,15 @@ fragOutput frag(Interpolators i)
     float metallic = UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _Metallic);
     float roughness = perceptualRoughnessToRoughness(UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _Roughness));
     float reflectance = UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _Reflectance);
-    o.BRDF = float4(metallic, roughness, reflectance, 1);
+    float emission = 0;
+    
+    #if defined(_USE_EMISSION)
+
+        emission = SAMPLE_TEXTURE2D(_EmissionMap, sampler_EmissionMap, i.uv) * UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _EmissionScale);
+    
+    #endif
+    
+    o.BRDF = float4(metallic, roughness, reflectance, emission);
 
     float3 viewDir = normalize(_WorldSpaceCameraPos - i.positionWS);
     float3 specular = SampleEnvironment(viewDir, i.normalWS);

@@ -7,17 +7,21 @@ using UnityEngine;
 [Il2CppSetOption(Option.NullChecks, false)]
 [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
 [Il2CppSetOption(Option.DivideByZeroChecks, false)]
-public struct TransformRef : IComponent {
-    public Transform transform;
+public struct NightyDaity : IComponent
+{
+    public enum NightyDaityEnum
+    {
+        Nighty,
+        Daity
+    }
+
+    public NightyDaityEnum theeStatus;
 }
 
+[RequireComponent(typeof(TransformRefProvider))]
 [Il2CppSetOption(Option.NullChecks, false)]
 [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
 [Il2CppSetOption(Option.DivideByZeroChecks, false)]
-public sealed class TransformRefProvider : MonoProvider<TransformRef> {
-    private void Awake()
-    {
-        if(this.GetData().transform == null)
-            this.GetData().transform = transform;
-    }
+public sealed class NightyDaityProvider : MonoProvider<NightyDaity> {
+    
 }

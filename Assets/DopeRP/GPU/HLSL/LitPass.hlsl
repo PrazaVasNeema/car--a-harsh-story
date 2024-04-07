@@ -16,6 +16,9 @@ UNITY_INSTANCING_BUFFER_START(LitBasePerMaterial)
 
 UNITY_DEFINE_INSTANCED_PROP(float4, _DetailsColor)
 UNITY_DEFINE_INSTANCED_PROP(float4, _AlbedoDetailsMap_ST)
+
+UNITY_DEFINE_INSTANCED_PROP(float, _EmissionScale)
+
 	UNITY_DEFINE_INSTANCED_PROP(float, _NormalScale)
 
 	UNITY_DEFINE_INSTANCED_PROP(float, _Metallic)
@@ -41,6 +44,13 @@ SAMPLER(sampler_AlbedoDetailsMap);
 //
 // TEXTURE2D(_DecalsNormalAtlas);
 // SAMPLER(sampler_DecalsNormalAtlas);
+
+#if defined(_USE_EMISSION)
+
+	TEXTURE2D(_EmissionMap);
+	SAMPLER(sampler_EmissionMap);
+
+#endif
 
 TEXTURE2D(_NormalMap);
 
@@ -193,6 +203,13 @@ float4 frag(Interpolators i) : SV_TARGET
 
 	fragColor += GetLighting(surfaceData);
 	// fragColor += GetEmission(i.uv) ;
+
+	#if defined(_USE_EMISSION)
+
+		float emission = SAMPLE_TEXTURE2D(_EmissionMap, sampler_EmissionMap, i.uv);
+		fragColor += emission * baseColor* UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _EmissionScale);
+    
+	#endif
 	
 	return float4(fragColor, surfaceData.alpha);
 	

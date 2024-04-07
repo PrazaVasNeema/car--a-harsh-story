@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Scellecs.Morpeh;
 using UnityEngine;
 
 public class LevelManager : MonoBehaviour
@@ -17,8 +18,8 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private Material m_skyboxDay;
     [SerializeField] private Material m_skyboxNight;
 
-    [SerializeField] private SwapperManager m_swapperManager;
-
+    [SerializeField] private bool m_nowIsDay = true;
+    
     public void Start()
     {
         //m_playerSpectatorMovementComponent.Init(m_gameInputManager.GetActorInputMapManager(GameInputManager.InputMap.Spectator));
@@ -29,6 +30,9 @@ public class LevelManager : MonoBehaviour
         m_currentMode = GameInputManager.InputMap.Car;
 
         SetCurrentMode(m_currentMode);
+        
+        // SetCurrentDaytime(true);
+
     }
 
     private void OnEnable()
@@ -51,8 +55,8 @@ public class LevelManager : MonoBehaviour
     
     private void GameEvents_OnChangeDaytime()
     {   
-        RenderSettings.skybox = m_swapperManager.swapStatus ? m_skyboxDay : m_skyboxNight;
-        m_swapperManager.SwapIt();
+        m_nowIsDay = !m_nowIsDay;
+        SetCurrentDaytime(m_nowIsDay);
     }
 
     private void SetCurrentMode(GameInputManager.InputMap currentMode)
@@ -75,11 +79,22 @@ public class LevelManager : MonoBehaviour
             m_cameraManager.ChangeActiveVirtualCamera(0);
 
         }
-
+        
+        m_currentMode = currentMode;
+        
     }
     
-    private void SetCurrentDaytime(GameInputManager.InputMap currentMode)
+    private void SetCurrentDaytime(bool nowIsDaytime) 
     {
+        if (GameData.instance.currentWorld != null)
+        {
 
+            var statusForNow = nowIsDaytime ? NightyDaity.NightyDaityEnum.Daity : NightyDaity.NightyDaityEnum.Nighty;
+            
+            GameData.instance.currentWorld.GetRequest<ChangeDaytimeRequest>().Publish(new ChangeDaytimeRequest { statusForNow = statusForNow}, true);
+            
+            RenderSettings.skybox = nowIsDaytime ? m_skyboxDay : m_skyboxNight;
+
+        }
     }
 }

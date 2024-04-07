@@ -126,7 +126,7 @@ float4 frag(Interpolators i) : SV_TARGET
 	surfaceData.viewDirection = normalize(_WorldSpaceCameraPos - surfaceData.positionWS);
 	surfaceData.depth = -TransformWorldToView(surfaceData.positionWS).z;
 
-	float3 brdfAtlas = SAMPLE_TEXTURE2D(_G_BRDFAtlas, sampler_G_BRDFAtlas, i.uv).xyz;
+	float4 brdfAtlas = SAMPLE_TEXTURE2D(_G_BRDFAtlas, sampler_G_BRDFAtlas, i.uv);
 	
 	surfaceData.metallic = brdfAtlas.x;
 	#ifdef _PREMULTIPLY_ALPHA
@@ -151,6 +151,8 @@ float4 frag(Interpolators i) : SV_TARGET
 
 	fragColor += GetLighting(surfaceData);
 	// fragColor += GetEmission(i.uv) ;
+
+	fragColor += brdfAtlas.w * baseColor;
 
 	#if defined(AMBIENT_LIGHT_ON)
 	

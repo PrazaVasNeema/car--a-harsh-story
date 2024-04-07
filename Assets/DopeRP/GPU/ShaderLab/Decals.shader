@@ -264,7 +264,7 @@ Shader "DopeRP/Shaders/Decals"
 					float metallic = UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_DECALS, _Metallic);
 					float roughness = perceptualRoughnessToRoughness(UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_DECALS, _Roughness));
 					float reflectance = UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_DECALS, _Reflectance);
-					float4 brdf = float4(metallic, roughness, reflectance, 1);
+					float4 brdf = float4(metallic, roughness, reflectance, 0);
 				
 					o.decalsArtisticBRDFAtlas = brdf;
 				
