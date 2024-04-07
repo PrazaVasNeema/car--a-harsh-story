@@ -49,6 +49,8 @@ public class CollisionDetection : MonoBehaviour
         }
         else if (myCollider.TryGetComponent<LocalMainframeRefForAServant>(out var refForMainframe))
         {
+            if(refForMainframe.refForMainframe == null)
+                return;
             if (refForMainframe.refForMainframe.TryGetComponent<EntityReverseProvider>(out entityReverseProvider))
             {
                 Debug.Log($"Damage amount loop:  this collider NAME: {myCollider.transform.name}");

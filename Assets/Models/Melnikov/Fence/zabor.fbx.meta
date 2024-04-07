@@ -3,7 +3,32 @@ guid: dd4de2313fa157648afe11b95e96ae53
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: bolt bolt
+    second: {fileID: 2100000, guid: 89c370f86519b844f8f623c3d2361f1a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: bolt head
+    second: {fileID: 2100000, guid: 89c370f86519b844f8f623c3d2361f1a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: gayka
+    second: {fileID: 2100000, guid: 89c370f86519b844f8f623c3d2361f1a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: kreplenye
+    second: {fileID: 2100000, guid: 89c370f86519b844f8f623c3d2361f1a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: rama
+    second: {fileID: 2100000, guid: 89c370f86519b844f8f623c3d2361f1a, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
