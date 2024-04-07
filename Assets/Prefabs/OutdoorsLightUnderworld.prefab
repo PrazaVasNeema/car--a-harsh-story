@@ -971,10 +971,10 @@ Light:
   m_Type: 0
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 176.6
-  m_Range: 42.76
-  m_SpotAngle: 145.15182
-  m_InnerSpotAngle: 96.88315
+  m_Intensity: 200
+  m_Range: 50
+  m_SpotAngle: 124.4361
+  m_InnerSpotAngle: 105.42533
   m_CookieSize: 10
   m_Shadows:
     m_Type: 0
@@ -1406,7 +1406,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8635454756835572613}
   m_Layer: 0
-  m_Name: OutdoorsLight
+  m_Name: OutdoorsLightUnderworld
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1422,8 +1422,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1.3, y: 1.3, z: 1.3}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 7013319321590457793}
   - {fileID: 8184706933945286458}

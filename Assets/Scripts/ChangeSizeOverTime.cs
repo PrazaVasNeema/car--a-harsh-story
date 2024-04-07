@@ -10,6 +10,8 @@ public class ChangeSizeOverTime : MonoBehaviour
     private float m_changeScale = 5f;
 
     [SerializeField] private Vector3 m_AxisScale = Vector3.one;
+    
+    [SerializeField] private float m_speedScale = 1;
 
     private Vector3 m_initialScale;
     private Transform targetTransform;
@@ -26,7 +28,7 @@ public class ChangeSizeOverTime : MonoBehaviour
     void Update()
     {
         targetTransform.localScale = Vector3.one;
-        var newScale =  m_changeScale * Mathf.Cos(Time.time) + m_changeScale * 2;
+        var newScale =  m_changeScale * Mathf.Cos(Time.time * m_speedScale) + m_changeScale * 2;
         var lossyScale = targetTransform.lossyScale / 1;
         var newActualScale = new Vector3(m_AxisScale.x == 0 ? 1 : newScale * m_AxisScale.x / lossyScale.x,
             m_AxisScale.y == 0 ? 1 : newScale * m_AxisScale.y / lossyScale.y,
