@@ -20,6 +20,8 @@ public class LevelManager : MonoBehaviour
 
     [SerializeField] private bool m_nowIsDay = true;
     
+    [SerializeField] private GameInputManager.InputMap m_initialGameMode = GameInputManager.InputMap.Spectator;
+    
     public void Start()
     {
         //m_playerSpectatorMovementComponent.Init(m_gameInputManager.GetActorInputMapManager(GameInputManager.InputMap.Spectator));
@@ -28,7 +30,7 @@ public class LevelManager : MonoBehaviour
         m_carController.Init(m_gameInputManager.GetActorInputMapManager(GameInputManager.InputMap.Car));
 
         // m_currentMode = GameInputManager.InputMap.Car;
-        m_currentMode = GameInputManager.InputMap.Spectator;
+        m_currentMode = m_initialGameMode;
 
         SetCurrentMode(m_currentMode,false);
         
