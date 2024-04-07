@@ -6,7 +6,7 @@ public class CameraManager : MonoBehaviour
 {
     [SerializeField] private List<Transform> m_virtualCamerasList;
 
-    public void ChangeActiveVirtualCamera(int index)
+    public void ChangeActiveVirtualCamera(int index, bool shouldStickToBrother = false)
     {
         for (int i = 0; i< m_virtualCamerasList.Count; ++i)
         {
@@ -21,7 +21,7 @@ public class CameraManager : MonoBehaviour
             }
         }
 
-        if (index == 1) 
+        if (shouldStickToBrother && index == 1) 
         {
             m_virtualCamerasList[1].position = m_virtualCamerasList[0].position;
             m_virtualCamerasList[1].rotation = m_virtualCamerasList[0].rotation;

@@ -7,13 +7,19 @@ public class SpectatorMovementComponent : MonoBehaviour
 {
     [SerializeField] private float m_maxSpeed = 5f;
     public float MaxSpeed => m_maxSpeed;
+    [Range(1,10)]
+    [SerializeField] private float m_shiftspeedModifier = 3f;
+    public float shiftspeedModifier => m_shiftspeedModifier;
+    [Range(0,1)]
+    [SerializeField] private float m_ctrlspeedModifier = 2f;
+    public float ctrlspeedModifier => m_ctrlspeedModifier;
 
     [SerializeField] private float m_mouseSensitivity = 5f;
 
     [SerializeField] private Transform m_test;
 
     private Vector3 m_currentVelocity = Vector3.zero;
-
+    
     private float rotY;
     private float rotX;
 
@@ -42,7 +48,7 @@ public class SpectatorMovementComponent : MonoBehaviour
         float speedModifier = 1;
         if (inputSpeedSlow != 0)
         {
-            speedModifier = (float)(inputSpeedSlow > 0 ? 2 : 0.5);
+            speedModifier = (float)(inputSpeedSlow > 0 ? m_shiftspeedModifier : m_ctrlspeedModifier);
         }
 
         var newPos = Vector3.SmoothDamp(transform.localPosition, newPos1, ref m_currentVelocity, 0.5f, m_maxSpeed * speedModifier);

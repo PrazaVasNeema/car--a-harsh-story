@@ -27,9 +27,10 @@ public class LevelManager : MonoBehaviour
         m_spectatorController.Init(m_gameInputManager.GetActorInputMapManager(GameInputManager.InputMap.Spectator));
         m_carController.Init(m_gameInputManager.GetActorInputMapManager(GameInputManager.InputMap.Car));
 
-        m_currentMode = GameInputManager.InputMap.Car;
+        // m_currentMode = GameInputManager.InputMap.Car;
+        m_currentMode = GameInputManager.InputMap.Spectator;
 
-        SetCurrentMode(m_currentMode);
+        SetCurrentMode(m_currentMode,false);
         
         // SetCurrentDaytime(true);
 
@@ -59,7 +60,7 @@ public class LevelManager : MonoBehaviour
         SetCurrentDaytime(m_nowIsDay);
     }
 
-    private void SetCurrentMode(GameInputManager.InputMap currentMode)
+    private void SetCurrentMode(GameInputManager.InputMap currentMode, bool shouldStickToBrother = true)
     {
         if(currentMode == GameInputManager.InputMap.Spectator)
         {
@@ -68,7 +69,7 @@ public class LevelManager : MonoBehaviour
 
 
             m_gameInputManager.SetCurrentMap(GameInputManager.InputMap.Spectator);
-            m_cameraManager.ChangeActiveVirtualCamera(1);
+            m_cameraManager.ChangeActiveVirtualCamera(1, shouldStickToBrother);
         }
         else
         {
