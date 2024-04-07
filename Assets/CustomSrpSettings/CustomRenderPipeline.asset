@@ -24,10 +24,10 @@ MonoBehaviour:
   m_shadows: 1
   m_shadowsSettings:
     shadowsOn: 1
-    maxDistance: 300
+    maxDistance: 1000
     distanceFade: 0.1
     directional:
-      atlasSize: 2048
+      atlasSize: 4096
       filter: 3
       cascades: 1
       cascadeRatio1: 0.073
