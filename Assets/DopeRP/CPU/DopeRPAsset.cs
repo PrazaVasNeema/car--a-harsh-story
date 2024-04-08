@@ -43,6 +43,9 @@ namespace DopeRP.CPU
 		public bool decalsOn => m_decalsOn;
 		
 		[Header("PostFX")]
+		[SerializeField] 
+		private bool m_postFXOn;
+		public bool postFXOn => m_postFXOn;
 		[SerializeField]
 		private PostFXSettings m_postFXSettings = default;
 		public PostFXSettings postFXSettings => m_postFXSettings;

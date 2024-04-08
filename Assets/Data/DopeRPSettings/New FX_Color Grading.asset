@@ -15,7 +15,7 @@ MonoBehaviour:
   m_settings:
     m_colorLUTResolution: 32
     colorAdjustments:
-      postExposure: -5.82
+      postExposure: 0
       contrast: 0
       colorFilter: {r: 1, g: 1, b: 1, a: 1}
       hueShift: 0

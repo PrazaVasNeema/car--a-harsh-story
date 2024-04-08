@@ -24,7 +24,7 @@ namespace DopeRP.CPU
         
         private static int fxSourceId = Shader.PropertyToID("_PostFXSource");
 
-        public static Material Material;
+        // public static Material Material;
 
         public static DopeRPAsset assetSettings;
 
@@ -261,11 +261,11 @@ namespace DopeRP.CPU
             ExecuteBuffer();
         }
         
-        public static void CopyTexture (RenderTargetIdentifier from, RenderTargetIdentifier to) {
-            Buffer.SetGlobalTexture(fxSourceId, from);
-            Buffer.SetRenderTarget(to);
-            Buffer.DrawProcedural(Matrix4x4.identity, Material, 0, MeshTopology.Triangles, 3);
-        }
+        // public static void CopyTexture (RenderTargetIdentifier from, RenderTargetIdentifier to) {
+        //     Buffer.SetGlobalTexture(fxSourceId, from);
+        //     Buffer.SetRenderTarget(to);
+        //     Buffer.DrawProcedural(Matrix4x4.identity, Material, 0, MeshTopology.Triangles, 3);
+        // }
         
         public static void Draw (RenderTargetIdentifier from, RenderTargetIdentifier to, PostFXStack.Pass pass,
             Material material) {

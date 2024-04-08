@@ -8,6 +8,8 @@ using UnityEngine.Rendering;
 [CreateAssetMenu(menuName = "DopeRP/PostFX/Vignette")]
 public partial class FX_Vignette : FX_Feature
 {
+    private const string BUFFER_NAME = "Vignette";
+    
     [Range(0,4)]
     public float m_vignette_power = 1;
     [Range(0,4)]
@@ -21,10 +23,12 @@ public partial class FX_Vignette : FX_Feature
     }
 
     public override void Render(int sourceRT, int targetRT, PostFXSettings generalFXSettings)
-    {
+    { 
+        RAPI.BeginSample(BUFFER_NAME);
         
-       RAPI.Draw(sourceRT,targetRT, PostFXStack.Pass.Vignette, generalFXSettings.Material);
+        RAPI.Draw(sourceRT,targetRT, PostFXStack.Pass.Vignette, generalFXSettings.Material);
 
+        RAPI.EndSample(BUFFER_NAME);
     }
     
 }

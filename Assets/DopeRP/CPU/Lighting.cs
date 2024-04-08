@@ -93,6 +93,16 @@ namespace DopeRP.CPU
 				if (m_shadowsOn)
 					RAPI.Buffer.SetGlobalVector(SProps.LightingMain.DirLightShadowDataId, DirLightShadowData);
 				
+				if (RAPI.assetSettings.ambientLightOn)
+				{
+					RAPI.SetKeyword("AMBIENT_LIGHT_ON", true);
+					RAPI.Buffer.SetGlobalFloat(SProps.CameraRenderer.AmbientLightScale, RAPI.assetSettings.ambientLightScale);
+				}
+				else
+				{
+					RAPI.SetKeyword("AMBIENT_LIGHT_ON", false);
+				}
+				
 			}
 			else
 			{

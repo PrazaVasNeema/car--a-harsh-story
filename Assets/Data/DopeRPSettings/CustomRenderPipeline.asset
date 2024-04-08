@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: CustomRenderPipeline
   m_EditorClassIdentifier: 
   samplingOn: 1
-  useGPUInstancing: 0
+  useGPUInstancing: 1
   LitDeferredMaterial: {fileID: 2100000, guid: b2f4f84bc8a8e234aad2a24c812aa627, type: 2}
   ambientLightOn: 1
   ambientLightScale: 0.011
-  mainDirLightStrength: 0.894
+  mainDirLightStrength: 0.905
   m_shadowsSettings:
     shadowsOn: 1
     maxDistance: 1200
@@ -40,4 +40,5 @@ MonoBehaviour:
     contrast: 1
     SSAOMaterial: {fileID: 2100000, guid: 60abf83f57f21544994c9a37aa5bb374, type: 2}
   m_decalsOn: 1
+  m_postFXOn: 1
   m_postFXSettings: {fileID: 11400000, guid: fe911ba97b277904caed8459cc8f6a12, type: 2}

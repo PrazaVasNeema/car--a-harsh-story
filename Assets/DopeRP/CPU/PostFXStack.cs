@@ -5,9 +5,7 @@ using static PostFXSettings;
 
 public partial class PostFXStack {
 
-    const string bufferName = "Post FX";
-
-    
+    private const string BUFFER_NAME = "PostFX";
     
     public enum Pass {
         Copy,
@@ -29,7 +27,7 @@ public partial class PostFXStack {
     public void Setup (PostFXSettings settings) {
 
         this.settings = settings;
-        this.settings = RAPI.CurCamera.cameraType <= CameraType.SceneView ? settings : null;
+        this.settings = RAPI.CurCamera.cameraType <= CameraType.SceneView && RAPI.assetSettings.postFXOn ? settings : null;
         ApplySceneViewState();
         RAPI.Buffer.GetTemporaryRT(SProps.PostFX.fxSourceAtlas, RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight, 32, FilterMode.Bilinear, RenderTextureFormat.Default);
         RAPI.Buffer.GetTemporaryRT(SProps.PostFX.fxDestinationAtlas, RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight, 32, FilterMode.Bilinear, RenderTextureFormat.Default);
@@ -38,6 +36,8 @@ public partial class PostFXStack {
     }
     
     public void Render (int sourceId) {
+        
+        RAPI.BeginSample(BUFFER_NAME);
         
         foreach (var fxFeature in settings.currentFXFeaturesList)
         {
@@ -52,7 +52,8 @@ public partial class PostFXStack {
         RAPI.Draw(SProps.PostFX.fxSourceAtlas, BuiltinRenderTextureType.CameraTarget, Pass.Copy,
             settings.Material);
      
-        RAPI.ExecuteBuffer();
+        
+        RAPI.EndSample(BUFFER_NAME);
         
     }
     

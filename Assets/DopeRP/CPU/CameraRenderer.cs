@@ -10,16 +10,12 @@ namespace DopeRP.CPU
 
 
 		private readonly StencilPrepass m_stencilPrepass = new StencilPrepass();
-		
 		private readonly Lighting m_lighting = new Lighting();
 		private readonly GBuffers m_gBuffers = new GBuffers();
 		private readonly Decals m_decals = new Decals();
-
 		private readonly SSAO m_ssao = new SSAO();
-		
 		PostFXStack postFXStack = new PostFXStack();
 		
-
 
 		public void Render(Camera camera, bool useGPUInstancing, DopeRPAsset assetSettings)
 		{
@@ -30,7 +26,7 @@ namespace DopeRP.CPU
 			}
 
 			RAPI.assetSettings = assetSettings;
-			RAPI.Material = assetSettings.postFXSettings.Material;
+			// RAPI.Material = assetSettings.postFXSettings.Material;
 			RAPI.m_samplingOn = assetSettings.samplingOn;
 			RAPI.Context.SetupCameraProperties(RAPI.CurCamera);
 			RAPI.SetupCommonUniforms();
@@ -60,23 +56,10 @@ namespace DopeRP.CPU
 				RAPI.SetKeyword("SSAO_ON", false);
 			}
 
-
-
-
 			m_lighting.Setup(assetSettings.shadowSettings);
 			postFXStack.Setup(assetSettings.postFXSettings);
 			Setup();
 
-			if (assetSettings.ambientLightOn)
-			{
-				RAPI.SetKeyword("AMBIENT_LIGHT_ON", true);
-				RAPI.Buffer.SetGlobalFloat(SProps.CameraRenderer.AmbientLightScale, assetSettings.ambientLightScale);
-			}
-			else
-			{
-				RAPI.SetKeyword("AMBIENT_LIGHT_ON", false);
-			}
-			
 			if (RAPI.CurCamera.cameraType == CameraType.Reflection)
 			{
 				DrawVisibleGeometryRefProbes(useGPUInstancing);
@@ -132,6 +115,8 @@ namespace DopeRP.CPU
 				RAPI.Buffer.SetRenderTarget(SProps.PostFX.fxSourceAtlas, RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store);
 			}
 			
+
+			
 			RAPI.Buffer.ClearRenderTarget(flags <= CameraClearFlags.Depth, flags == CameraClearFlags.Color,
 				flags == CameraClearFlags.Color ? RAPI.CurCamera.backgroundColor.linear : Color.clear);
 			
@@ -174,7 +159,10 @@ namespace DopeRP.CPU
 
 			RAPI.ExecuteBuffer();
 			
-			RAPI.Buffer.SetRenderTarget(SProps.PostFX.fxSourceAtlas, new RenderTargetIdentifier(SProps.Common.DepthBuffer));
+			if(postFXStack.IsActive)
+				RAPI.Buffer.SetRenderTarget(SProps.PostFX.fxSourceAtlas, new RenderTargetIdentifier(SProps.Common.DepthBuffer));
+			else
+				RAPI.Buffer.SetRenderTarget(BuiltinRenderTextureType.CameraTarget, new RenderTargetIdentifier(SProps.Common.DepthBuffer));
 			RAPI.ExecuteBuffer();
 			
 			RAPI.BeginSample(BUFFER_NAME_TRANSPARENCY);
@@ -230,7 +218,6 @@ namespace DopeRP.CPU
 		}
 
 		void Submit () {
-			
 			RAPI.ExecuteBuffer();
 			RAPI.Context.Submit();
 		}

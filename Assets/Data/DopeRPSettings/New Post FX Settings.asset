@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shader: {fileID: 4800000, guid: ffd7c9a6584c128448219777112f21b3, type: 3}
   currentFXFeaturesList:
-  - FXFeatureIsOne: 0
+  - FXFeatureIsOne: 1
     fxFeature: {fileID: 11400000, guid: 937ce4dd10d1116458cf3428b4a34dd0, type: 2}
-  - FXFeatureIsOne: 0
-    fxFeature: {fileID: 11400000, guid: 842e0214a4e14744d86e6a21656a4ca2, type: 2}
+  - FXFeatureIsOne: 1
+    fxFeature: {fileID: 11400000, guid: 91eee46deba4fda46ae2e6312f7afb49, type: 2}
   - FXFeatureIsOne: 1
     fxFeature: {fileID: 11400000, guid: 697a59b84a0a32048bbd72e8ecaedd9c, type: 2}
