@@ -9,7 +9,7 @@ using Unity.IL2CPP.CompilerServices;
 [Il2CppSetOption(Option.DivideByZeroChecks, false)]
 [CreateAssetMenu(menuName = "ECS/Systems/" + nameof(DoDamageSystem))]
 public sealed class DoDamageSystem : UpdateSystem {
-    protected Filter filter;
+    private Filter filter;
     private Request<DoDamageRequest> doDamageRequest;
     
     public override void OnAwake()
@@ -23,10 +23,7 @@ public sealed class DoDamageSystem : UpdateSystem {
         {
             if (doDamageRequest.targetEntity.Has<IsDisabledMarker>())
                 continue;
-            Debug.Log(doDamageRequest.targetEntity);
-            Debug.Log(doDamageRequest.damageAmount);
             ref var healthComponent = ref doDamageRequest.targetEntity.GetComponent<HealthComponent>();
-            // healthComponent.HP = (int)Mathf.Max(0, healthComponent.HP - doDamageRequest.damageAmount);
             healthComponent.HP = (int)(healthComponent.HP - doDamageRequest.damageAmount);
             if (healthComponent.HP <= 0)
             {

@@ -145,7 +145,7 @@ public class PrometeoCarController : MonoBehaviour
     float localVelocityZ;
     float localVelocityX;
     bool deceleratingCar;
-    bool touchControlsSetup = false;
+    // bool touchControlsSetup = false;
     /*
     The following variables are used to store information about sideways friction of the wheels (such as
     extremumSlip,extremumValue, asymptoteSlip, asymptoteValue and stiffness). We change this values to
@@ -303,55 +303,55 @@ public class PrometeoCarController : MonoBehaviour
         In this part of the code we specify what the car needs to do if the user presses W (throttle), S (reverse),
         A (turn left), D (turn right) or Space bar (handbrake).
         */
-        if (false)
-        {
-
-            if (Input.GetKey(KeyCode.W))
-            {
-                CancelInvoke("DecelerateCar");
-                deceleratingCar = false;
-                GoForward();
-            }
-            if (Input.GetKey(KeyCode.S))
-            {
-                CancelInvoke("DecelerateCar");
-                deceleratingCar = false;
-                GoReverse();
-            }
-
-            if (Input.GetKey(KeyCode.A))
-            {
-                TurnLeft();
-            }
-            if (Input.GetKey(KeyCode.D))
-            {
-                TurnRight();
-            }
-            if (Input.GetKey(KeyCode.Space))
-            {
-                CancelInvoke("DecelerateCar");
-                deceleratingCar = false;
-                Handbrake();
-            }
-            if (Input.GetKeyUp(KeyCode.Space))
-            {
-                RecoverTraction();
-            }
-            if ((!Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.W)))
-            {
-                ThrottleOff();
-            }
-            if ((!Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.W)) && !Input.GetKey(KeyCode.Space) && !deceleratingCar)
-            {
-                InvokeRepeating("DecelerateCar", 0f, 0.1f);
-                deceleratingCar = true;
-            }
-            if (!Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D) && steeringAxis != 0f)
-            {
-                ResetSteeringAngle();
-            }
-
-        }
+        // if (false)
+        // {
+        //
+        //     if (Input.GetKey(KeyCode.W))
+        //     {
+        //         CancelInvoke("DecelerateCar");
+        //         deceleratingCar = false;
+        //         GoForward();
+        //     }
+        //     if (Input.GetKey(KeyCode.S))
+        //     {
+        //         CancelInvoke("DecelerateCar");
+        //         deceleratingCar = false;
+        //         GoReverse();
+        //     }
+        //
+        //     if (Input.GetKey(KeyCode.A))
+        //     {
+        //         TurnLeft();
+        //     }
+        //     if (Input.GetKey(KeyCode.D))
+        //     {
+        //         TurnRight();
+        //     }
+        //     if (Input.GetKey(KeyCode.Space))
+        //     {
+        //         CancelInvoke("DecelerateCar");
+        //         deceleratingCar = false;
+        //         Handbrake();
+        //     }
+        //     if (Input.GetKeyUp(KeyCode.Space))
+        //     {
+        //         RecoverTraction();
+        //     }
+        //     if ((!Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.W)))
+        //     {
+        //         ThrottleOff();
+        //     }
+        //     if ((!Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.W)) && !Input.GetKey(KeyCode.Space) && !deceleratingCar)
+        //     {
+        //         InvokeRepeating("DecelerateCar", 0f, 0.1f);
+        //         deceleratingCar = true;
+        //     }
+        //     if (!Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D) && steeringAxis != 0f)
+        //     {
+        //         ResetSteeringAngle();
+        //     }
+        //
+        // }
 
 
         // We call the method AnimateWheelMeshes() in order to match the wheel collider movements with the 3D meshes of the wheels.

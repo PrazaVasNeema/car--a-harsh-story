@@ -9,7 +9,7 @@ using Unity.IL2CPP.CompilerServices;
 [Il2CppSetOption(Option.DivideByZeroChecks, false)]
 [CreateAssetMenu(menuName = "ECS/Systems/" + nameof(ChangeDaytimeSystem))]
 public sealed class ChangeDaytimeSystem : UpdateSystem {
-    protected Filter filter;
+    private Filter filter;
     private Request<ChangeDaytimeRequest> changeDaytimeRequest;
     
     public override void OnAwake()
@@ -21,10 +21,8 @@ public sealed class ChangeDaytimeSystem : UpdateSystem {
     public override void OnUpdate(float deltaTime) {
         foreach (var changeDaytimeRequest in changeDaytimeRequest.Consume())
         {
-            Debug.Log("NightDaity1");
             foreach (var entity in this.filter)
             {
-                Debug.Log("NightDaity2");
 
                 ref var nightyDaityComp = ref entity.GetComponent<NightyDaity>();
                 ref var transformRefComp = ref entity.GetComponent<TransformRef>();

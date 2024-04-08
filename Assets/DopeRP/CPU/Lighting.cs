@@ -117,7 +117,6 @@ namespace DopeRP.CPU
 			{
 				string keyword = SProps.LightingMain.OtherLightnCountKeyword_base + (i+1) * 10;
 				RAPI.SetKeyword(keyword, i == otherLightCountDiv10);
-				Debug.Log($"Div10: {otherLightCountDiv10}, i: {i}, keyword: {keyword}, shouldBeSet: {i==otherLightCountDiv10}");
 			}
 			
 
