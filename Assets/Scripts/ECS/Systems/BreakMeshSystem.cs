@@ -12,10 +12,6 @@ using Unity.VisualScripting;
 public sealed class BreakMeshSystem : UpdateSystem {
     private Request<BreakThisRequest> breakThisRequest;
     
-    private bool edgeSet = false;
-    private Vector3 edgeVertex = Vector3.zero;
-    private Vector2 edgeUV = Vector2.zero;
-    private Plane edgePlane = new Plane();
     
     public override void OnAwake() {
         this.breakThisRequest = this.World.GetRequest<BreakThisRequest>();

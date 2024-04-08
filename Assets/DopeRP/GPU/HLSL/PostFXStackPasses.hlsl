@@ -30,15 +30,8 @@ struct Varyings {
 
 Varyings DefaultPassVertex (uint vertexID : SV_VertexID) {
     Varyings output;
-    output.positionCS = float4(
-        vertexID <= 1 ? -1.0 : 3.0,
-        vertexID == 1 ? 3.0 : -1.0,
-        0.0, 1.0
-    );
-    output.screenUV = float2(
-        vertexID <= 1 ? 0.0 : 2.0,
-        vertexID == 1 ? 2.0 : 0.0
-    );
+    output.positionCS = float4(vertexID <= 1 ? -1.0 : 3.0,vertexID == 1 ? 3.0 : -1.0,0.0, 1.0);
+    output.screenUV = float2(vertexID <= 1 ? 0.0 : 2.0,vertexID == 1 ? 2.0 : 0.0);
     if (_ProjectionParams.x < 0.0) {
         output.screenUV.y = 1.0 - output.screenUV.y;
     }
@@ -122,10 +115,7 @@ float3 ColorGradingSaturation (float3 color, bool useACES) {
 }
 
 float3 ColorGradingChannelMixer (float3 color) {
-    return mul(
-        float3x3(_ChannelMixerRed.rgb, _ChannelMixerGreen.rgb, _ChannelMixerBlue.rgb),
-        color
-    );
+    return mul(float3x3(_ChannelMixerRed.rgb, _ChannelMixerGreen.rgb, _ChannelMixerBlue.rgb),color);
 }
 
 float3 ColorGradingShadowsMidtonesHighlights (float3 color, bool useACES) {
@@ -190,11 +180,7 @@ float4 ColorGradingReinhardPassFragment (Varyings input) : SV_TARGET {
 TEXTURE2D(_ColorGradingLUT);
 
 float3 ApplyColorGradingLUT (float3 color) {
-    return ApplyLut2D(
-        TEXTURE2D_ARGS(_ColorGradingLUT, sampler_linear_clamp),
-        saturate(_ColorGradingLUTInLogC ? LinearToLogC(color) : color),
-        _ColorGradingLUTParameters.xyz
-    );
+    return ApplyLut2D(TEXTURE2D_ARGS(_ColorGradingLUT, sampler_linear_clamp),saturate(_ColorGradingLUTInLogC ? LinearToLogC(color) : color),_ColorGradingLUTParameters.xyz);
 }
 
 float4 FinalPassFragment (Varyings input) : SV_TARGET {

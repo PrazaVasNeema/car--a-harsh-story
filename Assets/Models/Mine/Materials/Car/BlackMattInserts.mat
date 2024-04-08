@@ -105,7 +105,7 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _StencilCompare: 8
-    - _StencilID: 3
+    - _StencilID: 1
     - _StencilOp: 2
     - _UVSec: 0
     - _UseDetails: 0

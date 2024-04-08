@@ -36,9 +36,9 @@ public partial class PostFXStack {
         FXAA,
         Vignette
     }
-    
-    int 		fxSourceId = Shader.PropertyToID("_PostFXSource"),
-        fxSource2Id = Shader.PropertyToID("_PostFXSource2");
+
+    private int fxSourceId = Shader.PropertyToID("_PostFXSource");
+    private int fxSource2Id = Shader.PropertyToID("_PostFXSource2");
     
     public bool IsActive => settings != null;
 
@@ -52,15 +52,12 @@ public partial class PostFXStack {
 
     PostFXSettings settings;
 
-    public void Setup (
-        ScriptableRenderContext context, Camera camera, PostFXSettings settings, int colorLUTResolution
-    ) {
+    public void Setup (ScriptableRenderContext context, Camera camera, PostFXSettings settings, int colorLUTResolution) {
         this.colorLUTResolution = colorLUTResolution;
         this.context = context;
         this.camera = camera;
         this.settings = settings;
-        this.settings =
-            camera.cameraType <= CameraType.SceneView ? settings : null;
+        this.settings = camera.cameraType <= CameraType.SceneView ? settings : null;
         ApplySceneViewState();
     }
     
@@ -74,20 +71,13 @@ public partial class PostFXStack {
     void ConfigureColorAdjustments () {
         ColorAdjustmentsSettings colorAdjustments = settings.ColorAdjustments;
         
-        buffer.SetGlobalVector(colorAdjustmentsId, new Vector4(
-            Mathf.Pow(2f, colorAdjustments.postExposure),
-            colorAdjustments.contrast * 0.01f + 1f,
-            colorAdjustments.hueShift * (1f / 360f),
-            colorAdjustments.saturation * 0.01f + 1f
-        ));
+        buffer.SetGlobalVector(colorAdjustmentsId, new Vector4(Mathf.Pow(2f, colorAdjustments.postExposure), colorAdjustments.contrast * 0.01f + 1f, colorAdjustments.hueShift * (1f / 360f), colorAdjustments.saturation * 0.01f + 1f));
         buffer.SetGlobalColor(colorFilterId, colorAdjustments.colorFilter.linear);
     }
     
     void ConfigureWhiteBalance () {
         WhiteBalanceSettings whiteBalance = settings.WhiteBalance;
-        buffer.SetGlobalVector(whiteBalanceId, ColorUtils.ColorBalanceToLMSCoeffs(
-            whiteBalance.temperature, whiteBalance.tint
-        ));
+        buffer.SetGlobalVector(whiteBalanceId, ColorUtils.ColorBalanceToLMSCoeffs(whiteBalance.temperature, whiteBalance.tint));
     }
     
     void ConfigureSplitToning () {
@@ -110,9 +100,7 @@ public partial class PostFXStack {
         buffer.SetGlobalColor(smhShadowsId, smh.shadows.linear);
         buffer.SetGlobalColor(smhMidtonesId, smh.midtones.linear);
         buffer.SetGlobalColor(smhHighlightsId, smh.highlights.linear);
-        buffer.SetGlobalVector(smhRangeId, new Vector4(
-            smh.shadowsStart, smh.shadowsEnd, smh.highlightsStart, smh.highLightsEnd
-        ));
+        buffer.SetGlobalVector(smhRangeId, new Vector4(smh.shadowsStart, smh.shadowsEnd, smh.highlightsStart, smh.highLightsEnd));
     }
     
     void DoColorGradingAndToneMapping(int sourceId, bool useHDR = false) {
@@ -124,40 +112,25 @@ public partial class PostFXStack {
 
         int lutHeight = colorLUTResolution;
         int lutWidth = lutHeight * lutHeight;
-        buffer.GetTemporaryRT(
-            colorGradingLUTId, lutWidth, lutHeight, 0,
-            FilterMode.Bilinear, RenderTextureFormat.DefaultHDR
-        );
-        buffer.SetGlobalVector(colorGradingLUTParametersId, new Vector4(
-            lutHeight, 0.5f / lutWidth, 0.5f / lutHeight, lutHeight / (lutHeight - 1f)
-        ));
+        buffer.GetTemporaryRT(colorGradingLUTId, lutWidth, lutHeight, 0, FilterMode.Bilinear, RenderTextureFormat.DefaultHDR);
+        buffer.SetGlobalVector(colorGradingLUTParametersId, new Vector4(lutHeight, 0.5f / lutWidth, 0.5f / lutHeight, lutHeight / (lutHeight - 1f)));
 
         ToneMappingSettings.Mode mode = settings.ToneMapping.mode;
         Pass pass = Pass.ColorGradingNone + (int)mode;
-        buffer.SetGlobalFloat(
-            colorGradingLUTInLogId, useHDR && pass != Pass.ColorGradingNone ? 1f : 0f
-        );
+        buffer.SetGlobalFloat(colorGradingLUTInLogId, useHDR && pass != Pass.ColorGradingNone ? 1f : 0f);
         Draw(sourceId, colorGradingLUTId, pass);
 
-        buffer.SetGlobalVector(colorGradingLUTParametersId,
-            new Vector4(1f / lutWidth, 1f / lutHeight, lutHeight - 1f)
-        );
+        buffer.SetGlobalVector(colorGradingLUTParametersId, new Vector4(1f / lutWidth, 1f / lutHeight, lutHeight - 1f));
         
         RenderTextureFormat format = useHDR ?
             RenderTextureFormat.DefaultHDR : RenderTextureFormat.Default;
-        buffer.GetTemporaryRT(
-            Shader.PropertyToID("_ColorGrading"), RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight, 0, FilterMode.Bilinear, format
-        );
+        buffer.GetTemporaryRT(Shader.PropertyToID("_ColorGrading"), RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight, 0, FilterMode.Bilinear, format);
         Draw(sourceId, Shader.PropertyToID("_ColorGrading"), Pass.Final);
         
-        buffer.GetTemporaryRT(
-            Shader.PropertyToID("_FXAA"), RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight, 0, FilterMode.Bilinear, format
-        );
+        buffer.GetTemporaryRT(Shader.PropertyToID("_FXAA"), RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight, 0, FilterMode.Bilinear, format);
         Draw(Shader.PropertyToID("_ColorGrading"), Shader.PropertyToID("_FXAA"), Pass.FXAA);
         
-        buffer.GetTemporaryRT(
-            Shader.PropertyToID("_Vingette"), RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight, 0, FilterMode.Bilinear, format
-        );
+        buffer.GetTemporaryRT(Shader.PropertyToID("_Vingette"), RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight, 0, FilterMode.Bilinear, format);
         Draw(Shader.PropertyToID("_FXAA"), Shader.PropertyToID("_Vingette"), Pass.Vignette);
         
         //
@@ -180,16 +153,9 @@ public partial class PostFXStack {
 
     }
     
-    void Draw (
-        RenderTargetIdentifier from, RenderTargetIdentifier to, Pass pass
-    ) {
+    void Draw (RenderTargetIdentifier from, RenderTargetIdentifier to, Pass pass) {
         buffer.SetGlobalTexture(fxSourceId, from);
-        buffer.SetRenderTarget(
-            to, RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store
-        );
-        buffer.DrawProcedural(
-            Matrix4x4.identity, settings.Material, (int)pass,
-            MeshTopology.Triangles, 3
-        );
+        buffer.SetRenderTarget(to, RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store);
+        buffer.DrawProcedural(Matrix4x4.identity, settings.Material, (int)pass, MeshTopology.Triangles, 3);
     }
 }
