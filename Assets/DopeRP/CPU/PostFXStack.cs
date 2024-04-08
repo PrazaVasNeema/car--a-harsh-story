@@ -51,7 +51,9 @@ public partial class PostFXStack {
       
         RAPI.Draw(SProps.PostFX.fxSourceAtlas, BuiltinRenderTextureType.CameraTarget, Pass.Copy,
             settings.Material);
-     
+        
+        RAPI.CleanupTempRT(SProps.PostFX.fxSourceAtlas);
+        RAPI.CleanupTempRT(SProps.PostFX.fxDestinationAtlas);
         
         RAPI.EndSample(BUFFER_NAME);
         

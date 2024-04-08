@@ -13,9 +13,9 @@ namespace DopeRP.CPU
 
 		[Header("General RP settings")]
 		public bool samplingOn;
-		// public bool useDynamicBatching = true;
+		public bool useDynamicBatching = true;
 		public bool useGPUInstancing = true;
-		// public bool useSRPBatcher = true;
+		public bool useSRPBatcher = true;
 		
 		[Header("Lighting")]
 		public Material LitDeferredMaterial;
@@ -54,7 +54,7 @@ namespace DopeRP.CPU
 		
 		protected override RenderPipeline CreatePipeline () {
 			instance = this;
-			return new DopeRP(useGPUInstancing, this);
+			return new DopeRP(this);
 			
 		}
 		

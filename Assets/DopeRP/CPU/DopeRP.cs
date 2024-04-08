@@ -7,18 +7,16 @@ namespace DopeRP.CPU
 	{
 		global::DopeRP.CPU.CameraRenderer renderer = new global::DopeRP.CPU.CameraRenderer();
 		
-		bool useGPUInstancing;
 
 		private DopeRPAsset m_assetSettings;
 
-		public DopeRP (bool useGPUInstancing,
-			DopeRPAsset assetSettings) {
+		public DopeRP (DopeRPAsset assetSettings) {
 			// GraphicsSettings.useScriptableRenderPipelineBatching = true;
 			// GraphicsSettings.lightsUseLinearIntensity = true;
 			m_assetSettings = assetSettings;
 			// this.useDynamicBatching = useDynamicBatching;
-			this.useGPUInstancing = useGPUInstancing;
-			// GraphicsSettings.useScriptableRenderPipelineBatching = useSRPBatcher;
+			// this.useGPUInstancing = useGPUInstancing;
+			GraphicsSettings.useScriptableRenderPipelineBatching = assetSettings.useSRPBatcher;
 			GraphicsSettings.lightsUseLinearIntensity = true;
 		}
 
@@ -26,7 +24,7 @@ namespace DopeRP.CPU
 		{
 			RAPI.Context = context;
 			for (int i = 0; i < cameras.Length; i++) {
-				renderer.Render(cameras[i], useGPUInstancing, m_assetSettings);
+				renderer.Render(cameras[i], m_assetSettings);
 			}
 		}
 	}

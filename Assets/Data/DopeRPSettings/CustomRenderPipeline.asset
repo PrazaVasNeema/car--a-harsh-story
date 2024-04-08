@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: CustomRenderPipeline
   m_EditorClassIdentifier: 
   samplingOn: 1
+  useDynamicBatching: 0
   useGPUInstancing: 1
+  useSRPBatcher: 1
   LitDeferredMaterial: {fileID: 2100000, guid: b2f4f84bc8a8e234aad2a24c812aa627, type: 2}
   ambientLightOn: 1
   ambientLightScale: 0.011

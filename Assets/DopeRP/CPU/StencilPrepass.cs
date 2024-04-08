@@ -37,7 +37,7 @@ namespace DopeRP.CPU
 
             var drawingSettings = new DrawingSettings(SProps.Common.StencilPrePassId, sortingSettings)
             {
-                enableDynamicBatching = false,
+                enableDynamicBatching = RAPI.assetSettings.useDynamicBatching,
                 enableInstancing = RAPI.assetSettings.useGPUInstancing,
             };
             

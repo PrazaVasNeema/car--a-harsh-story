@@ -17,7 +17,7 @@ namespace DopeRP.CPU
 		PostFXStack postFXStack = new PostFXStack();
 		
 
-		public void Render(Camera camera, bool useGPUInstancing, DopeRPAsset assetSettings)
+		public void Render(Camera camera, DopeRPAsset assetSettings)
 		{
 			RAPI.CurCamera = camera;
 			PrepareUIForSceneWindow();
@@ -62,11 +62,11 @@ namespace DopeRP.CPU
 
 			if (RAPI.CurCamera.cameraType == CameraType.Reflection)
 			{
-				DrawVisibleGeometryRefProbes(useGPUInstancing);
+				DrawVisibleGeometryRefProbes();
 			}
 			else
 			{
-				DrawVisibleGeometry(useGPUInstancing, assetSettings.LitDeferredMaterial);
+				DrawVisibleGeometry(assetSettings.LitDeferredMaterial);
 				DrawUnsupportedShaders();
 				// DrawGizmos();
 
@@ -123,7 +123,7 @@ namespace DopeRP.CPU
 			RAPI.ExecuteBuffer();
 		}
 
-		void DrawVisibleGeometry (bool useGPUInstancing, Material litDeferredMaterial)
+		void DrawVisibleGeometry (Material litDeferredMaterial)
 		{
 			
 			var sortingSettings = new SortingSettings(RAPI.CurCamera)
@@ -134,7 +134,8 @@ namespace DopeRP.CPU
 			var drawingSettings = new DrawingSettings(SProps.CameraRenderer.UnlitShaderTagId, sortingSettings)
 			{
 				// enableDynamicBatching = useDynamicBatching,
-				enableInstancing = useGPUInstancing,
+				enableInstancing = RAPI.assetSettings.useGPUInstancing,
+				enableDynamicBatching = RAPI.assetSettings.useDynamicBatching,
 				perObjectData =
 					PerObjectData.ReflectionProbes |
 					PerObjectData.Lightmaps | PerObjectData.ShadowMask |
@@ -180,7 +181,7 @@ namespace DopeRP.CPU
 		}
 		
 				
-		void DrawVisibleGeometryRefProbes (bool useGPUInstancing) {
+		void DrawVisibleGeometryRefProbes () {
 
 			var sortingSettings = new SortingSettings(RAPI.CurCamera) {
 				criteria = SortingCriteria.CommonOpaque
@@ -189,7 +190,8 @@ namespace DopeRP.CPU
 				SProps.CameraRenderer.UnlitShaderTagId, sortingSettings
 			) {
 				// enableDynamicBatching = useDynamicBatching,
-				enableInstancing = useGPUInstancing,
+				enableInstancing = RAPI.assetSettings.useGPUInstancing,
+				enableDynamicBatching = RAPI.assetSettings.useDynamicBatching,
 				perObjectData =
 					PerObjectData.ReflectionProbes |
 					PerObjectData.Lightmaps | PerObjectData.ShadowMask |
