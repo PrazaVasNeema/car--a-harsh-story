@@ -22,8 +22,7 @@ namespace DopeRP.CPU
 		
 
 
-		public void Render(Camera camera, bool useDynamicBatching, bool useGPUInstancing,
-			CustomRenderPipelineAsset assetSettings)
+		public void Render(Camera camera, bool useGPUInstancing, CustomRenderPipelineAsset assetSettings)
 		{
 			RAPI.CurCamera = camera;
 			PrepareUIForSceneWindow();
@@ -31,6 +30,7 @@ namespace DopeRP.CPU
 				return;
 			}
 
+			RAPI.assetSettings = assetSettings;
 			RAPI.Material = assetSettings.postFXSettings.Material;
 			RAPI.m_samplingOn = assetSettings.samplingOn;
 			RAPI.Context.SetupCameraProperties(RAPI.CurCamera);
@@ -80,11 +80,11 @@ namespace DopeRP.CPU
 			
 			if (RAPI.CurCamera.cameraType == CameraType.Reflection)
 			{
-				DrawVisibleGeometryRefProbes(useDynamicBatching, useGPUInstancing);
+				DrawVisibleGeometryRefProbes(useGPUInstancing);
 			}
 			else
 			{
-				DrawVisibleGeometry(useDynamicBatching, useGPUInstancing, assetSettings.LitDeferredMaterial);
+				DrawVisibleGeometry(useGPUInstancing, assetSettings.LitDeferredMaterial);
 				DrawUnsupportedShaders();
 				// DrawGizmos();
 
@@ -139,7 +139,7 @@ namespace DopeRP.CPU
 			RAPI.ExecuteBuffer();
 		}
 
-		void DrawVisibleGeometry (bool useDynamicBatching, bool useGPUInstancing, Material litDeferredMaterial)
+		void DrawVisibleGeometry (bool useGPUInstancing, Material litDeferredMaterial)
 		{
 			
 			var sortingSettings = new SortingSettings(RAPI.CurCamera)
@@ -149,7 +149,7 @@ namespace DopeRP.CPU
 			
 			var drawingSettings = new DrawingSettings(SProps.CameraRenderer.UnlitShaderTagId, sortingSettings)
 			{
-				enableDynamicBatching = useDynamicBatching,
+				// enableDynamicBatching = useDynamicBatching,
 				enableInstancing = useGPUInstancing,
 				perObjectData =
 					PerObjectData.ReflectionProbes |
@@ -193,9 +193,7 @@ namespace DopeRP.CPU
 		}
 		
 				
-		void DrawVisibleGeometryRefProbes (
-			bool useDynamicBatching, bool useGPUInstancing
-		) {
+		void DrawVisibleGeometryRefProbes (bool useGPUInstancing) {
 
 			var sortingSettings = new SortingSettings(RAPI.CurCamera) {
 				criteria = SortingCriteria.CommonOpaque
@@ -203,7 +201,7 @@ namespace DopeRP.CPU
 			var drawingSettings = new DrawingSettings(
 				SProps.CameraRenderer.UnlitShaderTagId, sortingSettings
 			) {
-				enableDynamicBatching = useDynamicBatching,
+				// enableDynamicBatching = useDynamicBatching,
 				enableInstancing = useGPUInstancing,
 				perObjectData =
 					PerObjectData.ReflectionProbes |

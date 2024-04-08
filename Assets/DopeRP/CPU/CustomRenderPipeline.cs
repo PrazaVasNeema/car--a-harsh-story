@@ -7,18 +7,18 @@ namespace DopeRP.CPU
 	{
 		DopeRP.CPU.CameraRenderer renderer = new DopeRP.CPU.CameraRenderer();
 		
-		bool useDynamicBatching, useGPUInstancing;
+		bool useGPUInstancing;
 
 		private CustomRenderPipelineAsset m_assetSettings;
 
-		public CustomRenderPipeline (bool useDynamicBatching, bool useGPUInstancing, bool useSRPBatcher,
+		public CustomRenderPipeline (bool useGPUInstancing,
 			CustomRenderPipelineAsset assetSettings) {
 			// GraphicsSettings.useScriptableRenderPipelineBatching = true;
 			// GraphicsSettings.lightsUseLinearIntensity = true;
 			m_assetSettings = assetSettings;
-			this.useDynamicBatching = useDynamicBatching;
+			// this.useDynamicBatching = useDynamicBatching;
 			this.useGPUInstancing = useGPUInstancing;
-			GraphicsSettings.useScriptableRenderPipelineBatching = useSRPBatcher;
+			// GraphicsSettings.useScriptableRenderPipelineBatching = useSRPBatcher;
 			GraphicsSettings.lightsUseLinearIntensity = true;
 		}
 
@@ -26,7 +26,7 @@ namespace DopeRP.CPU
 		{
 			RAPI.Context = context;
 			for (int i = 0; i < cameras.Length; i++) {
-				renderer.Render(cameras[i], useDynamicBatching, useGPUInstancing, m_assetSettings);
+				renderer.Render(cameras[i], useGPUInstancing, m_assetSettings);
 			}
 		}
 	}

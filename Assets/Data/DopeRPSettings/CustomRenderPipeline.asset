@@ -13,15 +13,11 @@ MonoBehaviour:
   m_Name: CustomRenderPipeline
   m_EditorClassIdentifier: 
   samplingOn: 1
+  useGPUInstancing: 0
+  LitDeferredMaterial: {fileID: 2100000, guid: b2f4f84bc8a8e234aad2a24c812aa627, type: 2}
   ambientLightOn: 1
   ambientLightScale: 0.011
   mainDirLightStrength: 0.894
-  EmptyMaterial: {fileID: 2100000, guid: 3da448e14f24dfa47bad9c57df4f6384, type: 2}
-  useDynamicBatching: 0
-  useGPUInstancing: 1
-  useSRPBatcher: 0
-  LitDeferredMaterial: {fileID: 2100000, guid: b2f4f84bc8a8e234aad2a24c812aa627, type: 2}
-  m_shadows: 1
   m_shadowsSettings:
     shadowsOn: 1
     maxDistance: 1200
@@ -33,9 +29,7 @@ MonoBehaviour:
       cascadeRatio1: 0.073
       cascadeRatio2: 0.16
       cascadeRatio3: 0.252
-  postFXSettings: {fileID: 11400000, guid: fe911ba97b277904caed8459cc8f6a12, type: 2}
   m_SSAO: 1
-  m_decalsOn: 1
   ssaoSettings:
     samplesCount: 2
     noiseTexture: {fileID: 2800000, guid: 4d2d26443ff3f2c4980e45942ce45e79, type: 3}
@@ -45,4 +39,5 @@ MonoBehaviour:
     magnitude: 0.91
     contrast: 1
     SSAOMaterial: {fileID: 2100000, guid: 60abf83f57f21544994c9a37aa5bb374, type: 2}
-  colorLUTResolution: 64
+  m_decalsOn: 1
+  m_postFXSettings: {fileID: 11400000, guid: fe911ba97b277904caed8459cc8f6a12, type: 2}

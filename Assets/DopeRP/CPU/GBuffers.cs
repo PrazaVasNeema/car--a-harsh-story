@@ -50,7 +50,7 @@ namespace DopeRP.CPU
             var drawingSettings = new DrawingSettings(SProps.GBuffer.GBufferPassId, sortingSettings)
             {
                 enableDynamicBatching = false,
-                enableInstancing = true,
+                enableInstancing = RAPI.assetSettings.useGPUInstancing,
                 perObjectData =
                 PerObjectData.ReflectionProbes |
                 PerObjectData.Lightmaps | PerObjectData.ShadowMask |

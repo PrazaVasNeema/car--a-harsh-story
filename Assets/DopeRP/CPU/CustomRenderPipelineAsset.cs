@@ -9,52 +9,49 @@ namespace DopeRP.CPU
 	[CreateAssetMenu(menuName = "Rendering/Custom Render Pipeline")]
 	public class CustomRenderPipelineAsset : RenderPipelineAsset
 	{
+		public static CustomRenderPipelineAsset instance;
 
-		[SerializeField] public bool samplingOn;
-		[SerializeField] public bool ambientLightOn;
+		[Header("General RP settings")]
+		public bool samplingOn;
+		// public bool useDynamicBatching = true;
+		public bool useGPUInstancing = true;
+		// public bool useSRPBatcher = true;
+		
+		[Header("Lighting")]
+		public Material LitDeferredMaterial;
+		public bool ambientLightOn;
 		[Range(0, 0.2f)]
-		[SerializeField] public float ambientLightScale;
+		public float ambientLightScale;
 		[OnChangedCall("onPropertyChangeMain")]
 		[Range(0, 1f)]
-		[SerializeField] public float mainDirLightStrength;
-		
+		public float mainDirLightStrength;
 		[Header("(Just so unity don't create a new material each render call)")]
-		public Material EmptyMaterial;
-		public static CustomRenderPipelineAsset instance;
-		[SerializeField]
-		bool useDynamicBatching = true, useGPUInstancing = true, useSRPBatcher = true;
-		[Header("(Just so unity don't create a new material each render call)")]
-		public Material LitDeferredMaterial;
-		[SerializeField] 
-		private bool m_shadows;
-		public bool shadows => m_shadows;
 		[SerializeField] private ShadowSettings m_shadowsSettings = default;
 		public ShadowSettings shadowSettings => m_shadowsSettings;
 		
-
-
-		[Header("-------------------------")]
+		[Header("SSAO")]
 		[SerializeField] 
 		private bool m_SSAO;
 		public bool SSAO => m_SSAO;
 		[SerializeField] 
-		private bool m_decalsOn;
-		public bool decalsOn => m_decalsOn;
-		[SerializeField] 
 		private SSAOSettings ssaoSettings;
 		public SSAOSettings SSAOSettings => ssaoSettings;
 		
-
+		[Header("Decals")]
+		[SerializeField] 
+		private bool m_decalsOn;
+		public bool decalsOn => m_decalsOn;
+		
+		[Header("PostFX")]
 		[SerializeField]
 		private PostFXSettings m_postFXSettings = default;
-
 		public PostFXSettings postFXSettings => m_postFXSettings;
 		
 
 		
 		protected override RenderPipeline CreatePipeline () {
 			instance = this;
-			return new CustomRenderPipeline(useDynamicBatching, useGPUInstancing, useSRPBatcher, this);
+			return new CustomRenderPipeline(useGPUInstancing, this);
 			
 		}
 		

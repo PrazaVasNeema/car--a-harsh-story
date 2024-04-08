@@ -26,6 +26,8 @@ namespace DopeRP.CPU
 
         public static Material Material;
 
+        public static CustomRenderPipelineAsset assetSettings;
+
         
     
         public static void ExecuteBuffer () {

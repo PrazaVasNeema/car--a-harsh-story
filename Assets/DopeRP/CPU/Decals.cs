@@ -34,7 +34,7 @@ namespace DopeRP.CPU
             var drawingSettings = new DrawingSettings(SProps.Decals.DecalsPassId, sortingSettings)
             {
                 enableDynamicBatching = false,
-                enableInstancing = true,
+                enableInstancing = RAPI.assetSettings.useGPUInstancing,
             };
             var filteringSettings = new FilteringSettings(RenderQueueRange.opaque);
 
