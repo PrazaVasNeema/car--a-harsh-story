@@ -31,9 +31,7 @@ namespace DopeRP.CPU
 
             [Range(0f, 1f)]
             public float cascadeRatio1, cascadeRatio2, cascadeRatio3;
-            public Vector3 CascadeRatios =>
-                new Vector3(cascadeRatio1, cascadeRatio2, cascadeRatio3);
-            
+            public Vector3 CascadeRatios => new Vector3(cascadeRatio1, cascadeRatio2, cascadeRatio3);
 
         }
         
@@ -42,9 +40,6 @@ namespace DopeRP.CPU
         
         [Range(0.001f, 1f)]
         public float distanceFade = 0.1f;
-
-    
-
 
         public Directional directional = new Directional {
             atlasSize = TextureSize._1024,

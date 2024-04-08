@@ -24,8 +24,7 @@ namespace DopeRP.CPU
 
 
 		public void Render(Camera camera, bool useDynamicBatching, bool useGPUInstancing,
-			CustomRenderPipelineAsset customRenderPipelineAsset, PostFXSettings postFXSettings,
-			int colorLUTResolution)
+			CustomRenderPipelineAsset customRenderPipelineAsset, PostFXSettings postFXSettings)
 		{
 			RAPI.CurCamera = camera;
 			PrepareUIForSceneWindow();
@@ -67,7 +66,7 @@ namespace DopeRP.CPU
 
 
 			m_lighting.Setup(customRenderPipelineAsset.shadowSettings);
-			postFXStack.Setup(RAPI.Context, camera, postFXSettings, colorLUTResolution);
+			postFXStack.Setup(RAPI.Context, camera, postFXSettings);
 			Setup();
 
 			if (customRenderPipelineAsset.ambientLightOn)

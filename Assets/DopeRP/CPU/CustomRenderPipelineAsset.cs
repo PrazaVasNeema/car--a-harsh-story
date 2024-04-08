@@ -30,8 +30,8 @@ namespace DopeRP.CPU
 		public bool shadows => m_shadows;
 		[SerializeField] private ShadowSettings m_shadowsSettings = default;
 		public ShadowSettings shadowSettings => m_shadowsSettings;
-		[SerializeField]
-		PostFXSettings postFXSettings = default;
+		
+
 
 		[Header("-------------------------")]
 		[SerializeField] 
@@ -44,19 +44,19 @@ namespace DopeRP.CPU
 		private SSAOSettings ssaoSettings;
 		public SSAOSettings SSAOSettings => ssaoSettings;
 		
-		public enum ColorLUTResolution { _16 = 16, _32 = 32, _64 = 64 }
 
 		[SerializeField]
-		ColorLUTResolution colorLUTResolution = ColorLUTResolution._32;
+		PostFXSettings postFXSettings = default;
+		
+
 		
 		protected override RenderPipeline CreatePipeline () {
 			instance = this;
-			return new CustomRenderPipeline(useDynamicBatching, useGPUInstancing, useSRPBatcher, this,
-				postFXSettings, (int)colorLUTResolution);
+			return new CustomRenderPipeline(useDynamicBatching, useGPUInstancing, useSRPBatcher, this, postFXSettings);
 			
 		}
 		
-		
+		// ---------------------------
 		public void onPropertyChangeSSAOSettings()
 		{
 			Material ssaoMaterial = ssaoSettings.SSAOMaterial;
