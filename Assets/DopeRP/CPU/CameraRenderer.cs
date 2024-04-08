@@ -20,7 +20,6 @@ namespace DopeRP.CPU
 		
 		PostFXStack postFXStack = new PostFXStack();
 		
-		static int frameBufferId = Shader.PropertyToID("_CameraFrameBuffer");
 
 
 		public void Render(Camera camera, bool useDynamicBatching, bool useGPUInstancing,
@@ -107,13 +106,13 @@ namespace DopeRP.CPU
 				DrawGizmosBeforeFX();
 				if (postFXStack.IsActive)
 				{
-					postFXStack.Render(frameBufferId);
+					postFXStack.Render(SProps.PostFX.fxSourceAtlas);
 				}
 				DrawGizmosAfterFX();
-				if (postFXStack.IsActive)
-				{
-					RAPI.Buffer.ReleaseTemporaryRT(frameBufferId);
-				}
+				// if (postFXStack.IsActive)
+				// {
+				// 	RAPI.Buffer.ReleaseTemporaryRT(frameBufferId);
+				// }
 			}
 			RAPI.CleanupTempRT(SProps.Shadows.DirShadowAtlasId);
 
@@ -128,12 +127,12 @@ namespace DopeRP.CPU
 				if (flags > CameraClearFlags.Color) {
 					flags = CameraClearFlags.Color;
 				}
-				RAPI.Buffer.GetTemporaryRT(
-					frameBufferId, RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight,
-					32, FilterMode.Bilinear, RenderTextureFormat.Default
-				);
+				// RAPI.Buffer.GetTemporaryRT(
+				// 	frameBufferId, RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight,
+				// 	32, FilterMode.Bilinear, RenderTextureFormat.Default
+				// );
 				RAPI.Buffer.SetRenderTarget(
-					frameBufferId,
+					SProps.PostFX.fxSourceAtlas,
 					RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store
 				);
 			}
@@ -180,7 +179,7 @@ namespace DopeRP.CPU
 
 			RAPI.ExecuteBuffer();
 			
-			RAPI.Buffer.SetRenderTarget(Shader.PropertyToID("_CameraFrameBuffer"), new RenderTargetIdentifier(SProps.Common.DepthBuffer));
+			RAPI.Buffer.SetRenderTarget(SProps.PostFX.fxSourceAtlas, new RenderTargetIdentifier(SProps.Common.DepthBuffer));
 			RAPI.ExecuteBuffer();
 			
 			RAPI.BeginSample(BUFFER_NAME_TRANSPARENCY);

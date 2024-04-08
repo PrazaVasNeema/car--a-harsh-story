@@ -50,7 +50,7 @@ public partial class PostFXStack {
     public void Render (int sourceId) {
         // Draw(sourceId, BuiltinRenderTextureType.CameraTarget, Pass.Copy);
        
-        RAPI.Draw(sourceId, SProps.PostFX.fxSourceAtlas, Pass.Copy, settings.Material);
+        // RAPI.Draw(sourceId, SProps.PostFX.fxSourceAtlas, Pass.Copy, settings.Material);
         // RAPI.Buffer.SetGlobalTexture(SProps.PostFX.fxSourceAtlas, sourceId);
 
         // RAPI.ExecuteBuffer();

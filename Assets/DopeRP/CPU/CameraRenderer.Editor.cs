@@ -35,7 +35,7 @@ namespace DopeRP.CPU
 				new RenderTargetIdentifier(Shader.PropertyToID("1")),
 			};
 			if( postFXStack.IsActive)
-				RAPI.Buffer.SetRenderTarget(Shader.PropertyToID("_CameraFrameBuffer"), new RenderTargetIdentifier(SProps.Common.DepthBuffer));
+				RAPI.Buffer.SetRenderTarget(SProps.PostFX.fxSourceAtlas, new RenderTargetIdentifier(SProps.Common.DepthBuffer));
 			else
 			{
 				RAPI.Buffer.SetRenderTarget(BuiltinRenderTextureType.CameraTarget, new RenderTargetIdentifier(SProps.Common.DepthBuffer));
