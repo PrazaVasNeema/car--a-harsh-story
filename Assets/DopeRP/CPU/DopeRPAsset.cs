@@ -7,9 +7,9 @@ using LightType = UnityEngine.LightType;
 namespace DopeRP.CPU
 {
 	[CreateAssetMenu(menuName = "Rendering/Custom Render Pipeline")]
-	public class CustomRenderPipelineAsset : RenderPipelineAsset
+	public class DopeRPAsset : RenderPipelineAsset
 	{
-		public static CustomRenderPipelineAsset instance;
+		public static DopeRPAsset instance;
 
 		[Header("General RP settings")]
 		public bool samplingOn;
@@ -51,7 +51,7 @@ namespace DopeRP.CPU
 		
 		protected override RenderPipeline CreatePipeline () {
 			instance = this;
-			return new CustomRenderPipeline(useGPUInstancing, this);
+			return new DopeRP(useGPUInstancing, this);
 			
 		}
 		

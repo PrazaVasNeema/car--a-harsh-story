@@ -12,7 +12,6 @@ namespace DopeRP.CPU
 		private readonly StencilPrepass m_stencilPrepass = new StencilPrepass();
 		
 		private readonly Lighting m_lighting = new Lighting();
-		private readonly RenderBuffers m_renderBuffers = new RenderBuffers();
 		private readonly GBuffers m_gBuffers = new GBuffers();
 		private readonly Decals m_decals = new Decals();
 
@@ -22,7 +21,7 @@ namespace DopeRP.CPU
 		
 
 
-		public void Render(Camera camera, bool useGPUInstancing, CustomRenderPipelineAsset assetSettings)
+		public void Render(Camera camera, bool useGPUInstancing, DopeRPAsset assetSettings)
 		{
 			RAPI.CurCamera = camera;
 			PrepareUIForSceneWindow();

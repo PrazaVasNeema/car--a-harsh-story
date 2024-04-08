@@ -6,7 +6,7 @@ namespace DopeRP.CPU
     #if UNITY_EDITOR
 
     [CanEditMultipleObjects]
-    [CustomEditorForRenderPipeline(typeof(Light), typeof(CustomRenderPipelineAsset))]
+    [CustomEditorForRenderPipeline(typeof(Light), typeof(DopeRPAsset))]
     public class CustomLightEditor : LightEditor
     {
         public override void OnInspectorGUI() {

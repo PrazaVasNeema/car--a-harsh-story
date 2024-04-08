@@ -3,16 +3,16 @@ using UnityEngine.Rendering;
 
 namespace DopeRP.CPU
 {
-	public class CustomRenderPipeline : RenderPipeline
+	public class DopeRP : RenderPipeline
 	{
-		DopeRP.CPU.CameraRenderer renderer = new DopeRP.CPU.CameraRenderer();
+		global::DopeRP.CPU.CameraRenderer renderer = new global::DopeRP.CPU.CameraRenderer();
 		
 		bool useGPUInstancing;
 
-		private CustomRenderPipelineAsset m_assetSettings;
+		private DopeRPAsset m_assetSettings;
 
-		public CustomRenderPipeline (bool useGPUInstancing,
-			CustomRenderPipelineAsset assetSettings) {
+		public DopeRP (bool useGPUInstancing,
+			DopeRPAsset assetSettings) {
 			// GraphicsSettings.useScriptableRenderPipelineBatching = true;
 			// GraphicsSettings.lightsUseLinearIntensity = true;
 			m_assetSettings = assetSettings;
