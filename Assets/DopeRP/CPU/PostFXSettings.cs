@@ -12,7 +12,14 @@ public class PostFXSettings : ScriptableObject
     [Range(0,4)]
     public float m_vignette_offset = 1;
 
-    public List<FX_Feature> currentFXFeaturesList;
+    public List<PostFXFeaturesChoice> currentFXFeaturesList;
+    
+    [Serializable] 
+    public struct PostFXFeaturesChoice
+    {
+        public bool FXFeatureIsOne;
+        public FX_Feature fxFeature;
+    }
     
     [SerializeField]
     Shader shader = default;

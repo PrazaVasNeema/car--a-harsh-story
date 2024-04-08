@@ -75,10 +75,12 @@ public partial class PostFXStack {
         
         foreach (var fxFeature in settings.currentFXFeaturesList)
         {
-            fxFeature.SetupUniforms();
-            fxFeature.Render(SProps.PostFX.fxSourceAtlas, SProps.PostFX.fxDestinationAtlas, settings);
-            RAPI.Draw(SProps.PostFX.fxDestinationAtlas, SProps.PostFX.fxSourceAtlas, Pass.Copy, settings.Material);
-        
+            if (fxFeature.FXFeatureIsOne)
+            {
+                fxFeature.fxFeature.SetupUniforms();
+                fxFeature.fxFeature.Render(SProps.PostFX.fxSourceAtlas, SProps.PostFX.fxDestinationAtlas, settings);
+                RAPI.Draw(SProps.PostFX.fxDestinationAtlas, SProps.PostFX.fxSourceAtlas, Pass.Copy, settings.Material);
+            }
         }
         // DoColorGradingAndToneMapping(sourceId);
         // context.ExecuteCommandBuffer(buffer);

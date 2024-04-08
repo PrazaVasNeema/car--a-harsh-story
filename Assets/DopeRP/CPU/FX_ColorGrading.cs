@@ -59,7 +59,7 @@ public partial class FX_ColorGrading : FX_Feature
         RAPI.Buffer.SetGlobalVector(colorGradingLUTParametersId, new Vector4(1f / lutWidth, 1f / lutHeight, lutHeight - 1f));
 
         RenderTextureFormat format = RenderTextureFormat.Default;
-        RAPI.Buffer.GetTemporaryRT(Shader.PropertyToID("_ColorGrading"), RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight, 0, FilterMode.Bilinear, format);
+        // RAPI.Buffer.GetTemporaryRT(Shader.PropertyToID("_ColorGrading"), RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight, 0, FilterMode.Bilinear, format);
         // RAPI.DrawFullscreenQuadFromTo(SProps.PostFX.fxSourceAtlas, Shader.PropertyToID("_ColorGrading"),
         //     generalFXSettings.Material, (int)PostFXStack.Pass.Final);
         
