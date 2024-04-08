@@ -24,7 +24,7 @@ MonoBehaviour:
   m_shadows: 1
   m_shadowsSettings:
     shadowsOn: 1
-    maxDistance: 1000
+    maxDistance: 1200
     distanceFade: 0.1
     directional:
       atlasSize: 4096
