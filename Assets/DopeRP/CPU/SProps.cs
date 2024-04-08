@@ -122,6 +122,10 @@ namespace DopeRP.CPU
         public static class PostFX
         {
             
+            public static int fxSource = Shader.PropertyToID("_PostFXSource");
+            public static int fxSourceAtlas = Shader.PropertyToID("_PostFXSourceAtlas");
+            public static int fxDestinationAtlas = Shader.PropertyToID("_PostFXDestinationAtlas");
+            
             public static ShaderTagId DecalsPassId = new ShaderTagId("DecalsPass");
 
             // Forward rendering

@@ -26,7 +26,7 @@ public partial class PostFXStack {
      
      int colorLUTResolution;
     
-    enum Pass {
+    public enum Pass {
         Copy,
         ColorGradingNone,
         ColorGradingACES,
@@ -59,13 +59,37 @@ public partial class PostFXStack {
         this.settings = settings;
         this.settings = camera.cameraType <= CameraType.SceneView ? settings : null;
         ApplySceneViewState();
+        RAPI.Buffer.GetTemporaryRT(SProps.PostFX.fxSourceAtlas, RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight, 32, FilterMode.Bilinear, RenderTextureFormat.Default);
+        RAPI.Buffer.GetTemporaryRT(SProps.PostFX.fxDestinationAtlas, RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight, 32, FilterMode.Bilinear, RenderTextureFormat.Default);
+        // RAPI.Draw();
+        
     }
     
     public void Render (int sourceId) {
         // Draw(sourceId, BuiltinRenderTextureType.CameraTarget, Pass.Copy);
-        DoColorGradingAndToneMapping(sourceId);
-        context.ExecuteCommandBuffer(buffer);
-        buffer.Clear();
+       
+        RAPI.Draw(sourceId, SProps.PostFX.fxSourceAtlas, Pass.Copy, settings.Material);
+        // RAPI.Buffer.SetGlobalTexture(SProps.PostFX.fxSourceAtlas, sourceId);
+
+        // RAPI.ExecuteBuffer();
+        
+        foreach (var fxFeature in settings.currentFXFeaturesList)
+        {
+            fxFeature.SetupUniforms();
+            fxFeature.Render(SProps.PostFX.fxSourceAtlas, SProps.PostFX.fxDestinationAtlas, settings);
+            RAPI.Draw(SProps.PostFX.fxDestinationAtlas, SProps.PostFX.fxSourceAtlas, Pass.Copy, settings.Material);
+        
+        }
+        // DoColorGradingAndToneMapping(sourceId);
+        // context.ExecuteCommandBuffer(buffer);
+        // buffer.Clear();
+        RAPI.Draw(SProps.PostFX.fxSourceAtlas, BuiltinRenderTextureType.CameraTarget, Pass.Copy,
+            settings.Material);
+        
+        // RAPI.Buffer.ReleaseTemporaryRT(SProps.PostFX.fxSourceAtlas);
+        // RAPI.Buffer.ReleaseTemporaryRT(SProps.PostFX.fxDestinationAtlas);
+        RAPI.ExecuteBuffer();
+        
     }
     
     void ConfigureColorAdjustments () {

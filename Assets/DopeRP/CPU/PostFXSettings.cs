@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "DopeRP/Post FX Settings")]
@@ -11,6 +12,7 @@ public class PostFXSettings : ScriptableObject
     [Range(0,4)]
     public float m_vignette_offset = 1;
 
+    public List<FX_Feature> currentFXFeaturesList;
     
     [SerializeField]
     Shader shader = default;

@@ -6,10 +6,10 @@ using UnityEngine.Rendering;
 [CreateAssetMenu(menuName = "DopeRP/Post FX Settings")]
 public abstract class FX_Feature : ScriptableObject
 {
-    protected int fxSourceId = Shader.PropertyToID("_PostFXSource");
-    public abstract bool SetupUniforms();
+    public static PostFXStack.Pass m_FXFeaturePass;
+    public abstract void SetupUniforms();
     
-    public abstract bool Render(int sourceRT, int targetRT);
+    public abstract void Render(int sourceRT, int targetRT, PostFXSettings generalFXSettings);
 
     
     // void Draw (

@@ -226,6 +226,17 @@ namespace DopeRP.CPU
             Buffer.SetViewProjectionMatrices(Matrix4x4.identity, Matrix4x4.identity);
             Buffer.DrawMesh(fullscreenMesh, Matrix4x4.identity, material, 0, passNum);
         }
+        
+        public static void DrawFullscreenQuadFromTo(RenderTargetIdentifier from, RenderTargetIdentifier to, 
+            Material material, int passNum)
+        {
+            Buffer.SetGlobalTexture(SProps.PostFX.fxSourceAtlas, from);
+            Buffer.SetRenderTarget(to, RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store);
+            // buffer.DrawProcedural(Matrix4x4.identity, settings.Material, (int)pass, MeshTopology.Triangles, 3);
+            Buffer.SetViewProjectionMatrices(Matrix4x4.identity, Matrix4x4.identity);
+            Buffer.DrawMesh(fullscreenMesh, Matrix4x4.identity, material, 0, passNum);
+            // RAPI.Buffer.SetViewProjectionMatrices(RAPI.CurCamera.worldToCameraMatrix, RAPI.CurCamera.projectionMatrix);
+        }
 
         public static void BeginSample(string bufferName)
         {
@@ -252,6 +263,13 @@ namespace DopeRP.CPU
             Buffer.SetGlobalTexture(fxSourceId, from);
             Buffer.SetRenderTarget(to);
             Buffer.DrawProcedural(Matrix4x4.identity, Material, 0, MeshTopology.Triangles, 3);
+        }
+        
+        public static void Draw (RenderTargetIdentifier from, RenderTargetIdentifier to, PostFXStack.Pass pass,
+            Material material) {
+            Buffer.SetGlobalTexture(fxSourceId, from);
+            Buffer.SetRenderTarget(to, RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store);
+            Buffer.DrawProcedural(Matrix4x4.identity, material, (int)pass, MeshTopology.Triangles, 3);
         }
     }
 }
