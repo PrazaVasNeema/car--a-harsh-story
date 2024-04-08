@@ -6,6 +6,7 @@ Shader "DopeRP/Shaders/Decals"
 		[Toggle(_CONTRIBUTE_ALBEDO)] _ContributeAlbedo ("Contribute Albedo", Float) = 0
 		_BaseMap("Albedo Texture", 2D) = "(0,0,0,0)" {}
 		_BaseColor("Color", Color) = (1.0, 1.0, 1.0, 1.0)
+		[Toggle(_ADD_COLOR)] _AddColor ("Additive Color", Float) = 0
 		
 		[Toggle(_OPACITY_ATLAS)] _OpacityAtlas ("Opacity as texture", Float) = 0
 		[NoScaleOffset] _OpacityMap("Albedo Texture", 2D) = "(0,0,0,0)" {}
@@ -60,10 +61,12 @@ Shader "DopeRP/Shaders/Decals"
 			// #pragma enable_d3d11_debug_symbols
 			// #pragma shader_feature _CLIPPING
 			#pragma shader_feature _CONTRIBUTE_ALBEDO
+			#pragma shader_feature _ADD_COLOR
 			#pragma shader_feature _OPACITY_ATLAS
 			#pragma shader_feature _R_CUTOUT
 			#pragma shader_feature _CONTRIBUTE_NORMAL
 			#pragma shader_feature _CONTRIBUTE_BRDF
+			
 
 
 			#pragma vertex vert
@@ -260,7 +263,16 @@ Shader "DopeRP/Shaders/Decals"
 				#if defined(_CONTRIBUTE_ALBEDO)
 				
 					float4 baseColor = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, texCoords);
-					baseColor *= UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_DECALS, _BaseColor);
+				
+					#if defined(_ADD_COLOR)
+    
+						baseColor += UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_DECALS, _BaseColor);
+
+					#else
+    
+						baseColor *= UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial_DECALS, _BaseColor);
+
+					#endif
 				
 					o.decalsArtisticAlbedoAtlas = baseColor;
 				

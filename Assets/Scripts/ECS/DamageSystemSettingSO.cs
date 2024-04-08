@@ -15,10 +15,6 @@ public class DamageSystemSettingSO : ScriptableObject
         public float spawnDecalsHPThresholdLow = 10;
         public float spawnDecalsHPThresholdHigh = 30;
         public float gigaSplashHPThreshold = 200;
-        public float gigaSplashSphereRadius = 2;
-        public float gigaSplashCastDistance = 2;
-        public LayerMask gigaSplashLayerMask;
-        public float impactForceModifier;
         public List<GameObject> decalLowDamagePrefabs;
         public List<GameObject> decalHighDamagePrefabs;
 
