@@ -14,6 +14,7 @@ Material:
   m_ValidKeywords:
   - _CONTRIBUTE_ALBEDO
   - _CONTRIBUTE_BRDF
+  - _R_CUTOUT
   m_InvalidKeywords:
   - _CLIPPING
   - _RECEIVE_SHADOWS
@@ -97,6 +98,7 @@ Material:
     - _OpacityAtlas: 0
     - _Parallax: 0.02
     - _PremulAlpha: 0
+    - _RCutout: 1
     - _ReceiveShadows: 1
     - _Reflectance: 0.514
     - _Roughness: 0.72

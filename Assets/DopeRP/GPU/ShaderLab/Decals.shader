@@ -212,12 +212,13 @@ Shader "DopeRP/Shaders/Decals"
 				// #endif
 				
 				worldPos = float4(TransformViewToWorld(viewSpacePosition.xyz),1);
+									o.decalsArtisticAlbedoAtlas = 0;
+
 
 				#else
 
 					worldPos = SAMPLE_TEXTURE2D(_GAux_WorldSpaceAtlas, sampler_GAux_WorldSpaceAtlas, screenUV);
 					o.decalsArtisticAlbedoAtlas = 0;
-
 				// o.decalsArtisticAlbedoAtlas = worldPos;
 				// return o;
 				#endif

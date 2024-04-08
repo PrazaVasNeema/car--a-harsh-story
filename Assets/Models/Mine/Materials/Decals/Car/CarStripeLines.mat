@@ -13,7 +13,9 @@ Material:
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - _CONTRIBUTE_ALBEDO
+  - _CONTRIBUTE_BRDF
   - _OPACITY_ATLAS
+  - _R_CUTOUT
   m_InvalidKeywords:
   - _CLIPPING
   - _RECEIVE_SHADOWS
@@ -80,12 +82,12 @@ Material:
     - _BumpScale: 1
     - _Clipping: 1
     - _ContributeAlbedo: 1
-    - _ContributeBRDF: 0
+    - _ContributeBRDF: 1
     - _ContributeNormals: 0
     - _Cutoff: 0.103
     - _DepthLevel: 1
     - _DetailNormalMapScale: 1
-    - _DstBlend: 10
+    - _DstBlend: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
@@ -97,6 +99,7 @@ Material:
     - _OpacityAtlas: 1
     - _Parallax: 0.02
     - _PremulAlpha: 0
+    - _RCutout: 1
     - _ReceiveShadows: 1
     - _Reflectance: 0.5
     - _Roughness: 1

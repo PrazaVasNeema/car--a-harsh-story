@@ -13,6 +13,7 @@ Material:
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - _CONTRIBUTE_ALBEDO
+  - _CONTRIBUTE_BRDF
   - _OPACITY_ATLAS
   m_InvalidKeywords:
   - _CLIPPING
@@ -80,12 +81,12 @@ Material:
     - _BumpScale: 1
     - _Clipping: 1
     - _ContributeAlbedo: 1
-    - _ContributeBRDF: 0
+    - _ContributeBRDF: 1
     - _ContributeNormals: 0
     - _Cutoff: 0.478
     - _DepthLevel: 1
     - _DetailNormalMapScale: 1
-    - _DstBlend: 10
+    - _DstBlend: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
