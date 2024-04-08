@@ -46,13 +46,15 @@ namespace DopeRP.CPU
 		
 
 		[SerializeField]
-		PostFXSettings postFXSettings = default;
+		private PostFXSettings m_postFXSettings = default;
+
+		public PostFXSettings postFXSettings => m_postFXSettings;
 		
 
 		
 		protected override RenderPipeline CreatePipeline () {
 			instance = this;
-			return new CustomRenderPipeline(useDynamicBatching, useGPUInstancing, useSRPBatcher, this, postFXSettings);
+			return new CustomRenderPipeline(useDynamicBatching, useGPUInstancing, useSRPBatcher, this);
 			
 		}
 		

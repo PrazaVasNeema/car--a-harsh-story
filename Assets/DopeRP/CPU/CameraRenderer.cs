@@ -23,16 +23,16 @@ namespace DopeRP.CPU
 
 
 		public void Render(Camera camera, bool useDynamicBatching, bool useGPUInstancing,
-			CustomRenderPipelineAsset customRenderPipelineAsset, PostFXSettings postFXSettings)
+			CustomRenderPipelineAsset assetSettings)
 		{
 			RAPI.CurCamera = camera;
 			PrepareUIForSceneWindow();
-			if (!RAPI.Cull(customRenderPipelineAsset.shadowSettings.maxDistance)) {
+			if (!RAPI.Cull(assetSettings.shadowSettings.maxDistance)) {
 				return;
 			}
 
-			RAPI.Material = postFXSettings.Material;
-			RAPI.m_samplingOn = customRenderPipelineAsset.samplingOn;
+			RAPI.Material = assetSettings.postFXSettings.Material;
+			RAPI.m_samplingOn = assetSettings.samplingOn;
 			RAPI.Context.SetupCameraProperties(RAPI.CurCamera);
 			RAPI.SetupCommonUniforms();
 			
@@ -42,7 +42,7 @@ namespace DopeRP.CPU
 			m_stencilPrepass.Render();
 				m_gBuffers.Render();
 				// RAPI.DrawEmpty(customRenderPipelineAsset.EmptyMaterial);
-				if (customRenderPipelineAsset.decalsOn)
+				if (assetSettings.decalsOn)
 				{
 					// RAPI.SetKeyword("DECALS_ON", true);
 					m_decals.Render();
@@ -51,9 +51,9 @@ namespace DopeRP.CPU
 				{
 					// RAPI.SetKeyword("DECALS_ON", false);
 				}
-			if (customRenderPipelineAsset.SSAO)
+			if (assetSettings.SSAO)
 			{
-				m_ssao.Render(customRenderPipelineAsset.SSAOSettings);
+				m_ssao.Render(assetSettings.SSAOSettings);
 				RAPI.SetKeyword("SSAO_ON", true);
 			}
 			else
@@ -64,14 +64,14 @@ namespace DopeRP.CPU
 
 
 
-			m_lighting.Setup(customRenderPipelineAsset.shadowSettings);
-			postFXStack.Setup(postFXSettings);
+			m_lighting.Setup(assetSettings.shadowSettings);
+			postFXStack.Setup(assetSettings.postFXSettings);
 			Setup();
 
-			if (customRenderPipelineAsset.ambientLightOn)
+			if (assetSettings.ambientLightOn)
 			{
 				RAPI.SetKeyword("AMBIENT_LIGHT_ON", true);
-				RAPI.Buffer.SetGlobalFloat(SProps.CameraRenderer.AmbientLightScale, customRenderPipelineAsset.ambientLightScale);
+				RAPI.Buffer.SetGlobalFloat(SProps.CameraRenderer.AmbientLightScale, assetSettings.ambientLightScale);
 			}
 			else
 			{
@@ -84,8 +84,7 @@ namespace DopeRP.CPU
 			}
 			else
 			{
-				DrawVisibleGeometry(useDynamicBatching, useGPUInstancing,
-					customRenderPipelineAsset.LitDeferredMaterial);
+				DrawVisibleGeometry(useDynamicBatching, useGPUInstancing, assetSettings.LitDeferredMaterial);
 				DrawUnsupportedShaders();
 				// DrawGizmos();
 
