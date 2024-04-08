@@ -19,18 +19,18 @@ MonoBehaviour:
       contrast: 0
       colorFilter: {r: 1, g: 1, b: 1, a: 1}
       hueShift: 0
-      saturation: 0
+      saturation: 8
     toneMapping:
-      mode: 0
+      mode: 2
     whiteBalance:
-      temperature: 0
+      temperature: -29
       tint: 0
     splitToning:
-      shadows: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-      highlights: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-      balance: 0
+      shadows: {r: 0.3216002, g: 0.53053606, b: 0.6886792, a: 1}
+      highlights: {r: 0.7169812, g: 0.47081387, b: 0.24012107, a: 1}
+      balance: 15
     channelMixer:
-      red: {x: 1, y: 0, z: 0}
+      red: {x: 1, y: 0, z: 0.3}
       green: {x: 0, y: 1, z: 0}
       blue: {x: 0, y: 0, z: 1}
     shadowsMidtonesHighlights:
