@@ -6,6 +6,10 @@ public class PostFXSettings : ScriptableObject
 {
     public bool m_FXAA_ON;
     public bool m_vignette_on;
+    [Range(0,4)]
+    public float m_vignette_power = 1;
+    [Range(0,4)]
+    public float m_vignette_offset = 1;
 
     
     [SerializeField]

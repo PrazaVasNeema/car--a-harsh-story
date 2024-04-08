@@ -119,5 +119,17 @@ namespace DopeRP.CPU
             
         }
         
+        public static class PostFX
+        {
+            
+            public static ShaderTagId DecalsPassId = new ShaderTagId("DecalsPass");
+
+            // Forward rendering
+
+            public static int VignetteSettings = Shader.PropertyToID("_VignetteSettings");
+
+            
+        }
+        
     }
 }

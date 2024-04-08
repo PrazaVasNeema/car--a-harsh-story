@@ -203,13 +203,13 @@ float4 FinalPassFragment (Varyings input) : SV_TARGET {
     return color;
 }
 
-float power;
+float2 _VignetteSettings;
 
 float4 VignettePassFragment(Varyings input) : SV_TARGET
 {
-    float2 d = (input.screenUV - 0.5) * 1.2;
+    float2 d = (input.screenUV - 0.5) * _VignetteSettings.x;
     float4 color = GetSource(input.screenUV);
-    color *= (1 - length(d)*length(d)) * 0.9;
+    color *= (1 - length(d)*length(d)) * _VignetteSettings.y;
     return color;
 }
 

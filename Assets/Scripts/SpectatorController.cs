@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class SpectatorController : PlayerActorControllerAbstract
 {
+    [SerializeField] private bool m_useAttack = true;
     [SerializeField] private AttackManager m_attackManager;
     [SerializeField] private SpectatorMovementComponent m_spectatorMovementComponent;
 
@@ -50,7 +51,7 @@ public class SpectatorController : PlayerActorControllerAbstract
 
     private void ActorInputManager_OnFireAction(object sender, System.EventArgs e)
     {
-        if (m_attackManager != null)
+        if (m_attackManager != null && m_useAttack)
         {
             m_attackManager.Attack();
         }
@@ -58,7 +59,7 @@ public class SpectatorController : PlayerActorControllerAbstract
     
     private void ActorInputManager_OnFireHeavyAction(object sender, System.EventArgs e)
     {
-        if (m_attackManager != null)
+        if (m_attackManager != null && m_useAttack)
         {
             m_attackManager.AttackAlt();
         }
@@ -66,7 +67,7 @@ public class SpectatorController : PlayerActorControllerAbstract
     
     private void ActorInputManager_OnFireSuperAction(object sender, System.EventArgs e)
     {
-        if (m_attackManager != null)
+        if (m_attackManager != null && m_useAttack)
         {
             m_attackManager.AttackSuper();
         }

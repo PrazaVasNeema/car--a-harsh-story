@@ -170,6 +170,8 @@ public partial class PostFXStack {
         //     Draw(sourceId, sourceId, Pass.Vignette);
         // buffer.ReleaseTemporaryRT(colorGradingLUTId);
         //
+        var vignetteSettings = new Vector2(settings.m_vignette_offset, settings.m_vignette_power);
+        RAPI.Buffer.SetGlobalVector(SProps.PostFX.VignetteSettings, vignetteSettings);
         Draw(Shader.PropertyToID("_Vingette"), BuiltinRenderTextureType.CameraTarget, Pass.Copy);
         
         RAPI.Buffer.ReleaseTemporaryRT(Shader.PropertyToID("_ColorGrading"));
