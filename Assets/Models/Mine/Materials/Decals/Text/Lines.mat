@@ -98,6 +98,7 @@ Material:
     - _OpacityAtlas: 1
     - _Parallax: 0.02
     - _PremulAlpha: 0
+    - _RCutout: 0
     - _ReceiveShadows: 1
     - _Reflectance: 0.5
     - _Roughness: 0.823

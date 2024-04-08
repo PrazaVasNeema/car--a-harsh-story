@@ -16,6 +16,7 @@ Material:
   - _CONTRIBUTE_BRDF
   - _CONTRIBUTE_NORMAL
   - _OPACITY_ATLAS
+  - _R_CUTOUT
   m_InvalidKeywords:
   - _CLIPPING
   m_LightmapFlags: 4
@@ -85,7 +86,7 @@ Material:
     - _ContributeNormals: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
-    - _DstBlend: 10
+    - _DstBlend: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
@@ -95,6 +96,7 @@ Material:
     - _OcclusionStrength: 1
     - _OpacityAtlas: 1
     - _Parallax: 0.02
+    - _RCutout: 1
     - _Reflectance: 0.523
     - _Roughness: 0.66
     - _SmoothnessTextureChannel: 0

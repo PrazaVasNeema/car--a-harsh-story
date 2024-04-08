@@ -85,7 +85,7 @@ Material:
     - _Cutoff: 0.103
     - _DepthLevel: 1
     - _DetailNormalMapScale: 1
-    - _DstBlend: 10
+    - _DstBlend: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
@@ -97,6 +97,7 @@ Material:
     - _OpacityAtlas: 1
     - _Parallax: 0.02
     - _PremulAlpha: 0
+    - _RCutout: 0
     - _ReceiveShadows: 1
     - _Reflectance: 0.5
     - _Roughness: 1

@@ -10,6 +10,7 @@ Shader "DopeRP/Shaders/Decals"
 		[Toggle(_OPACITY_ATLAS)] _OpacityAtlas ("Opacity as texture", Float) = 0
 		[NoScaleOffset] _OpacityMap("Albedo Texture", 2D) = "(0,0,0,0)" {}
 		_Cutoff ("Cutoff", Range(0.0, 1.0)) = 0.5
+		[Toggle(_R_CUTOUT)] _RCutout ("R Cutout for details (notalpha)", Float) = 1
 
 		[Toggle(_CONTRIBUTE_NORMAL)] _ContributeNormals ("Contribute Normals", Float) = 0
 		[NoScaleOffset] _NormalMap("Normal Texture", 2D) = "bump" {}
@@ -60,6 +61,7 @@ Shader "DopeRP/Shaders/Decals"
 			// #pragma shader_feature _CLIPPING
 			#pragma shader_feature _CONTRIBUTE_ALBEDO
 			#pragma shader_feature _OPACITY_ATLAS
+			#pragma shader_feature _R_CUTOUT
 			#pragma shader_feature _CONTRIBUTE_NORMAL
 			#pragma shader_feature _CONTRIBUTE_BRDF
 
@@ -227,9 +229,15 @@ Shader "DopeRP/Shaders/Decals"
 				float4 baseMap_ST =  UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _BaseMap_ST);
 				float2 texCoords = (objectPos.xy + 0.5) * baseMap_ST.xy + baseMap_ST.zw;
 				#if defined(_OPACITY_ATLAS)
+
+					#if defined(_R_CUTOUT)
+						clip(SAMPLE_TEXTURE2D(_OpacityMap, sampler_OpacityMap, texCoords).r - UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _Cutoff));
+
+					#else
 				
-					clip(SAMPLE_TEXTURE2D(_OpacityMap, sampler_OpacityMap, texCoords).r - UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _Cutoff));
-					clip(SAMPLE_TEXTURE2D(_OpacityMap, sampler_OpacityMap, texCoords).a - UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _Cutoff));
+						clip(SAMPLE_TEXTURE2D(_OpacityMap, sampler_OpacityMap, texCoords).a - UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _Cutoff));
+
+					#endif
 				
 				#endif
 				
