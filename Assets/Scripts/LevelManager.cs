@@ -35,6 +35,8 @@ public class LevelManager : MonoBehaviour
         SetCurrentMode(m_currentMode,false);
         
         // SetCurrentDaytime(true);
+        // Invoke("SetCurrentDaytime", 2f);
+        StartCoroutine(WaitAndCall());
 
     }
 
@@ -99,5 +101,15 @@ public class LevelManager : MonoBehaviour
             RenderSettings.skybox = nowIsDaytime ? m_skyboxDay : m_skyboxNight;
 
         }
+    }
+    
+    IEnumerator WaitAndCall()
+    {
+        if (GameData.instance.currentWorld == null)
+        {
+            yield return new WaitForSeconds(.2f);
+        }
+        // suspend execution for 5 seconds
+        SetCurrentDaytime(m_nowIsDay);
     }
 }
