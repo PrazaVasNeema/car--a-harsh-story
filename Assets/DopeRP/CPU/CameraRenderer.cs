@@ -65,7 +65,7 @@ namespace DopeRP.CPU
 
 
 			m_lighting.Setup(customRenderPipelineAsset.shadowSettings);
-			postFXStack.Setup(RAPI.Context, camera, postFXSettings);
+			postFXStack.Setup(postFXSettings);
 			Setup();
 
 			if (customRenderPipelineAsset.ambientLightOn)
@@ -131,10 +131,7 @@ namespace DopeRP.CPU
 				// 	frameBufferId, RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight,
 				// 	32, FilterMode.Bilinear, RenderTextureFormat.Default
 				// );
-				RAPI.Buffer.SetRenderTarget(
-					SProps.PostFX.fxSourceAtlas,
-					RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store
-				);
+				RAPI.Buffer.SetRenderTarget(SProps.PostFX.fxSourceAtlas, RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store);
 			}
 			
 			RAPI.Buffer.ClearRenderTarget(flags <= CameraClearFlags.Depth, flags == CameraClearFlags.Color,

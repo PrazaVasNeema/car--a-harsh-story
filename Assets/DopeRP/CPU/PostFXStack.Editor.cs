@@ -1,3 +1,4 @@
+using DopeRP.CPU;
 using UnityEditor;
 using UnityEngine;
 
@@ -8,7 +9,7 @@ partial class PostFXStack {
 #if UNITY_EDITOR
 
     partial void ApplySceneViewState () {
-        if (camera.cameraType == CameraType.SceneView && !SceneView.currentDrawingSceneView.sceneViewState.showImageEffects) {
+        if (RAPI.CurCamera.cameraType == CameraType.SceneView && !SceneView.currentDrawingSceneView.sceneViewState.showImageEffects) {
             settings = null;
         }
     }
