@@ -80,10 +80,10 @@ public sealed class CheckDamageDealtSystem : UpdateSystem {
                         var entityTransform = entity.GetComponent<TransformRef>().transform;
                         Debug.Log($"Name: {entityTransform.name}");
                         var entitiesDistance = (change.contactPoint.point - entityTransform.position).magnitude;
-                        var damageMultiplier = Mathf.InverseLerp(0, 5, entitiesDistance);
+                        var damageMultiplier = Mathf.InverseLerp(0, 5f, entitiesDistance);
                         var damageAmountSplash = damageAmount * -Mathf.Log10(damageMultiplier)/2;
                         Debug.Log($"Distance: {entitiesDistance}");
-                        Debug.Log($"Initial damage: {damageAmount}; damageMultiplier: {damageMultiplier}; log: {-Mathf.Log10(damageMultiplier)}; Total damage: {damageAmountSplash}");
+                        Debug.Log($"Name: {entityTransform.name}, Initial damage: {damageAmount}; damageMultiplier: {damageMultiplier}; log: {-Mathf.Log10(damageMultiplier)}; Total damage: {damageAmountSplash}");
                         this.World.GetRequest<DoDamageRequest>().Publish(new DoDamageRequest
                         {
                             targetEntity = entity,

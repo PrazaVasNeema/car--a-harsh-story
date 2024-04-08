@@ -31,6 +31,7 @@ public class CarController : PlayerActorControllerAbstract
         base.Deactivate();
         m_carActorInputManager.OnHandbreakAction -= M_carActorInputManager_OnHandbreakAction; ;
         m_carActorInputManager.OnHandbreakActionCanceled -= M_carActorInputManager_OnHandbreakActionPerformed;
+        m_carActorInputManager.OnFrontLightsAction -= M_carActorInputManager_OnFrontLightsAction;
     }
 
     protected override void Update()
