@@ -14,6 +14,7 @@ namespace DopeRP.CPU
 		private readonly GBuffers m_gBuffers = new GBuffers();
 		private readonly Decals m_decals = new Decals();
 		private readonly SSAO m_ssao = new SSAO();
+		private readonly SSR m_ssr = new SSR();
 		PostFXStack postFXStack = new PostFXStack();
 		
 
@@ -55,6 +56,8 @@ namespace DopeRP.CPU
 			{
 				RAPI.SetKeyword("SSAO_ON", false);
 			}
+			
+			m_ssr.Render(assetSettings.SSRSettings);
 
 			m_lighting.Setup(assetSettings.shadowSettings);
 			postFXStack.Setup(assetSettings.postFXSettings);
@@ -83,6 +86,10 @@ namespace DopeRP.CPU
 				RAPI.CleanupTempRT((SProps.GBuffer.G_BRDFAtlas));
 				RAPI.CleanupTempRT(SProps.Common.ColorFiller);
 				RAPI.CleanupTempRT(SProps.GBuffer.GAux_WorldSpaceAtlas);
+				
+				RAPI.CleanupTempRT(SProps.SSR.SSRRawAtlas);
+				RAPI.CleanupTempRT(SProps.SSR.SSRColorAtlas);
+
 				
 				DrawGizmosBeforeFX();
 				if (postFXStack.IsActive)

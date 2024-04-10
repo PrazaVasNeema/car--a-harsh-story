@@ -151,6 +151,8 @@ float4 frag (Interpolators i) : SV_Target
     float f = _NearFarPlanes.y;
     float4 clipSpacePosition;
     float4 viewSpacePosition;
+
+    // return float4(i.uv, 0, 1);
     
     #if !UNITY_REVERSED_Z
         depth = lerp(UNITY_NEAR_CLIP_VALUE, 1, depth);
@@ -169,6 +171,10 @@ float4 frag (Interpolators i) : SV_Target
     #endif
 
     float4 fragPositionVS = viewSpacePosition;
+
+    // float2 fragCoords = 
+    
+    return float4(i.positionSV.xy/ _ScreenSize.xy, 0, 1);
 
     float3 normalWS = normalize(SAMPLE_TEXTURE2D(_G_NormalWorldSpaceAtlas, sampler_G_NormalWorldSpaceAtlas, i.uv).xyz);
     float3 normalVS = mul((real3x3)_Matrix_V, normalWS);

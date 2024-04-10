@@ -37,6 +37,10 @@ namespace DopeRP.CPU
 		private SSAOSettings ssaoSettings;
 		public SSAOSettings SSAOSettings => ssaoSettings;
 		
+		[SerializeField] 
+		private SSRSettings ssrSettings;
+		public SSRSettings SSRSettings => ssrSettings;
+		
 		[Header("Decals")]
 		[SerializeField] 
 		private bool m_decalsOn;

@@ -89,6 +89,29 @@ namespace DopeRP.CPU
             public static int NoiseScale = Shader.PropertyToID("_NoiseScale");
 
         }
+        
+        public static class SSR
+        {
+            
+            // public static ShaderTagId SSAORawPassId = new ShaderTagId("SSAORawPass");
+            // public static ShaderTagId SSAOBlurPassId = new ShaderTagId("SSAOBlurPass");
+            
+            public static string SSRRawPassName = "SSRRawPass";
+            public static string SSRColorPassName = "SSRColorPass";
+            
+            public static int NoiseTexture = Shader.PropertyToID("_NoiseTexture");
+            public static int RandomSize = Shader.PropertyToID("_RandomSize");
+            public static int SampleRadius = Shader.PropertyToID("_SampleRadius");
+            public static int Bias = Shader.PropertyToID("_Bias");
+            public static int Magnitude = Shader.PropertyToID("_Magnitude");
+            public static int Contrast = Shader.PropertyToID("_Contrast");
+            
+            public static int SSRRawAtlas = Shader.PropertyToID("_SSRRawAtlas");
+            public static int SSRColorAtlas = Shader.PropertyToID("_SSRColorAtlas");
+            
+            public static int NoiseScale = Shader.PropertyToID("_NoiseScale");
+
+        }
 
         public static class GBuffer
         {

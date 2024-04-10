@@ -42,6 +42,8 @@ SAMPLER(sampler_NormalMap);
 
 CBUFFER_START(GBuffer)
 
+    float4 _ScreenSize;
+
 CBUFFER_END
 
 struct MeshData {
@@ -62,6 +64,11 @@ struct Interpolators {
     float3 normalWS : TEXCOORD3;
 
     float2 uv         : TEXCOORD5;
+    
+    float3 positionVS : TEXCOORD6;
+
+    float3 normalVS : TEXCOORD7;
+
 
     GI_VARYINGS_DATA
     UNITY_VERTEX_INPUT_INSTANCE_ID
@@ -92,6 +99,9 @@ Interpolators vert(MeshData i)
     o.tangentWS = float4(TransformObjectToWorldDir(i.tangentOS.xyz), i.tangentOS.w);
     o.normalWS = TransformObjectToWorldNormal(i.normal);
 
+    o.positionVS =  TransformWorldToView(TransformObjectToWorld(i.position));
+    o.normalVS = TransformWorldToViewNormal(TransformObjectToWorldNormal(i.normal));
+    
     float4 baseMap_ST =  UNITY_ACCESS_INSTANCED_PROP(LitBasePerMaterial, _AlbedoMap_ST);
     o.uv = i.uv * baseMap_ST.xy + baseMap_ST.zw;
     return o;
@@ -182,6 +192,22 @@ fragOutput frag(Interpolators i)
 
     o.positionWS = float4(i.positionWS, 1);
 
+    // o.specular = mul(UNITY_MATRIX_V, i.positionWS);
+
+    float4 a = mul(UNITY_MATRIX_V, i.positionWS);
+    
+    o.tangentWorldSpace = float4(TransformWorldToView(o.positionWS), 1);
+
+    // o.tangentWorldSpace = float4(i.position.xy/ _ScreenSize.xy, 0, 1);
+
+    // o.tangentWorldSpace = mul(UNITY_MATRIX_V, float4(i.positionWS, 1));
+
+    o.tangentWorldSpace = float4(i.positionVS, 1);
+
+    // o.tangentWorldSpace = float4(i.position.xy/ _ScreenSize.xy, 0 , 1);
+
+    o.tangentWorldSpace = float4(i.normalVS, 1);
+    
     return o;
     
 }

@@ -12,6 +12,7 @@ Shader "DopeRP/Shaders/SSAO"
 
 	SubShader
 	{
+		ZWrite Off
 		
 		Pass {
 			Name "SSAORawPass"

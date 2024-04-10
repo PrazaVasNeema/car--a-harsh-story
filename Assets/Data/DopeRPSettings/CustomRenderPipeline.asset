@@ -41,6 +41,8 @@ MonoBehaviour:
     magnitude: 0.91
     contrast: 1
     SSAOMaterial: {fileID: 2100000, guid: 60abf83f57f21544994c9a37aa5bb374, type: 2}
+  ssrSettings:
+    SSRMaterial: {fileID: 2100000, guid: 76f6bbe82ee40094e8decc722bd8bade, type: 2}
   m_decalsOn: 1
   m_postFXOn: 1
   m_postFXSettings: {fileID: 11400000, guid: fe911ba97b277904caed8459cc8f6a12, type: 2}

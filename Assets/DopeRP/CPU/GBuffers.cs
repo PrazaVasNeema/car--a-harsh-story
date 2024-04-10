@@ -18,7 +18,7 @@ namespace DopeRP.CPU
             var cameraWidth = RAPI.CurCamera.pixelWidth;
             var cameraHeight = RAPI.CurCamera.pixelHeight;
 
-            RAPI.Buffer.GetTemporaryRT(SProps.GBuffer.GAux_TangentWorldSpaceAtlas, cameraWidth, cameraHeight, 0, FilterMode.Point, RenderTextureFormat.ARGBHalf);
+            RAPI.Buffer.GetTemporaryRT(SProps.GBuffer.GAux_TangentWorldSpaceAtlas, cameraWidth, cameraHeight, 0, FilterMode.Point, RenderTextureFormat.ARGB32);
             RAPI.Buffer.GetTemporaryRT(SProps.GBuffer.GAux_WorldSpaceAtlas, cameraWidth, cameraHeight, 0, FilterMode.Point, RenderTextureFormat.ARGBFloat);
             
             RAPI.Buffer.GetTemporaryRT(SProps.GBuffer.G_AlbedoAtlas, cameraWidth, cameraHeight, 0, FilterMode.Bilinear, RenderTextureFormat.ARGB32);
