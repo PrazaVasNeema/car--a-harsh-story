@@ -89,7 +89,7 @@ namespace DopeRP.CPU
 				{
 					postFXStack.Render(SProps.PostFX.fxSourceAtlas);
 				}
-				DrawGizmosAfterFX();
+				// DrawGizmosAfterFX();
 				// if (postFXStack.IsActive)
 				// {
 				// 	RAPI.Buffer.ReleaseTemporaryRT(frameBufferId);
