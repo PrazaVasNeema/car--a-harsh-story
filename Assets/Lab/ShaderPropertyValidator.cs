@@ -75,7 +75,7 @@ public class ShaderPropertyValidator : MonoBehaviour
         }
         else
         {
-            Debug.Log("All required shader properties are available.");
+            Debug.Log("All required shader properties are available!.");
         }
     }
 }
