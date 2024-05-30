@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f48922ce3d8b884d9efe64a03e385ad, type: 3}
+  m_Name: New Post FX Settings 1
+  m_EditorClassIdentifier: 
+  shader: {fileID: 4800000, guid: ffd7c9a6584c128448219777112f21b3, type: 3}
+  currentFXFeaturesList:
+  - FXFeatureIsOne: 0
+    fxFeature: {fileID: 11400000, guid: 937ce4dd10d1116458cf3428b4a34dd0, type: 2}
+  - FXFeatureIsOne: 0
+    fxFeature: {fileID: 11400000, guid: 91eee46deba4fda46ae2e6312f7afb49, type: 2}
+  - FXFeatureIsOne: 0
+    fxFeature: {fileID: 11400000, guid: 91eee46deba4fda46ae2e6312f7afb49, type: 2}
+  - FXFeatureIsOne: 1
+    fxFeature: {fileID: 11400000, guid: 697a59b84a0a32048bbd72e8ecaedd9c, type: 2}
