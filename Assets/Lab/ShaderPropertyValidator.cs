@@ -1,6 +1,8 @@
 // ShaderPropertyValidator.cs
 using UnityEngine;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 [System.Serializable]
 public struct ShaderProperty
@@ -17,7 +19,6 @@ public struct ShaderProperty
 
 public class ShaderPropertyValidator : MonoBehaviour
 {
-    [HideInInspector]
     public List<ShaderProperty> availableProperties = new List<ShaderProperty>();
     public List<ShaderProperty> neededProperties = new List<ShaderProperty>();
 
@@ -29,6 +30,13 @@ public class ShaderPropertyValidator : MonoBehaviour
             availableProperties.Add(property);
             Debug.Log($"Added available property: {propertyName} (ID: {propertyID})");
         }
+    }
+
+
+
+    public void RemoveNeededProperty(int propertyID)
+    {
+        neededProperties.RemoveAll(p => p.propertyID == propertyID);
     }
 
     public void DetermineSettings()
@@ -76,6 +84,48 @@ public class ShaderPropertyValidator : MonoBehaviour
         else
         {
             Debug.Log("All required shader properties are available.");
+        }
+    }
+    
+    public void RemoveAvailableProperty(int propertyID)
+    {
+        availableProperties.RemoveAll(p => p.propertyID == propertyID);
+    }
+
+    public void AddNeededProperty(int propertyID, string propertyName)
+    {
+        ShaderProperty property = new ShaderProperty(propertyID, propertyName);
+        if (!neededProperties.Exists(p => p.propertyID == propertyID))
+        {
+            neededProperties.Add(property);
+            Debug.Log($"Added needed property: {propertyName} (ID: {propertyID})");
+        }
+    }
+
+    public void SaveProperties(string filePath)
+    {
+        var formatter = new BinaryFormatter();
+        using (var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None))
+        {
+            formatter.Serialize(stream, availableProperties);
+            formatter.Serialize(stream, neededProperties);
+        }
+    }
+
+    public void LoadProperties(string filePath)
+    {
+        if (File.Exists(filePath))
+        {
+            var formatter = new BinaryFormatter();
+            using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                availableProperties = (List<ShaderProperty>)formatter.Deserialize(stream);
+                neededProperties = (List<ShaderProperty>)formatter.Deserialize(stream);
+            }
+        }
+        else
+        {
+            Debug.LogError($"File not found: {filePath}");
         }
     }
 }
