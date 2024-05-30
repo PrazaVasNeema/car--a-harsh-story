@@ -1,3 +1,4 @@
+// ShaderPropertyValidatorEditor.cs
 using UnityEngine;
 using UnityEditor;
 
@@ -6,24 +7,26 @@ public class ShaderPropertyValidatorEditor : Editor
 {
     public override void OnInspectorGUI()
     {
-        // Отрисовка стандартного инспектора
         DrawDefaultInspector();
 
-        // Получение ссылки на целевой объект
         ShaderPropertyValidator validator = (ShaderPropertyValidator)target;
 
-        // Добавление кнопки "Validate Properties"
-        if (GUILayout.Button("Validate Properties"))
+        EditorGUILayout.LabelField("Available Properties", EditorStyles.boldLabel);
+        foreach (var property in validator.availableProperties)
         {
-            // Вызов метода валидации
-            validator.ValidateProperties();
+            EditorGUILayout.LabelField($"ID: {property.propertyID}, Name: {property.propertyName}");
         }
 
-        // Добавление кнопки "Simulate Validation"
-        // if (GUILayout.Button("Simulate Validation"))
-        // {
-        //     // Вызов метода симуляции валидации
-        //     validator.SimulateValidation();
-        // }
+        EditorGUILayout.LabelField("Needed Properties", EditorStyles.boldLabel);
+        foreach (var property in validator.neededProperties)
+        {
+            EditorGUILayout.LabelField($"ID: {property.propertyID}, Name: {property.propertyName}");
+        }
+
+        if (GUILayout.Button("Validate Properties"))
+        {
+            validator.ValidateProperties();
+        }
+        
     }
 }
