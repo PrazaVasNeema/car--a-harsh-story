@@ -1,3 +1,4 @@
+// ShaderPropertyValidator.cs
 using UnityEngine;
 using System.Collections.Generic;
 
@@ -16,42 +17,45 @@ public struct ShaderProperty
 
 public class ShaderPropertyValidator : MonoBehaviour
 {
-    // Список доступных свойств
-    private List<ShaderProperty> availableProperties = new List<ShaderProperty>();
+    [HideInInspector]
+    public List<ShaderProperty> availableProperties = new List<ShaderProperty>();
+    public List<ShaderProperty> neededProperties = new List<ShaderProperty>();
 
-    // Список необходимых свойств
-    private List<ShaderProperty> neededProperties = new List<ShaderProperty>();
-
-    // Добавление доступного свойства
     public void AddAvailableProperty(int propertyID, string propertyName)
     {
         ShaderProperty property = new ShaderProperty(propertyID, propertyName);
         if (!availableProperties.Exists(p => p.propertyID == propertyID))
         {
             availableProperties.Add(property);
+            Debug.Log($"Added available property: {propertyName} (ID: {propertyID})");
         }
     }
 
-    // Метод для симуляции валидации с добавлением списков и вызовом валидации
-    public void SimulateValidation()
+    public void DetermineSettings()
     {
-        // Очистка списков для демонстрации
-        availableProperties.Clear();
+        int noiseScaleID = Shader.PropertyToID("SProps_SSAO_NoiseScale");
+        int radiusID = Shader.PropertyToID("SProps_SSAO_Radius");
+
+        AddAvailableProperty(noiseScaleID, "SProps_SSAO_NoiseScale");
+        AddAvailableProperty(radiusID, "SProps_SSAO_Radius");
+
+        Shader.SetGlobalVector(noiseScaleID, new Vector4(0.5f, 0.5f, 0f, 0f));
+    }
+
+    public void SetupNeededProperties()
+    {
         neededProperties.Clear();
-
-        // Добавление доступных свойств
-        AddAvailableProperty(Shader.PropertyToID("SProps_SSAO_NoiseScale"), "SProps_SSAO_NoiseScale");
-        AddAvailableProperty(Shader.PropertyToID("SProps_SSAO_Radius"), "SProps_SSAO_Radius");
-
-        // Добавление необходимых свойств
         neededProperties.Add(new ShaderProperty(Shader.PropertyToID("SProps_SSAO_NoiseScale"), "SProps_SSAO_NoiseScale"));
         neededProperties.Add(new ShaderProperty(Shader.PropertyToID("SProps_SSAO_Intensity"), "SProps_SSAO_Intensity"));
+    }
 
-        // Вызов метода валидации
+    public void SimulateValidation()
+    {
+        DetermineSettings();
+        SetupNeededProperties();
         ValidateProperties();
     }
 
-    // Проверка необходимых свойств
     public void ValidateProperties()
     {
         List<ShaderProperty> missingProperties = new List<ShaderProperty>();
