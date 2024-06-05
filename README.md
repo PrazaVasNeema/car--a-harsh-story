@@ -57,6 +57,9 @@ that was heavily modified on the go (like, I added my way of calculating normals
 </p>
 Also, I used decals as part of my damage system:
 
+<br>
+<br>
+
 <table align="center">
   <tr>
     <td colspan="2" align="center" style='border:3px solid #d9d9d9; padding: 0'>
