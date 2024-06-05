@@ -48,6 +48,11 @@ Shader "DopeRP/Shaders/Lit"
 		
 //[Enum(UnityEngine.Rendering.StencilOp)] _StencilFail ("Stencil Fail", Float) = 0
 //[Enum(UnityEngine.Rendering.StencilOp)] _StencilZFail ("Stencil ZFail", Float) = 0
+		
+//		[KeywordEnum(On, Clip, Dither, Off)] _Shadows ("Shadows", Float) = 0
+		
+		[Toggle(_SHADOWS_CLIP)] _ShadowsClip ("Shadows alpha Clipping", Float) = 0
+
 
 		
 
@@ -113,10 +118,10 @@ Shader "DopeRP/Shaders/Lit"
 
 			HLSLPROGRAM
 			#pragma target 3.5
-			#pragma vertex ShadowCasterPassVertex
-			#pragma shader_feature _ _SHADOWS_CLIP _SHADOWS_DITHER
+			#pragma shader_feature _SHADOWS_CLIP
 			#pragma multi_compile_instancing
 			// #pragma enable_d3d11_debug_symbols
+			#pragma vertex ShadowCasterPassVertex
 			#pragma fragment ShadowCasterPassFragment
 			#include "Assets/DopeRP/GPU/HLSL/ShadowCasterPass.hlsl"
 			ENDHLSL
