@@ -6,7 +6,7 @@ Car – A Harsh Story (iter 1)
 First iteration oh my custom SRP in Unity with testing scene included
 </h5>
 <p align="center">
-    <img src="./ReadmeResources/Header2.gif" style="width: 70%; height: 70%;" alt="1">
+    <img src="./ReadmeResources/Header2.gif" style="width: 80%; height: 80%;" alt="1">
 </p>
 
 -------------------
@@ -60,7 +60,7 @@ Also, I used decals as part of my damage system:
 <table align="center">
   <tr>
     <td colspan="2" align="center" style='border:3px solid #d9d9d9; padding: 0'>
-      <img src="./ReadmeResources/Decals21.gif" alt="Main GIF" width="600">
+      <img src="./ReadmeResources/Decals21.gif" alt="Main GIF">
     </td>
   </tr>
 </table>
@@ -105,9 +105,15 @@ Including:
 - Change of daytime on single key
 - Destruction system (for both can and some world objects)
 
-<p align="center">
-    <img style='border:3px solid #d9d9d9'  src="./ReadmeResources/test2.gif" alt="Gif1">
-</p>
+<table align="center">
+  <tr>
+    <td colspan="1" align="center" style='border:3px solid #d9d9d9; padding: 0'>
+      <div style="border: 3px solid #d9d9d9; display: inline-block;">
+          <img src="./ReadmeResources/test2.gif" alt="Side GIF 2">
+        </div>
+    </td>
+  </tr>
+</table>
 
 -------------------
 ## Used Stuff
@@ -125,6 +131,7 @@ Including:
 - ProBuilder
 
 ### Unique assets:
-- Lots of ambient 3D model stuff was made by a friend of mine, Alexey Melnikov. All the files located under "../Assets/Models/Benefactor/"
+- Lots of ambient 3D model stuff was made in Blender by a friend of mine, Alexey Melnikov. All the files located under "../Assets/Models/Benefactor/"
 - And, of course, the car model is not mine. It was included in the original repo
+- All the other stuff was made by me both in Blender and Houdini
 -------------------
