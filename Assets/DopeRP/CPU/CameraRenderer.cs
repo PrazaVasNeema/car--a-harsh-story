@@ -14,7 +14,7 @@ namespace DopeRP.CPU
 		private readonly GBuffers m_gBuffers = new GBuffers();
 		private readonly Decals m_decals = new Decals();
 		private readonly SSAO m_ssao = new SSAO();
-		PostFXStack postFXStack = new PostFXStack();
+		private readonly PostFXStack postFXStack = new PostFXStack();
 		
 
 		public void Render(Camera camera, DopeRPAsset assetSettings)
@@ -26,25 +26,17 @@ namespace DopeRP.CPU
 			}
 
 			RAPI.assetSettings = assetSettings;
-			// RAPI.Material = assetSettings.postFXSettings.Material;
 			RAPI.m_samplingOn = assetSettings.samplingOn;
 			RAPI.Context.SetupCameraProperties(RAPI.CurCamera);
 			RAPI.SetupCommonUniforms();
 			
 			RAPI.CurCamera.depthTextureMode = DepthTextureMode.None;
 
-			// if ( customRenderPipelineAsset.SSAO || customRenderPipelineAsset.decalsOn)
 			m_stencilPrepass.Render();
 				m_gBuffers.Render();
-				// RAPI.DrawEmpty(customRenderPipelineAsset.EmptyMaterial);
 				if (assetSettings.decalsOn)
 				{
-					// RAPI.SetKeyword("DECALS_ON", true);
 					m_decals.Render();
-				}
-				else
-				{
-					// RAPI.SetKeyword("DECALS_ON", false);
 				}
 			if (assetSettings.SSAO)
 			{
@@ -68,8 +60,6 @@ namespace DopeRP.CPU
 			{
 				DrawVisibleGeometry(assetSettings.LitDeferredMaterial);
 				DrawUnsupportedShaders();
-				// DrawGizmos();
-
 
 				RAPI.CleanupTempRT(SProps.GBuffer.GAux_TangentWorldSpaceAtlas);
 				RAPI.CleanupTempRT(SProps.SSAO.SSAORawAtlas);
@@ -89,11 +79,6 @@ namespace DopeRP.CPU
 				{
 					postFXStack.Render(SProps.PostFX.fxSourceAtlas);
 				}
-				// DrawGizmosAfterFX();
-				// if (postFXStack.IsActive)
-				// {
-				// 	RAPI.Buffer.ReleaseTemporaryRT(frameBufferId);
-				// }
 			}
 			RAPI.CleanupTempRT(SProps.Shadows.DirShadowAtlasId);
 
@@ -108,10 +93,7 @@ namespace DopeRP.CPU
 				if (flags > CameraClearFlags.Color) {
 					flags = CameraClearFlags.Color;
 				}
-				// RAPI.Buffer.GetTemporaryRT(
-				// 	frameBufferId, RAPI.CurCamera.pixelWidth, RAPI.CurCamera.pixelHeight,
-				// 	32, FilterMode.Bilinear, RenderTextureFormat.Default
-				// );
+				
 				RAPI.Buffer.SetRenderTarget(SProps.PostFX.fxSourceAtlas, RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store);
 			}
 			
@@ -133,7 +115,6 @@ namespace DopeRP.CPU
 			
 			var drawingSettings = new DrawingSettings(SProps.CameraRenderer.UnlitShaderTagId, sortingSettings)
 			{
-				// enableDynamicBatching = useDynamicBatching,
 				enableInstancing = RAPI.assetSettings.useGPUInstancing,
 				enableDynamicBatching = RAPI.assetSettings.useDynamicBatching,
 				perObjectData =
@@ -149,7 +130,6 @@ namespace DopeRP.CPU
 			RAPI.Context.DrawRenderers(RAPI.CullingResults, ref drawingSettings, ref filteringSettings);
 
 			RAPI.Context.DrawSkybox(RAPI.CurCamera);
-
 			
 			RAPI.BeginSample(BUFFER_NAME_MAIN);
 			
@@ -168,7 +148,6 @@ namespace DopeRP.CPU
 			
 			RAPI.BeginSample(BUFFER_NAME_TRANSPARENCY);
 				
-			//Draw transparent geometry
 			drawingSettings.SetShaderPassName(1, SProps.CameraRenderer.LitShaderTagId);
 
 			sortingSettings.criteria = SortingCriteria.CommonTransparent;

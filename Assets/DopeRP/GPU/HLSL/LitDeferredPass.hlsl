@@ -1,13 +1,10 @@
 ﻿#ifndef LIT_PASS_INCLUDED
 #define LIT_PASS_INCLUDED
 
-
 #include "Assets/DopeRP/GPU/HLSL/Common/Common.hlsl"
 #include "Assets/DopeRP/GPU/HLSL/SurfaceData.hlsl"
 #include "Assets/DopeRP/GPU/HLSL/GI.hlsl"
 #include "Assets/DopeRP/GPU/HLSL/Lighting.hlsl"
-
-
 
 
 CBUFFER_START(LitMain)
@@ -89,11 +86,7 @@ float4 frag(Interpolators i) : SV_TARGET
 
 	#if defined(SSAO_ON)
 	
-		// float4 ssao = SAMPLE_TEXTURE2D(_SSAOBlurAtlas, sampler_SSAOBlurAtlas, i.uv);
-		// return ssao;
-	
 		float ssao = SAMPLE_TEXTURE2D(_SSAOBlurAtlas, sampler_SSAOBlurAtlas, i.uv).r;
-		// if (ssao > 0)
 		baseColor *= ssao * when_gt(ssao, 0) + 1 * when_le(ssao, 0);
 
 	#endif
@@ -142,16 +135,10 @@ float4 frag(Interpolators i) : SV_TARGET
 
 	surfaceData.specular = specularAtlas.xyz;
 
-	
 	float3 fragColor = 0;
 
-	
-	// GI gi = GetGI(GI_FRAGMENT_DATA(input), surfaceData);
 	fragColor += IndirectBRDF(surfaceData)* 0.1;
-
 	fragColor += GetLighting(surfaceData);
-	// fragColor += GetEmission(i.uv) ;
-
 	fragColor += brdfAtlas.w * baseColor;
 
 	#if defined(AMBIENT_LIGHT_ON)

@@ -1,10 +1,20 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 
 public class CameraManager : MonoBehaviour
 {
     [SerializeField] private List<Transform> m_virtualCamerasList;
+
+    private void Update()
+    {
+        if (Input.GetKey(KeyCode.F4))
+        {
+            m_virtualCamerasList[0].GetComponent<CinemachineFreeLook>().Follow = null;
+        }
+    }
 
     public void ChangeActiveVirtualCamera(int index, bool shouldStickToBrother = false)
     {

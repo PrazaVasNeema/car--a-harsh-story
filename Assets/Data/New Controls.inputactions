@@ -345,6 +345,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "CINEMATIC_TOUCH",
+                    "type": "Button",
+                    "id": "a7a5dfae-6b19-4d8c-8c61-1808e82edbc7",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -444,6 +453,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "CHANGE_DAYTIME",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "30410f35-839f-4c23-8c2f-316698bda179",
+                    "path": "<Keyboard>/4",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CINEMATIC_TOUCH",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -4,7 +4,7 @@ using UnityEngine.Rendering;
 
 namespace DopeRP.CPU
 {
-    public class SSAO : IsValidatable
+    public class SSAO
     {
         private const string BUFFER_NAME = "SSAO";
         
@@ -48,15 +48,7 @@ namespace DopeRP.CPU
             RAPI.EndSample(BUFFER_NAME);
             
         }
-
-        public List<ShaderProperty> Validate()
-        {
-            List<ShaderProperty> neededProperties = new List<ShaderProperty>();
-            neededProperties.Add(new ShaderProperty(SProps.SSAO.NoiseScale, "NoiseScale"));
-            neededProperties.Add(new ShaderProperty(SProps.SSAO.SSAORawAtlas, "SSAORawAtlas"));
-            neededProperties.Add(new ShaderProperty(SProps.SSAO.SSAOBlurAtlas, "SSAOBlurAtlas"));
-            return neededProperties;
-        }
+        
     }
     
 }
